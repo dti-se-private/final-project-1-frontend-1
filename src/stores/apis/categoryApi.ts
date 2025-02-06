@@ -1,34 +1,24 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {axiosBaseQuery, GetManyRequest, ResponseBody} from "@/src/stores/apis";
-import {CategoryResponse} from "@/src/stores/apis/categoryApi";
 
-export interface ProductResponse {
+export interface CategoryResponse {
     id: string;
-    category: CategoryResponse;
     name: string;
     description: string;
-    price: string;
-    totalQuantity: number;
-    image: string;
 }
 
-export interface ProductRequest {
-    categoryId: string;
+export interface CategoryRequest {
     name: string;
     description: string;
-    price: string;
-    totalQuantity: number;
-    image: string;
 }
-
 
 export const productApi = createApi({
-    reducerPath: "productApi",
+    reducerPath: "categoryApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/products`
+        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/product-categories`
     }),
     endpoints: (builder) => ({
-        searchProducts: builder.query<ResponseBody<ProductResponse[]>, GetManyRequest>({
+        getCategories: builder.query<ResponseBody<CategoryResponse[]>, GetManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
                     `page=${args.page}`,
@@ -43,8 +33,8 @@ export const productApi = createApi({
                 if (result.error) {
                     return {error: result.error};
                 }
-                return {data: result.data as ResponseBody<ProductResponse[]>};
+                return {data: result.data as ResponseBody<CategoryResponse[]>};
             }
-        })
+        }),
     })
 });

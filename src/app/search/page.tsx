@@ -76,7 +76,7 @@ export default function Page() {
                 {/* Pagination */}
                 <div className="flex justify-center gap-4">
                     <Button
-                        onClick={() => search.setPage(search.searcherState.request.page - 1)}
+                        onPress={() => search.setPage(search.searcherState.request.page - 1)}
                     >
                         {'<'}
                     </Button>
@@ -86,7 +86,7 @@ export default function Page() {
                         {search.searcherState.request.page + 1}
                     </Button>
                     <Button
-                        onClick={() => search.setPage(search.searcherState.request.page + 1)}
+                        onPress={() => search.setPage(search.searcherState.request.page + 1)}
                     >
                         {'>'}
                     </Button>

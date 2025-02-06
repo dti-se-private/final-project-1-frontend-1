@@ -1,26 +1,28 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {axiosBaseQuery, ResponseBody} from "@/src/stores/apis";
-import {Account} from "@/src/stores/apis/accountApi";
+import {AccountResponse} from "@/src/stores/apis/accountApi";
 
 
-export interface RegisterByEmailAndPasswordRequest {
-    email: string;
-    password: string;
+export interface RegisterByInternalRequest {
     name: string;
+    email: string;
+    otp: string;
+    password: string;
     phone: string;
 }
 
-export interface LoginByEmailAndPasswordRequest {
+export interface LoginByInternalRequest {
     email: string;
     password: string;
 }
 
 export interface Session {
-    accountId: string;
+    account: AccountResponse
     accessToken: string;
     refreshToken: string;
-    accessTokenExpiredAt: string;
-    refreshTokenExpiredAt: string;
+    accessTokenExpiredAt: Date;
+    refreshTokenExpiredAt: Date;
+    permissions: string[];
 }
 
 
@@ -30,24 +32,31 @@ export const authenticationApi = createApi({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/authentications`
     }),
     endpoints: (builder) => ({
-        registerByEmailAndPassword: builder.mutation<ResponseBody<Account>, RegisterByEmailAndPasswordRequest>({
-            // @ts-expect-error: Still compatible even in type lint error.
+        registerByEmailAndPassword: builder.mutation<ResponseBody<AccountResponse>, RegisterByInternalRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
-                return baseQuery({
-                    url: "/registers/email-password",
+                const result = await baseQuery({
+                    url: "/registers/internal",
                     method: "POST",
                     data: args,
                 });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<AccountResponse>};
             }
         }),
-        loginByEmailAndPassword: builder.query<ResponseBody<Session>, LoginByEmailAndPasswordRequest>({
+        loginByEmailAndPassword: builder.query<ResponseBody<Session>, LoginByInternalRequest>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
-                return baseQuery({
-                    url: "/logins/email-password",
+                const result = await baseQuery({
+                    url: "/logins/internal",
                     method: "POST",
                     data: args,
                 });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<AccountResponse>};
             }
         }),
         logout: builder.query<ResponseBody<null>, Session>({

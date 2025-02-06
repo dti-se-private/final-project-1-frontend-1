@@ -1,7 +1,7 @@
 "use client"
 import * as Yup from "yup";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
-import {LoginByEmailAndPasswordRequest} from "@/src/stores/apis/authenticationApi";
+import {LoginByInternalRequest} from "@/src/stores/apis/authenticationApi";
 import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {Button} from "@heroui/react";
@@ -24,7 +24,7 @@ export default function Page() {
     });
 
     const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
-        const request: LoginByEmailAndPasswordRequest = {
+        const request: LoginByInternalRequest = {
             email: values.email,
             password: values.password,
         }

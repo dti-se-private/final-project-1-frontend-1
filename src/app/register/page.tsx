@@ -1,7 +1,7 @@
 "use client"
 import * as Yup from "yup";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
-import {RegisterByEmailAndPasswordRequest} from "@/src/stores/apis/authenticationApi";
+import {RegisterByInternalRequest} from "@/src/stores/apis/authenticationApi";
 import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {Button} from "@heroui/react";
@@ -13,6 +13,7 @@ export default function Page() {
 
     const initialValues = {
         email: "",
+        otp: "",
         password: "",
         name: "",
         phone: "",
@@ -20,14 +21,16 @@ export default function Page() {
 
     const validationSchema = Yup.object().shape({
         email: Yup.string().email("Invalid email.").required("Email is required."),
+        otp: Yup.string().required("OTP is required."),
         password: Yup.string().required("Password is required."),
         name: Yup.string().required("Name is required."),
         phone: Yup.string().required("Phone is required."),
     });
 
     const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
-        const request: RegisterByEmailAndPasswordRequest = {
+        const request: RegisterByInternalRequest = {
             email: values.email,
+            otp: values.otp,
             password: values.password,
             name: values.name,
             phone: values.phone,
@@ -62,6 +65,7 @@ export default function Page() {
                 >
                     <Form className="w-2/3 md:w-1/3">
                         <FormInput name="email" label="Email" type="email"/>
+                        <FormInput name="otp" label="OTP" type="text"/>
                         <FormInput name="password" label="Password" type="password"/>
                         <FormInput name="name" label="Name" type="text"/>
                         <FormInput name="phone" label="Phone" type="text"/>

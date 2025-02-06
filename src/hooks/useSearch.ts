@@ -1,9 +1,10 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {productApi, RetrieveProductResponse, SearchProductRequest} from "@/src/stores/apis/productApi";
+import {productApi, ProductResponse} from "@/src/stores/apis/productApi";
 import {useEffect} from "react";
 import {searcherSlice} from "@/src/stores/slices/searcherSlice";
 import {searchSlice} from "@/src/stores/slices/searchSlice";
+import {GetManyRequest} from "@/src/stores/apis";
 
 export const useSearch = () => {
     const dispatch = useDispatch();
@@ -14,7 +15,7 @@ export const useSearch = () => {
 
     const productApiResult = productApi.useSearchProductsQuery(searcherState.request)
 
-    const setRequest = (request: SearchProductRequest) => {
+    const setRequest = (request: GetManyRequest) => {
         dispatch(searchSlice.actions.setPage({
             prevPage: 0,
             currentPage: 0,
@@ -35,7 +36,7 @@ export const useSearch = () => {
     }
 
     useEffect(() => {
-        let newProducts: RetrieveProductResponse[] = [];
+        let newProducts: ProductResponse[] = [];
         if (searcherState.request.filters.length > 0) {
             newProducts = productApiResult.data?.data ?? [];
         }
@@ -51,7 +52,7 @@ export const useSearch = () => {
             page: 0,
             size: 10,
             search: '',
-            filters: ["name", "description", "category", "location", "time"]
+            filters: ["name", "description"]
         });
         productApiResult.refetch();
     }, []);

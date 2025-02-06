@@ -1,11 +1,11 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {Session} from "@/src/stores/apis/authenticationApi";
-import {Account} from "@/src/stores/apis/accountApi";
+import {AccountResponse} from "@/src/stores/apis/accountApi";
 import storage from "redux-persist/lib/storage";
 
 export interface AuthenticationState {
     isLoggedIn: boolean;
-    account?: Account;
+    account?: AccountResponse;
     session?: Session;
 }
 

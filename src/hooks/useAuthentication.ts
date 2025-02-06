@@ -2,14 +2,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {
     authenticationApi,
-    LoginByEmailAndPasswordRequest,
-    RegisterByEmailAndPasswordRequest,
+    LoginByInternalRequest,
+    RegisterByInternalRequest,
     Session
 } from "@/src/stores/apis/authenticationApi";
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
-import {accountApi, PatchOneAccountRequest, RetrieveOneAccountRequest} from "@/src/stores/apis/accountApi";
+import {accountApi, PatchAccountRequest} from "@/src/stores/apis/accountApi";
 import {useEffect} from "react";
-import moment from "moment";
+import {GetOneRequest} from "@/src/stores/apis";
 
 export const useAuthentication = () => {
     const dispatch = useDispatch();
@@ -18,36 +18,30 @@ export const useAuthentication = () => {
     const [registerApiTrigger] = authenticationApi.useRegisterByEmailAndPasswordMutation();
     const [logoutApiTrigger] = authenticationApi.useLazyLogoutQuery();
     const [refreshSessionApiTrigger] = authenticationApi.useLazyRefreshSessionQuery();
-    const [retrieveAccountApiTrigger] = accountApi.useLazyRetrieveOneByIdQuery();
+    const [getAccountApiTrigger] = accountApi.useLazyGetAccountByIdQuery();
     const [patchAccountApiTrigger] = accountApi.usePatchOneByIdMutation();
 
-    const retrieveAccount = async (request: RetrieveOneAccountRequest) => {
-        const retrieveAccountApiResult = await retrieveAccountApiTrigger(request).unwrap();
-        const values = retrieveAccountApiResult.data;
-        if (values) {
+    const getAccount = async (request: GetOneRequest) => {
+        const getAccountApiResult = await getAccountApiTrigger(request).unwrap();
+        const data = getAccountApiResult.data;
+        if (data) {
             dispatch(authenticationSlice.actions.setAccount({
-                account: {
-                    ...values,
-                    dob: moment(values.dob).format('YYYY-MM-DD'),
-                },
+                account: data
             }));
         } else {
             dispatch(authenticationSlice.actions.setAccount({
                 account: undefined,
             }));
         }
-        return retrieveAccountApiResult;
+        return getAccountApiResult;
     }
 
-    const patchAccount = async (request: PatchOneAccountRequest) => {
+    const patchAccount = async (request: PatchAccountRequest) => {
         const patchAccountApiResult = await patchAccountApiTrigger(request).unwrap();
-        const values = patchAccountApiResult.data;
-        if (values) {
+        const data = patchAccountApiResult.data;
+        if (data) {
             dispatch(authenticationSlice.actions.setAccount({
-                account: {
-                    ...values,
-                    dob: moment(values.dob).format('YYYY-MM-DD'),
-                },
+                account: data
             }));
         } else {
             dispatch(authenticationSlice.actions.setAccount({
@@ -57,7 +51,7 @@ export const useAuthentication = () => {
         return patchAccountApiResult;
     }
 
-    const login = async (request: LoginByEmailAndPasswordRequest) => {
+    const login = async (request: LoginByInternalRequest) => {
         const loginApiResult = await loginApiTrigger(request).unwrap();
         dispatch(authenticationSlice.actions.login({
             session: loginApiResult.data,
@@ -65,7 +59,7 @@ export const useAuthentication = () => {
         return loginApiResult;
     }
 
-    const register = async (request: RegisterByEmailAndPasswordRequest) => {
+    const register = async (request: RegisterByInternalRequest) => {
         const registerApiResult = await registerApiTrigger(request).unwrap();
         dispatch(authenticationSlice.actions.register({
             account: registerApiResult.data,
@@ -94,11 +88,11 @@ export const useAuthentication = () => {
 
     useEffect(() => {
         if (state.session) {
-            retrieveAccount({
-                id: state.session.accountId,
+            getAccount({
+                id: state.session.account.id,
             }).then()
         }
-    }, [retrieveAccount, state.session])
+    }, [state.session])
 
     return {
         state,

@@ -9,7 +9,7 @@ import {Pagination} from "swiper/modules";
 
 export default function Page() {
     const landing = useLanding();
-    const categories = ['all', 'sports', 'entertainment', 'conference', 'networking', 'health', 'literature', 'art', 'workshop', 'education']
+    const categories = ['all', 'appliance', 'fashion', 'food', 'gadget', 'health', 'sport', 'toys', 'vehicle'];
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -56,7 +56,7 @@ export default function Page() {
                     {categories.map((category) => (
                         <Button
                             key={category}
-                            onClick={() => landing.setCategory(category)}
+                            onPress={() => landing.setCategory(category)}
                             variant={(landing.searcherState.request.search === "" && category === "all") || (landing.searcherState.request.search === category) ? 'solid' : 'bordered'}
                         >
                             {upperFirst(category)}
@@ -100,7 +100,7 @@ export default function Page() {
                 {/* Pagination */}
                 <div className="flex justify-center gap-4">
                     <Button
-                        onClick={() => landing.setPage(landing.searcherState.request.page - 1)}
+                        onPress={() => landing.setPage(landing.searcherState.request.page - 1)}
                     >
                         {'<'}
                     </Button>
@@ -110,7 +110,7 @@ export default function Page() {
                         {landing.searcherState.request.page + 1}
                     </Button>
                     <Button
-                        onClick={() => landing.setPage(landing.searcherState.request.page + 1)}
+                        onPress={() => landing.setPage(landing.searcherState.request.page + 1)}
                     >
                         {'>'}
                     </Button>

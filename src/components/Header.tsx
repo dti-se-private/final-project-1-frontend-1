@@ -18,6 +18,7 @@ import Link from "next/link";
 import {SearchIcon} from "@heroui/shared-icons";
 import {useModal} from "@/src/hooks/useModal";
 import _ from "lodash";
+import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 
 export default function Component() {
     const modal = useModal();
@@ -25,7 +26,7 @@ export default function Component() {
     const search = useSearch();
     const router = useRouter();
 
-    const handleLogout = (product: React.MouseProduct<HTMLLIElement>) => {
+    const handleLogout = () => {
         authentication
             .logout()
             .then((data) => {
@@ -47,7 +48,7 @@ export default function Component() {
             });
     }
 
-    const handleSearch = _.debounce((product: React.ChangeProduct<HTMLInputElement>) => {
+    const handleSearch = _.debounce((product) => {
         search.setRequest({
             ...search.searcherState.request,
             search: product.target.value
@@ -79,7 +80,11 @@ export default function Component() {
                             isBordered
                             as="button"
                             size="sm"
-                            src={authentication.state.account?.profileImageUrl}
+                            src={
+                                authentication.state.account?.image
+                                    ? convertHexStringToBase64Data(authentication.state.account?.image, "image/png")
+                                    : "https://placehold.co/400x400?text=A"
+                            }
                         />
                     </DropdownTrigger>
                     <DropdownMenu>
@@ -92,23 +97,23 @@ export default function Component() {
                                     </DropdownItem>
                                     <DropdownSection showDivider title="Dashboard">
                                         <DropdownItem key="participant" href="/participant"
-                                                      onClick={() => router.push("/participant")}>
+                                                      onPress={() => router.push("/participant")}>
                                             Participant
                                         </DropdownItem>
                                         <DropdownItem key="organizer" href="/organizer"
-                                                      onClick={() => router.push("/organizer")}>
+                                                      onPress={() => router.push("/organizer")}>
                                             Organizer
                                         </DropdownItem>
                                     </DropdownSection>
                                     <DropdownSection title="Account">
                                         <DropdownItem key="profile" href="/profile"
-                                                      onClick={() => router.push("/profile")}>
+                                                      onPress={() => router.push("/profile")}>
                                             Profile
                                         </DropdownItem>
                                         <DropdownItem
                                             key="logout"
                                             color="danger"
-                                            onClick={handleLogout}
+                                            onPress={() => handleLogout()}
                                         >
                                             Logout
                                         </DropdownItem>
@@ -121,14 +126,14 @@ export default function Component() {
                                     <DropdownItem
                                         key="login"
                                         href="/login"
-                                        onClick={() => router.push("/login")}
+                                        onPress={() => router.push("/login")}
                                     >
                                         Login
                                     </DropdownItem>
                                     <DropdownItem
                                         key="register"
                                         href="/register"
-                                        onClick={() => router.push("/register")}
+                                        onPress={() => router.push("/register")}
                                     >
                                         Register
                                     </DropdownItem>
