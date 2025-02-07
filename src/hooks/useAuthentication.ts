@@ -2,7 +2,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {
     authenticationApi,
+    LoginByExternalRequest,
     LoginByInternalRequest,
+    RegisterByExternalRequest,
     RegisterByInternalRequest,
     Session
 } from "@/src/stores/apis/authenticationApi";
@@ -14,57 +16,54 @@ import {GetOneRequest} from "@/src/stores/apis";
 export const useAuthentication = () => {
     const dispatch = useDispatch();
     const state = useSelector((state: RootState) => state.authenticationSlice);
-    const [loginApiTrigger] = authenticationApi.useLazyLoginByEmailAndPasswordQuery();
-    const [registerApiTrigger] = authenticationApi.useRegisterByEmailAndPasswordMutation();
-    const [logoutApiTrigger] = authenticationApi.useLazyLogoutQuery();
-    const [refreshSessionApiTrigger] = authenticationApi.useLazyRefreshSessionQuery();
+    const [loginByInternalApiTrigger] = authenticationApi.useLoginByInternalMutation();
+    const [registerByInternalApiTrigger] = authenticationApi.useRegisterByInternalMutation();
+    const [loginByExternalApiTrigger] = authenticationApi.useLoginByExternalMutation();
+    const [registerByExternalApiTrigger] = authenticationApi.useRegisterByExternalMutation();
+    const [logoutApiTrigger] = authenticationApi.useLogoutMutation();
+    const [refreshSessionApiTrigger] = authenticationApi.useRefreshSessionMutation();
     const [getAccountApiTrigger] = accountApi.useLazyGetAccountByIdQuery();
     const [patchAccountApiTrigger] = accountApi.usePatchOneByIdMutation();
 
     const getAccount = async (request: GetOneRequest) => {
         const getAccountApiResult = await getAccountApiTrigger(request).unwrap();
-        const data = getAccountApiResult.data;
-        if (data) {
-            dispatch(authenticationSlice.actions.setAccount({
-                account: data
-            }));
-        } else {
-            dispatch(authenticationSlice.actions.setAccount({
-                account: undefined,
-            }));
-        }
-        return getAccountApiResult;
+        dispatch(authenticationSlice.actions.setAccount({
+            account: getAccountApiResult.data
+        }));
     }
 
     const patchAccount = async (request: PatchAccountRequest) => {
         const patchAccountApiResult = await patchAccountApiTrigger(request).unwrap();
-        const data = patchAccountApiResult.data;
-        if (data) {
-            dispatch(authenticationSlice.actions.setAccount({
-                account: data
-            }));
-        } else {
-            dispatch(authenticationSlice.actions.setAccount({
-                account: undefined,
-            }));
-        }
+        dispatch(authenticationSlice.actions.setAccount({
+            account: patchAccountApiResult.data
+        }));
         return patchAccountApiResult;
     }
 
-    const login = async (request: LoginByInternalRequest) => {
-        const loginApiResult = await loginApiTrigger(request).unwrap();
+    const loginByInternal = async (request: LoginByInternalRequest) => {
+        const loginByInternalApiResult = await loginByInternalApiTrigger(request).unwrap();
         dispatch(authenticationSlice.actions.login({
-            session: loginApiResult.data,
+            session: loginByInternalApiResult.data,
         }));
-        return loginApiResult;
+        return loginByInternalApiResult;
     }
 
-    const register = async (request: RegisterByInternalRequest) => {
-        const registerApiResult = await registerApiTrigger(request).unwrap();
-        dispatch(authenticationSlice.actions.register({
-            account: registerApiResult.data,
+    const registerByInternal = async (request: RegisterByInternalRequest) => {
+        const registerByInternalApiResult = await registerByInternalApiTrigger(request).unwrap();
+        return registerByInternalApiResult;
+    }
+
+    const loginByExternal = async (request: LoginByExternalRequest) => {
+        const loginByExternalApiResult = await loginByExternalApiTrigger(request).unwrap();
+        dispatch(authenticationSlice.actions.login({
+            session: loginByExternalApiResult.data,
         }));
-        return registerApiResult;
+        return loginByExternalApiResult;
+    }
+
+    const registerByExternal = async (request: RegisterByExternalRequest) => {
+        const registerByExternalApiResult = await registerByExternalApiTrigger(request).unwrap();
+        return registerByExternalApiResult;
     }
 
     const logout = async () => {
@@ -72,7 +71,7 @@ export const useAuthentication = () => {
         try {
             logoutApiResult = await logoutApiTrigger(state.session!).unwrap();
         } catch (e) {
-            throw e;
+            console.log(e)
         }
         dispatch(authenticationSlice.actions.logout({}));
         return logoutApiResult
@@ -96,8 +95,10 @@ export const useAuthentication = () => {
 
     return {
         state,
-        login,
-        register,
+        loginByInternal,
+        registerByInternal,
+        loginByExternal,
+        registerByExternal,
         logout,
         refreshSession,
         patchAccount,

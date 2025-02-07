@@ -95,19 +95,16 @@ export default function Component() {
                                         <p className="font-semibold">{authentication.state.account?.name}</p>
                                         <p className="font-semibold">{authentication.state.account?.email}</p>
                                     </DropdownItem>
-                                    <DropdownSection showDivider title="Dashboard">
-                                        <DropdownItem key="participant" href="/participant"
-                                                      onPress={() => router.push("/participant")}>
-                                            Participant
+                                    <DropdownSection showDivider title="Menu">
+                                        <DropdownItem key="addresses" href="/addresses">
+                                            Addresses
                                         </DropdownItem>
-                                        <DropdownItem key="organizer" href="/organizer"
-                                                      onPress={() => router.push("/organizer")}>
-                                            Organizer
+                                        <DropdownItem key="orders">
+                                            Orders
                                         </DropdownItem>
                                     </DropdownSection>
                                     <DropdownSection title="Account">
-                                        <DropdownItem key="profile" href="/profile"
-                                                      onPress={() => router.push("/profile")}>
+                                        <DropdownItem key="profile" href="/profile">
                                             Profile
                                         </DropdownItem>
                                         <DropdownItem

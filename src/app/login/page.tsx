@@ -1,12 +1,13 @@
 "use client"
 import * as Yup from "yup";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
-import {LoginByInternalRequest} from "@/src/stores/apis/authenticationApi";
+import {LoginByInternalRequest, RegisterByExternalRequest} from "@/src/stores/apis/authenticationApi";
 import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {Button} from "@heroui/react";
 import {useModal} from "@/src/hooks/useModal";
 import {useRouter} from "next/navigation";
+import {CredentialResponse, GoogleLogin} from "@react-oauth/google";
 
 export default function Page() {
     const authentication = useAuthentication();
@@ -29,7 +30,7 @@ export default function Page() {
             password: values.password,
         }
         return authentication
-            .login(request)
+            .loginByInternal(request)
             .then((data) => {
                 modal.setContent({
                     header: "Login Succeed",
@@ -49,9 +50,43 @@ export default function Page() {
             });
     };
 
+
+    const handleGoogleLoginSuccess = (credentialResponse: CredentialResponse) => {
+        console.log(credentialResponse);
+        const request: RegisterByExternalRequest = {
+            credential: credentialResponse.credential!
+        }
+        return authentication
+            .loginByExternal(request)
+            .then((data) => {
+                modal.setContent({
+                    header: "Login Succeed",
+                    body: `${data.message}`,
+                })
+                router.push("/");
+            })
+            .catch((error) => {
+                modal.setContent({
+                    header: "Login Failed",
+                    body: `${error.data.message}`,
+                })
+            }).finally(() => {
+                modal.onOpenChange(true);
+            });
+    }
+
+
+    const handleGoogleLoginError = () => {
+        modal.setContent({
+            header: "Login Failed",
+            body: `Login by Google failed`,
+        });
+        modal.onOpenChange(true);
+    }
+
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
-            <div className="container flex flex-col justify-center items-center">
+            <div className="container flex flex-col justify-center items-center gap-8">
                 <h1 className="mb-8 text-4xl font-bold">Login Now!</h1>
                 <Formik
                     initialValues={initialValues}
@@ -66,6 +101,11 @@ export default function Page() {
                         </Button>
                     </Form>
                 </Formik>
+                <GoogleLogin
+                    type="icon"
+                    onSuccess={handleGoogleLoginSuccess}
+                    onError={handleGoogleLoginError}
+                />
             </div>
         </div>
     )

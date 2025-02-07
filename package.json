@@ -12,6 +12,8 @@
   "dependencies": {
     "@heroui/react": "^2.6.14",
     "@iconify/react": "^5.2.0",
+    "@react-google-maps/api": "^2.20.5",
+    "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.5.1",
     "@uiw/react-json-view": "^2.0.0-alpha.30",
     "axios": "^1.7.9",

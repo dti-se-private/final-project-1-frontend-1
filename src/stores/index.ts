@@ -14,6 +14,7 @@ import storeRegistry from "@/src/registries/storeRegistry";
 import {searchSlice} from "@/src/stores/slices/searchSlice";
 import {searcherSlice} from "@/src/stores/slices/searcherSlice";
 import {statisticApi} from "@/src/stores/apis/statisticApi";
+import {verificationApi} from "@/src/stores/apis/verificationApi";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
     [searchSlice.reducerPath]: searchSlice.reducer,
     [modalSlice.reducerPath]: modalSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
+    [verificationApi.reducerPath]: verificationApi.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [statisticApi.reducerPath]: statisticApi.reducer,
@@ -60,6 +62,7 @@ export const store = configureStore({
         },
     }).concat(
         productApi.middleware,
+        verificationApi.middleware,
         authenticationApi.middleware,
         accountApi.middleware,
         statisticApi.middleware,

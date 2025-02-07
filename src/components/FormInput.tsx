@@ -10,7 +10,6 @@ export default function Component(props: Readonly<ComponentProps<typeof Input>>)
 
     return (
         <Input
-            {...props}
             className="mb-6 w-full"
             disabled={isSubmitting}
             onChange={handleChange}
@@ -37,6 +36,7 @@ export default function Component(props: Readonly<ComponentProps<typeof Input>>)
                         nameSegments.length === 3 && errors[nameSegments[0]] && errors[nameSegments[0]][Number(nameSegments[1])] && errors[nameSegments[0]][Number(nameSegments[1])][nameSegments[2]]
                 )
             }
+            {...props}
         />
     );
 };
