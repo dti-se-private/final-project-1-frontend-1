@@ -28,13 +28,12 @@ export const productApi = createApi({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/products`
     }),
     endpoints: (builder) => ({
-        searchProducts: builder.query<ResponseBody<ProductResponse[]>, GetManyRequest>({
+        getProducts: builder.query<ResponseBody<ProductResponse[]>, GetManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
                     `page=${args.page}`,
                     `size=${args.size}`,
                     `search=${args.search}`,
-                    ...args.filters.map(filter => `filters=${filter}`)
                 ];
                 const result = await baseQuery({
                     url: `?${queryParams.join("&")}`,

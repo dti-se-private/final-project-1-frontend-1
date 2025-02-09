@@ -34,7 +34,6 @@ export default function Component() {
                     header: "Logout Succeed",
                     body: `${data?.message}`,
                 })
-                router.push("/");
             })
             .catch((error) => {
                 modal.setContent({
@@ -43,7 +42,7 @@ export default function Component() {
                 })
             })
             .finally(() => {
-                window.location.href = '/login';
+                router.push("/login");
                 modal.onOpenChange(true);
             });
     }

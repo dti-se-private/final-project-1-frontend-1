@@ -12,7 +12,7 @@ export const useLanding = () => {
 
     const searcherState = useSelector((state: RootState) => state.searcherSlice);
 
-    const productApiResult = productApi.useSearchProductsQuery(searcherState.request)
+    const productApiResult = productApi.useGetProductsQuery(searcherState.request)
 
     const setCategory = (category: string) => {
         dispatch(landingSlice.actions.setPage({

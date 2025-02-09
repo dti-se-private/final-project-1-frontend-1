@@ -31,7 +31,7 @@ export const accountApi = createApi({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/accounts`
     }),
     endpoints: (builder) => ({
-        getAccountById: builder.query<ResponseBody<AccountResponse>, GetOneRequest>({
+        getAccount: builder.query<ResponseBody<AccountResponse>, GetOneRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
                     url: `/${args.id}`,
@@ -43,7 +43,7 @@ export const accountApi = createApi({
                 return {data: result.data as ResponseBody<AccountResponse>};
             }
         }),
-        patchOneById: builder.mutation<ResponseBody<AccountResponse>, PatchAccountRequest>({
+        patchAccount: builder.mutation<ResponseBody<AccountResponse>, PatchAccountRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
                     url: `/${args.id}`,

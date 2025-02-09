@@ -19,7 +19,6 @@ export interface GetManyRequest {
     page: number;
     size: number;
     search: string;
-    filters: string[];
 }
 
 export const axiosBaseQuery =

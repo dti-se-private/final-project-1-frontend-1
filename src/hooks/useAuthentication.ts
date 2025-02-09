@@ -22,8 +22,8 @@ export const useAuthentication = () => {
     const [registerByExternalApiTrigger] = authenticationApi.useRegisterByExternalMutation();
     const [logoutApiTrigger] = authenticationApi.useLogoutMutation();
     const [refreshSessionApiTrigger] = authenticationApi.useRefreshSessionMutation();
-    const [getAccountApiTrigger] = accountApi.useLazyGetAccountByIdQuery();
-    const [patchAccountApiTrigger] = accountApi.usePatchOneByIdMutation();
+    const [getAccountApiTrigger] = accountApi.useLazyGetAccountQuery();
+    const [patchAccountApiTrigger] = accountApi.usePatchAccountMutation();
 
     const getAccount = async (request: GetOneRequest) => {
         const getAccountApiResult = await getAccountApiTrigger(request).unwrap();

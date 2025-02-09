@@ -31,7 +31,7 @@ export const authenticationSlice = createSlice({
             state.session = undefined;
             state.isLoggedIn = false;
             storage
-                .removeItem('persist')
+                .removeItem('persistence')
                 .then(() => {
                     console.log('Persisted state has been removed.');
                 })
