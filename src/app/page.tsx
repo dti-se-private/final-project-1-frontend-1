@@ -6,9 +6,11 @@ import Link from 'next/link'
 import {upperFirst} from "tiny-case";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Pagination} from "swiper/modules";
+import { useSearch } from '../hooks/useSearch';
 
 export default function Page() {
     const landing = useLanding();
+    const search = useSearch();
     const categories = ['all', 'sports', 'entertainment', 'conference', 'networking', 'health', 'literature', 'art', 'workshop', 'education']
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
@@ -18,6 +20,10 @@ export default function Page() {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
     });
+
+    const filteredProducts = landing.searcherState.products.filter(product => 
+        product.name.toLowerCase().includes(search.searcherState.request.search.toLowerCase())
+    )
 
     return (
         <div className="pb-8 flex flex-col justify-center items-center">
