@@ -1,9 +1,11 @@
 "use client"
 import React from "react";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
+import {Icon} from "@iconify/react";
 import {
     Button,
     getKeyValue,
+    Input,
     Pagination,
     Spinner,
     Table,
@@ -13,27 +15,55 @@ import {
     TableHeader,
     TableRow
 } from "@heroui/react";
-import {AccountAddressResponse} from "@/src/stores/apis/addressApi";
+import {AccountAddressResponse} from "@/src/stores/apis/accountAddressApi";
 import {useRouter} from "next/navigation";
 import * as wkx from "wkx";
-import Json from "@/src/components/Json"
+import {SearchIcon} from "@heroui/shared-icons";
+import _ from "lodash";
+import {useModal} from "@/src/hooks/useModal";
 
 export default function Page() {
-    const {accountAddressState, accountAddressApiResult, setPage} = useAccountAddress();
     const router = useRouter();
+    const {
+        accountAddressState,
+        getAccountAddressesApiResult,
+        setGetManyRequest,
+        setDetails,
+        deleteAccountAddress,
+    } = useAccountAddress();
+    const modal = useModal();
 
-    const rowMapper = (item: AccountAddressResponse, key: string): any => {
+    const rowMapper = (item: AccountAddressResponse, key: string): React.JSX.Element => {
         if (key === "action") {
             return (
-                <div className="flex flex-row gap-4">
+                <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/addresses/${item.id}`)}
+                        onPress={() => {
+                            setDetails(item);
+                            router.push(`/addresses/${item.id}`);
+                        }}
                     >
                         Details
                     </Button>
                     <Button
                         color="danger"
+                        onPress={() => deleteAccountAddress({id: item.id})
+                            .then((data) => {
+                                modal.setContent({
+                                    header: "Delete Succeed",
+                                    body: `${data.message}`,
+                                })
+                            })
+                            .catch((error) => {
+                                modal.setContent({
+                                    header: "Delete Failed",
+                                    body: `${error.data.message}`,
+                                })
+                            }).finally(() => {
+                                modal.onOpenChange(true);
+                            })
+                        }
                     >
                         Delete
                     </Button>
@@ -42,39 +72,89 @@ export default function Page() {
         }
 
         if (key === "location") {
-            const wkbBuffer = new Buffer(item.location, 'hex')
+            const wkbBuffer = Buffer.from(item.location, 'hex')
             const geometry = wkx.Geometry.parse(wkbBuffer);
-            const geoJson = geometry.toGeoJSON() as {type: string, coordinates: number[]}
-            const point = {
-                "x": geoJson.coordinates![0],
-                "y": geoJson.coordinates![1],
-            }
-            return <Json value={point}/>
+            const geoJson = geometry.toGeoJSON() as { type: string, coordinates: number[] }
+            const mapLink = `https://maps.google.com/?q=${geoJson.coordinates[1]},${geoJson.coordinates[0]}`
+            return (
+                <Button
+                    onPress={() => window.open(mapLink)}
+                >
+                    <Icon icon="heroicons:map-pin"/>
+                </Button>
+            )
         }
 
-        return String(getKeyValue(item, key));
+        return (
+            <>
+                {String(getKeyValue(item, key))}
+            </>
+        );
     }
 
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
-            <div className="container flex flex-col justify-start items-center min-h-[55vh]">
-                <h1 className="mb-8 text-4xl font-bold">Address</h1>
+            <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
+                <h1 className="mb-8 text-4xl font-bold">Addresses</h1>
                 <Table
-                    className="w-3/4"
-                    bottomContent={
-                        accountAddressState.currentPage > 0 ? (
-                            <div className="flex w-full justify-center">
-                                <Pagination
-                                    isCompact
-                                    showControls
-                                    showShadow
-                                    color="primary"
-                                    page={accountAddressState.currentPage}
-                                    total={Infinity}
-                                    onChange={(page) => setPage(page)}
+                    topContent={
+                        <div className="flex flex-col gap-4">
+                            <div className="flex flex-row w-full gap-4">
+                                <Input
+                                    placeholder="Search..."
+                                    startContent={<SearchIcon className="text-default-300"/>}
+                                    value={accountAddressState.getManyRequest.search}
+                                    variant="bordered"
+                                    isClearable={true}
+                                    onClear={() => setGetManyRequest({
+                                        page: accountAddressState.getManyRequest.page,
+                                        size: accountAddressState.getManyRequest.size,
+                                        search: "",
+                                    })}
+                                    onValueChange={_.debounce((value) => setGetManyRequest({
+                                        page: accountAddressState.getManyRequest.page,
+                                        size: accountAddressState.getManyRequest.size,
+                                        search: value
+                                    }), 500)}
                                 />
+                                <Button
+                                    startContent={<Icon icon="heroicons:plus"/>}
+                                    onPress={() => router.push(`/addresses/add`)}
+                                >
+                                    Add
+                                </Button>
                             </div>
-                        ) : null
+                            <label className="flex items-center text-default-400 text-small">
+                                Rows per page:
+                                <select
+                                    className="bg-transparent outline-none text-default-400 text-small"
+                                    onChange={(event) => setGetManyRequest({
+                                        page: accountAddressState.getManyRequest.page,
+                                        size: Number(event.target.value),
+                                        search: accountAddressState.getManyRequest.search
+                                    })}
+                                >
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                </select>
+                            </label>
+                        </div>
+                    }
+                    bottomContent={
+                        <div className="flex w-full justify-center">
+                            <Pagination
+                                showControls
+                                showShadow
+                                page={accountAddressState.getManyRequest.page + 1}
+                                total={Infinity}
+                                onChange={(page) => setGetManyRequest({
+                                    page: page - 1,
+                                    size: accountAddressState.getManyRequest.size,
+                                    search: accountAddressState.getManyRequest.search,
+                                })}
+                            />
+                        </div>
                     }
                 >
                     <TableHeader>
@@ -86,9 +166,9 @@ export default function Page() {
                         <TableColumn key="action">Action</TableColumn>
                     </TableHeader>
                     <TableBody
-                        items={accountAddressApiResult.data?.data ?? []}
+                        items={getAccountAddressesApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={accountAddressApiResult.isLoading ? "loading" : "idle"}
+                        loadingState={getAccountAddressesApiResult.isLoading ? "loading" : "idle"}
                     >
                         {(item) => (
                             <TableRow key={item?.name}>

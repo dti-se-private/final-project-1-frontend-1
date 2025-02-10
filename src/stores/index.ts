@@ -15,7 +15,7 @@ import {searchSlice} from "@/src/stores/slices/searchSlice";
 import {searcherSlice} from "@/src/stores/slices/searcherSlice";
 import {statisticApi} from "@/src/stores/apis/statisticApi";
 import {verificationApi} from "@/src/stores/apis/verificationApi";
-import {accountAddressApi} from "@/src/stores/apis/addressApi";
+import {accountAddressApi} from "@/src/stores/apis/accountAddressApi";
 import {accountAddressSlice} from "@/src/stores/slices/accountAddressSlice";
 
 const rootReducer = combineReducers({

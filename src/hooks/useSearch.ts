@@ -4,7 +4,7 @@ import {productApi} from "@/src/stores/apis/productApi";
 import {useEffect} from "react";
 import {searcherSlice} from "@/src/stores/slices/searcherSlice";
 import {searchSlice} from "@/src/stores/slices/searchSlice";
-import {GetManyRequest} from "@/src/stores/apis";
+import {ManyRequest} from "@/src/stores/apis";
 
 export const useSearch = () => {
     const dispatch = useDispatch();
@@ -15,7 +15,7 @@ export const useSearch = () => {
 
     const productApiResult = productApi.useGetProductsQuery(searcherState.request)
 
-    const setRequest = (request: GetManyRequest) => {
+    const setRequest = (request: ManyRequest) => {
         dispatch(searchSlice.actions.setPage({
             prevPage: 0,
             currentPage: 0,

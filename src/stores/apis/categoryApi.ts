@@ -1,5 +1,5 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {axiosBaseQuery, GetManyRequest, ResponseBody} from "@/src/stores/apis";
+import {axiosBaseQuery, ManyRequest, ResponseBody} from "@/src/stores/apis";
 
 export interface CategoryResponse {
     id: string;
@@ -18,7 +18,7 @@ export const productApi = createApi({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/product-categories`
     }),
     endpoints: (builder) => ({
-        getCategories: builder.query<ResponseBody<CategoryResponse[]>, GetManyRequest>({
+        getCategories: builder.query<ResponseBody<CategoryResponse[]>, ManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
                     `page=${args.page}`,

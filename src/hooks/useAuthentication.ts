@@ -11,7 +11,7 @@ import {
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
 import {accountApi, PatchAccountRequest} from "@/src/stores/apis/accountApi";
 import {useEffect} from "react";
-import {GetOneRequest} from "@/src/stores/apis";
+import {OneRequest} from "@/src/stores/apis";
 
 export const useAuthentication = () => {
     const dispatch = useDispatch();
@@ -25,7 +25,7 @@ export const useAuthentication = () => {
     const [getAccountApiTrigger] = accountApi.useLazyGetAccountQuery();
     const [patchAccountApiTrigger] = accountApi.usePatchAccountMutation();
 
-    const getAccount = async (request: GetOneRequest) => {
+    const getAccount = async (request: OneRequest) => {
         const getAccountApiResult = await getAccountApiTrigger(request).unwrap();
         dispatch(authenticationSlice.actions.setAccount({
             account: getAccountApiResult.data

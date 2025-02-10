@@ -4,7 +4,7 @@ import {useSearch} from "@/src/hooks/useSearch";
 import {upperFirst} from "tiny-case";
 import Link from "next/link";
 import Image from "next/image";
-import {RetrieveProductResponse} from "@/src/stores/apis/productApi";
+import {ProductResponse} from "@/src/stores/apis/productApi";
 
 export default function Page() {
     const search = useSearch();
@@ -26,7 +26,7 @@ export default function Page() {
                     defaultValue={filters}
                     onChange={(values: string[]) => search.setRequest({
                         ...search.searcherState.request,
-                        filters: values
+                        search: values.join(" ")
                     })}
                 >
                     <div className="flex flex-wrap justify-center items-center gap-6">
@@ -45,7 +45,7 @@ export default function Page() {
             {/* Products */}
             <section className="container flex flex-col justify-center items-center">
                 <div className="flex flex-wrap justify-center items-center gap-6 mb-8 min-h-[80vh]">
-                    {search.searcherState.products.map((product: RetrieveProductResponse, index: number) => (
+                    {search.searcherState.products.map((product: ProductResponse, index: number) => (
                         <Link
                             href={`/products/${product.id}`}
                             key={index}

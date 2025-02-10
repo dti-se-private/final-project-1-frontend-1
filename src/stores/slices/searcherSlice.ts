@@ -1,10 +1,10 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {ProductResponse} from "@/src/stores/apis/productApi";
-import {GetManyRequest} from "@/src/stores/apis";
+import {ManyRequest} from "@/src/stores/apis";
 
 export interface SearcherState {
     products: ProductResponse[];
-    request: GetManyRequest;
+    request: ManyRequest;
 }
 
 export const searcherSlice = createSlice({

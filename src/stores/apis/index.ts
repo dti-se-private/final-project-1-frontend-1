@@ -11,11 +11,11 @@ export interface ResponseBody<T> {
     message: string;
 }
 
-export interface GetOneRequest {
+export interface OneRequest {
     id: string;
 }
 
-export interface GetManyRequest {
+export interface ManyRequest {
     page: number;
     size: number;
     search: string;

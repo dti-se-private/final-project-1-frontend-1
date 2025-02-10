@@ -1,21 +1,28 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {ManyRequest} from "@/src/stores/apis";
+import {AccountAddressResponse} from "@/src/stores/apis/accountAddressApi";
 
-export interface AddressState {
-    prevPage: number,
-    currentPage: number,
+export interface AccountAddressState {
+    getManyRequest: ManyRequest
+    details?: AccountAddressResponse
 }
 
 export const accountAddressSlice = createSlice({
     name: 'accountAddressSlice',
     initialState: {
-        prevPage: 0,
-        currentPage: 0
-    } as AddressState,
-    reducers: {
-        setPage: (state, action) => {
-            const {prevPage, currentPage} = action.payload;
-            state.prevPage = prevPage ?? state.currentPage
-            state.currentPage = currentPage
+        getManyRequest: {
+            page: 0,
+            size: 10,
+            search: ''
         },
+        details: undefined
+    } as AccountAddressState,
+    reducers: {
+        setGetManyRequest: (state, action) => {
+            state.getManyRequest = action.payload;
+        },
+        setDetails: (state, action) => {
+            state.details = action.payload;
+        }
     },
 });

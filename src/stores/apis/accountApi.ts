@@ -1,5 +1,5 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {axiosBaseQuery, GetOneRequest, ResponseBody} from "@/src/stores/apis";
+import {axiosBaseQuery, OneRequest, ResponseBody} from "@/src/stores/apis";
 
 export interface AccountResponse {
     id: string;
@@ -31,7 +31,7 @@ export const accountApi = createApi({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/accounts`
     }),
     endpoints: (builder) => ({
-        getAccount: builder.query<ResponseBody<AccountResponse>, GetOneRequest>({
+        getAccount: builder.query<ResponseBody<AccountResponse>, OneRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
                     url: `/${args.id}`,

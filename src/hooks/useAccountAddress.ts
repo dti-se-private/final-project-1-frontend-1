@@ -1,34 +1,59 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {useEffect} from "react";
 import {accountAddressSlice} from "@/src/stores/slices/accountAddressSlice";
-import {accountAddressApi} from "@/src/stores/apis/addressApi";
+import {
+    accountAddressApi, AccountAddressRequest,
+    AccountAddressResponse,
+    PatchAccountAddressRequest
+} from "@/src/stores/apis/accountAddressApi";
+import {ManyRequest, OneRequest} from "@/src/stores/apis";
 
 export const useAccountAddress = () => {
     const dispatch = useDispatch();
     const accountAddressState = useSelector((state: RootState) => state.accountAddressSlice);
-    const accountAddressApiResult = accountAddressApi.useGetAccountAddressesQuery({
-        page: accountAddressState.currentPage,
-        size: 10,
-        search: ""
+    const getAccountAddressesApiResult = accountAddressApi.useGetAccountAddressesQuery({
+        page: accountAddressState.getManyRequest.page,
+        size: accountAddressState.getManyRequest.size,
+        search: accountAddressState.getManyRequest.search
     });
+    const [addAccountAddressApiTrigger] = accountAddressApi.useAddAccountAddressMutation();
+    const [patchAccountAddressApiTrigger] = accountAddressApi.usePatchAccountAddressMutation();
+    const [deleteAccountAddressApiTrigger] = accountAddressApi.useDeleteAccountAddressMutation();
 
-    const setPage = (page: number) => {
-        if (page >= 0) {
-            dispatch(accountAddressSlice.actions.setPage({
-                prevPage: accountAddressState.currentPage,
-                currentPage: page
-            }));
-        }
+    const addAccountAddress = async (request: AccountAddressRequest) => {
+        const addAccountApiResult = await addAccountAddressApiTrigger(request).unwrap();
+        getAccountAddressesApiResult.refetch();
+        return addAccountApiResult;
     }
 
-    useEffect(() => {
-        accountAddressApiResult.refetch();
-    }, [accountAddressState.prevPage, accountAddressState.currentPage]);
+    const patchAccountAddress = async (request: PatchAccountAddressRequest) => {
+        const patchAccountApiResult = await patchAccountAddressApiTrigger(request).unwrap();
+        dispatch(accountAddressSlice.actions.setDetails(patchAccountApiResult.data));
+        getAccountAddressesApiResult.refetch();
+        return patchAccountApiResult;
+    }
+
+    const deleteAccountAddress = async (request: OneRequest) => {
+        const deleteAccountApiResult = await deleteAccountAddressApiTrigger(request).unwrap();
+        getAccountAddressesApiResult.refetch();
+        return deleteAccountApiResult;
+    }
+
+    const setGetManyRequest = (request: ManyRequest) => {
+        dispatch(accountAddressSlice.actions.setGetManyRequest(request));
+    }
+
+    const setDetails = (accountAddress: AccountAddressResponse) => {
+        dispatch(accountAddressSlice.actions.setDetails(accountAddress));
+    }
 
     return {
         accountAddressState,
-        accountAddressApiResult,
-        setPage
+        getAccountAddressesApiResult,
+        setGetManyRequest,
+        setDetails,
+        addAccountAddress,
+        patchAccountAddress,
+        deleteAccountAddress
     };
 }

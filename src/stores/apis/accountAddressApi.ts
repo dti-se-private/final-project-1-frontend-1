@@ -1,5 +1,5 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {axiosBaseQuery, GetManyRequest, GetOneRequest, ResponseBody} from "@/src/stores/apis";
+import {axiosBaseQuery, ManyRequest, OneRequest, ResponseBody} from "@/src/stores/apis";
 
 export interface AccountAddressResponse {
     id: string;
@@ -27,7 +27,7 @@ export const accountAddressApi = createApi({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/account-addresses`
     }),
     endpoints: (builder) => ({
-        getAccountAddresses: builder.query<ResponseBody<AccountAddressResponse[]>, GetManyRequest>({
+        getAccountAddresses: builder.query<ResponseBody<AccountAddressResponse[]>, ManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
                     `page=${args.page}`,
@@ -44,7 +44,7 @@ export const accountAddressApi = createApi({
                 return {data: result.data as ResponseBody<AccountAddressResponse[]>};
             }
         }),
-        getAccountAddress: builder.query<ResponseBody<AccountAddressResponse>, GetOneRequest>({
+        getAccountAddress: builder.query<ResponseBody<AccountAddressResponse>, OneRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
                     url: `/${args.id}`,
@@ -56,7 +56,7 @@ export const accountAddressApi = createApi({
                 return {data: result.data as ResponseBody<AccountAddressResponse>};
             }
         }),
-        addAccountAddresses: builder.mutation<ResponseBody<AccountAddressResponse>, AccountAddressRequest>({
+        addAccountAddress: builder.mutation<ResponseBody<AccountAddressResponse>, AccountAddressRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
                     url: "",
@@ -82,7 +82,7 @@ export const accountAddressApi = createApi({
                 return {data: result.data as ResponseBody<AccountAddressResponse>};
             }
         }),
-        deleteAccountAddress: builder.mutation<ResponseBody<void>, GetOneRequest>({
+        deleteAccountAddress: builder.mutation<ResponseBody<void>, OneRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
                     url: `/${args.id}`,

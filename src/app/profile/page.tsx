@@ -106,7 +106,8 @@ export default function Page() {
                                 <FormInput name="email" label="Email" type="email"/>
                                 <div className="flex gap-4 mb-6 w-full">
                                     <FormInput className="" name="otp" label="OTP" type="text"/>
-                                    <Button type="button" onPress={() => handlePressOtp(props.values)} className="w-1/3 h-14">
+                                    <Button type="button" onPress={() => handlePressOtp(props.values)}
+                                            className="w-1/3 h-14">
                                         Send OTP
                                     </Button>
                                 </div>
