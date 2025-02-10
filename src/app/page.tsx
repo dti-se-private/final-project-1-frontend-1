@@ -7,6 +7,7 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import {Pagination} from "swiper/modules";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import {useRouter} from "next/navigation";
+import Link from "next/link";
 
 export default function Page() {
     const router = useRouter();
@@ -83,13 +84,10 @@ export default function Page() {
             <section className="container flex flex-col justify-center items-center px-2">
                 <div className="flex flex-wrap justify-center items-center gap-6 mb-8 min-h-[80vh]">
                     {productApiResult.data?.data?.map((product, index) => (
-                        <div
-                            onClick={() => {
-                                setDetails(product);
-                                router.push(`/products/${product.id}`);
-                            }}
+                        <Link
+                            href={`/products/${product.id}`}
                             key={index}
-                            className="cursor-pointer flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md h-full"
+                            className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md h-full"
                         >
                             <div className="relative w-full md:h-[30vh] md:w-[30vh] h-[40vh] w-[40vh] mb-4">
                                 <Image
@@ -97,7 +95,7 @@ export default function Page() {
                                     src={
                                         product.image
                                             ? convertHexStringToBase64Data(product.image, "image/png")
-                                            : "https://placehold.co/1366x768?text=product"
+                                            : "https://placehold.co/400x400?text=product"
                                     }
                                     layout="fill"
                                     objectFit="cover"
@@ -105,11 +103,11 @@ export default function Page() {
                                 />
                             </div>
                             <div className="w-full flex flex-col justify-center items-start">
-                                <h3 className="overflow-hidden truncate w-full text-lg font-bold">{product.name}</h3>
+                                <p className="overflow-hidden truncate w-full text-lg font-bold">{product.name}</p>
                                 <p className="text-md">{currencyFormatter.format(product.price)}</p>
                                 <p className="text-md">Stock: {product.quantity}</p>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                     {productApiResult.isLoading && (<Spinner/>)}
                     {!productApiResult.isLoading && productApiResult.data?.data?.length === 0 && (

@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
 import {Icon} from "@iconify/react";
 import {
@@ -24,6 +24,7 @@ import {useModal} from "@/src/hooks/useModal";
 
 export default function Page() {
     const router = useRouter();
+    const modal = useModal();
     const {
         accountAddressState,
         getAccountAddressesApiResult,
@@ -31,7 +32,6 @@ export default function Page() {
         setDetails,
         deleteAccountAddress,
     } = useAccountAddress();
-    const modal = useModal();
 
     const rowMapper = (item: AccountAddressResponse, key: string): React.JSX.Element => {
         if (key === "action") {
@@ -39,10 +39,7 @@ export default function Page() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => {
-                            setDetails(item);
-                            router.push(`/addresses/${item.id}`);
-                        }}
+                        onPress={() => router.push(`/addresses/${item.id}`)}
                     >
                         Details
                     </Button>

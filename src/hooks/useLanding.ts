@@ -32,7 +32,7 @@ export const useLanding = () => {
     }
 
     const setDetails = (product: ProductResponse) => {
-        dispatch(accountAddressSlice.actions.setDetails(product));
+        dispatch(landingSlice.actions.setDetails(product));
     }
 
     return {

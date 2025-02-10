@@ -11,6 +11,7 @@ import {authenticationApi} from "@/src/stores/apis/authenticationApi";
 import {accountApi} from "@/src/stores/apis/accountApi";
 import {categoryApi} from "@/src/stores/apis/categoryApi";
 import {productApi} from "@/src/stores/apis/productApi";
+import {cartApi} from "@/src/stores/apis/cartApi";
 import storeRegistry from "@/src/registries/storeRegistry";
 import {statisticApi} from "@/src/stores/apis/statisticApi";
 import {verificationApi} from "@/src/stores/apis/verificationApi";
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
     [authenticationApi.reducerPath]: authenticationApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
+    [cartApi.reducerPath]: cartApi.reducer,
     [statisticApi.reducerPath]: statisticApi.reducer,
 })
 
@@ -65,6 +67,7 @@ export const store = configureStore({
     }).concat(
         productApi.middleware,
         categoryApi.middleware,
+        cartApi.middleware,
         verificationApi.middleware,
         authenticationApi.middleware,
         accountApi.middleware,

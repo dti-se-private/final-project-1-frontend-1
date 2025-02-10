@@ -41,7 +41,7 @@ export default function Page() {
                                     src={
                                         product.image
                                             ? convertHexStringToBase64Data(product.image, "image/png")
-                                            : "https://placehold.co/1366x768?text=product"
+                                            : "https://placehold.co/400x400?text=product"
                                     }
                                     layout="fill"
                                     objectFit="cover"
@@ -49,7 +49,7 @@ export default function Page() {
                                 />
                             </div>
                             <div className="w-full flex flex-col justify-center items-start">
-                                <h3 className="overflow-hidden truncate w-full text-lg font-bold">{product.name}</h3>
+                                <p className="overflow-hidden truncate w-full text-lg font-bold">{product.name}</p>
                                 <p className="text-md">{currencyFormatter.format(product.price)}</p>
                                 <p className="text-md">Stock: {product.quantity}</p>
                             </div>

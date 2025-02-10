@@ -1,5 +1,5 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {axiosBaseQuery, ManyRequest, ResponseBody} from "@/src/stores/apis";
+import {axiosBaseQuery, ManyRequest, OneRequest, ResponseBody} from "@/src/stores/apis";
 import {CategoryResponse} from "@/src/stores/apis/categoryApi";
 
 export interface ProductResponse {
@@ -44,6 +44,18 @@ export const productApi = createApi({
                 }
                 return {data: result.data as ResponseBody<ProductResponse[]>};
             }
-        })
+        }),
+        getProduct: builder.query<ResponseBody<ProductResponse>, OneRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: `/${args.id}`,
+                    method: "GET",
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<ProductResponse>};
+            }
+        }),
     })
 });

@@ -2,33 +2,45 @@
 import * as Yup from "yup";
 import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
-import {Button, Checkbox} from "@heroui/react";
+import {Button, Checkbox, Spinner} from "@heroui/react";
 import {useModal} from "@/src/hooks/useModal";
-import React, {useState} from "react";
+import React, {useEffect} from "react";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
 import {useParams, useRouter} from "next/navigation";
-import {PatchAccountAddressRequest} from "@/src/stores/apis/accountAddressApi";
+import {accountAddressApi, PatchAccountAddressRequest} from "@/src/stores/apis/accountAddressApi";
 import LocationPicker from "@/src/components/LocationPicker";
 import L from "leaflet";
 import * as wkx from "wkx";
 import FormInputArea from "@/src/components/FormInputArea";
 
 export default function Page() {
-    const {addressId} = useParams();
+    const {addressId}: { addressId: string } = useParams();
     const router = useRouter();
     const {
         accountAddressState,
         patchAccountAddress,
+        setDetails
     } = useAccountAddress();
     const modal = useModal();
 
-    const [initialValues, setInitialValues] = useState({
+    const detailAccountAddressApiResult = accountAddressApi.useGetAccountAddressQuery({
+        id: addressId,
+    });
+
+    useEffect(() => {
+        if (detailAccountAddressApiResult.data?.data) {
+            setDetails(detailAccountAddressApiResult.data.data);
+        }
+    }, [detailAccountAddressApiResult.data?.data]);
+
+
+    const initialValues = {
         id: accountAddressState.details?.id ?? "",
         name: accountAddressState.details?.name ?? "",
         address: accountAddressState.details?.address ?? "",
         location: accountAddressState.details?.location ?? "",
         isPrimary: accountAddressState.details?.isPrimary ?? false,
-    });
+    };
 
     const validationSchema = Yup.object().shape({
         id: Yup.string().required("ID is required."),
@@ -72,6 +84,18 @@ export default function Page() {
         const geoJson = geometry.toGeoJSON() as { type: string, coordinates: number[] };
         return {lat: geoJson.coordinates[1], lng: geoJson.coordinates[0]};
     }
+
+
+    if (detailAccountAddressApiResult.isLoading) {
+        return (
+            <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+                <div className="container flex flex-row justify-center items-center gap-8 w-2/3">
+                    <Spinner/>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-center items-center">
