@@ -12,19 +12,28 @@ import {
     NavbarContent
 } from "@heroui/react";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
-import {useSearch} from "@/src/hooks/useSearch";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
 import {SearchIcon} from "@heroui/shared-icons";
 import {useModal} from "@/src/hooks/useModal";
 import _ from "lodash";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
+import {useLanding} from "@/src/hooks/useLanding";
 
 export default function Component() {
     const modal = useModal();
     const authentication = useAuthentication();
-    const search = useSearch();
     const router = useRouter();
+
+    const {
+        landingState,
+        productApiResult,
+        categoryApiResult,
+        setGetProductsRequest,
+        setGetCategoriesRequest,
+        setDetails,
+        setCategory
+    } = useLanding();
 
     const handleLogout = () => {
         authentication
@@ -47,28 +56,29 @@ export default function Component() {
             });
     }
 
-    const handleSearch = _.debounce((product) => {
-        search.setRequest({
-            ...search.searcherState.request,
-            search: product.target.value
+    const handleSearch = _.debounce((event) => {
+        setGetProductsRequest({
+            page: 0,
+            size: landingState.getProductsRequest.size,
+            search: event.target.value
         });
     }, 500)
 
     return (
         <Navbar isBordered>
             <NavbarBrand className="w-1/5">
-                <Link className="text-xl font-bold" href="/">Ecommerce</Link>
+                <Link className="text-xl font-bold truncate text-clip" href="/">Ecommerce</Link>
             </NavbarBrand>
             <NavbarContent as="div" className="w-3/5 items-center" justify="center">
                 <Input
                     type="text"
                     placeholder="Search..."
                     startContent={<SearchIcon className="text-gray-500"/>}
-                    onChange={(product) => {
-                        if (window.location.pathname !== "/search") {
-                            router.push("/search");
+                    onChange={(event) => {
+                        if (window.location.pathname !== "/browse") {
+                            router.push("/browse");
                         }
-                        handleSearch(product);
+                        handleSearch(event);
                     }}
                 />
             </NavbarContent>

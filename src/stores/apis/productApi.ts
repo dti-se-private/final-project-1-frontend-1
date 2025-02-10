@@ -7,8 +7,8 @@ export interface ProductResponse {
     category: CategoryResponse;
     name: string;
     description: string;
-    price: string;
-    totalQuantity: number;
+    price: number;
+    quantity: number;
     image: string;
 }
 
@@ -16,8 +16,8 @@ export interface ProductRequest {
     categoryId: string;
     name: string;
     description: string;
-    price: string;
-    totalQuantity: number;
+    price: number;
+    quantity: number;
     image: string;
 }
 

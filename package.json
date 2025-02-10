@@ -27,6 +27,7 @@
     "react-dom": "^19.0.0",
     "react-leaflet": "^5.0.0",
     "react-redux": "^9.2.0",
+    "react-virtualized": "^9.22.6",
     "recharts": "^2.15.1",
     "redux-persist": "^6.0.0",
     "swiper": "^11.2.2",

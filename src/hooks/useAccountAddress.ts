@@ -2,7 +2,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {accountAddressSlice} from "@/src/stores/slices/accountAddressSlice";
 import {
-    accountAddressApi, AccountAddressRequest,
+    accountAddressApi,
+    AccountAddressRequest,
     AccountAddressResponse,
     PatchAccountAddressRequest
 } from "@/src/stores/apis/accountAddressApi";
@@ -11,11 +12,7 @@ import {ManyRequest, OneRequest} from "@/src/stores/apis";
 export const useAccountAddress = () => {
     const dispatch = useDispatch();
     const accountAddressState = useSelector((state: RootState) => state.accountAddressSlice);
-    const getAccountAddressesApiResult = accountAddressApi.useGetAccountAddressesQuery({
-        page: accountAddressState.getManyRequest.page,
-        size: accountAddressState.getManyRequest.size,
-        search: accountAddressState.getManyRequest.search
-    });
+    const getAccountAddressesApiResult = accountAddressApi.useGetAccountAddressesQuery(accountAddressState.getAccountAddressesRequest);
     const [addAccountAddressApiTrigger] = accountAddressApi.useAddAccountAddressMutation();
     const [patchAccountAddressApiTrigger] = accountAddressApi.usePatchAccountAddressMutation();
     const [deleteAccountAddressApiTrigger] = accountAddressApi.useDeleteAccountAddressMutation();
@@ -39,8 +36,8 @@ export const useAccountAddress = () => {
         return deleteAccountApiResult;
     }
 
-    const setGetManyRequest = (request: ManyRequest) => {
-        dispatch(accountAddressSlice.actions.setGetManyRequest(request));
+    const setGetAccountAddressesRequest = (request: ManyRequest) => {
+        dispatch(accountAddressSlice.actions.setGetAccountAddressesRequest(request));
     }
 
     const setDetails = (accountAddress: AccountAddressResponse) => {
@@ -50,7 +47,7 @@ export const useAccountAddress = () => {
     return {
         accountAddressState,
         getAccountAddressesApiResult,
-        setGetManyRequest,
+        setGetAccountAddressesRequest,
         setDetails,
         addAccountAddress,
         patchAccountAddress,

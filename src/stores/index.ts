@@ -9,10 +9,9 @@ import {modalSlice} from "@/src/stores/slices/modalSlice";
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
 import {authenticationApi} from "@/src/stores/apis/authenticationApi";
 import {accountApi} from "@/src/stores/apis/accountApi";
+import {categoryApi} from "@/src/stores/apis/categoryApi";
 import {productApi} from "@/src/stores/apis/productApi";
 import storeRegistry from "@/src/registries/storeRegistry";
-import {searchSlice} from "@/src/stores/slices/searchSlice";
-import {searcherSlice} from "@/src/stores/slices/searcherSlice";
 import {statisticApi} from "@/src/stores/apis/statisticApi";
 import {verificationApi} from "@/src/stores/apis/verificationApi";
 import {accountAddressApi} from "@/src/stores/apis/accountAddressApi";
@@ -21,14 +20,13 @@ import {accountAddressSlice} from "@/src/stores/slices/accountAddressSlice";
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
     [landingSlice.reducerPath]: landingSlice.reducer,
-    [searcherSlice.reducerPath]: searcherSlice.reducer,
-    [searchSlice.reducerPath]: searchSlice.reducer,
     [modalSlice.reducerPath]: modalSlice.reducer,
     [accountAddressSlice.reducerPath]: accountAddressSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [accountAddressApi.reducerPath]: accountAddressApi.reducer,
     [verificationApi.reducerPath]: verificationApi.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
+    [categoryApi.reducerPath]: categoryApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [statisticApi.reducerPath]: statisticApi.reducer,
 })
@@ -66,6 +64,7 @@ export const store = configureStore({
         },
     }).concat(
         productApi.middleware,
+        categoryApi.middleware,
         verificationApi.middleware,
         authenticationApi.middleware,
         accountApi.middleware,

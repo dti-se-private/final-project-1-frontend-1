@@ -24,7 +24,7 @@ export default function LocationPicker(props: {
     const FlyMapTo = () => {
         const map = useMap()
         useEffect(() => {
-                map.flyTo(props.position);
+            map.flyTo(props.position);
         }, [props.position])
         return null
     }
@@ -45,7 +45,7 @@ export default function LocationPicker(props: {
                 {props.position && <Marker position={props.position}></Marker>}
             </MapContainer>
             <div className="flex flex-row justify-between mt-4">
-                <p>Latitude: {props.position?.lat }</p>
+                <p>Latitude: {props.position?.lat}</p>
                 <p>Longitude: {props.position?.lng}</p>
             </div>
         </>

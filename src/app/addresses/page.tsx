@@ -27,7 +27,7 @@ export default function Page() {
     const {
         accountAddressState,
         getAccountAddressesApiResult,
-        setGetManyRequest,
+        setGetAccountAddressesRequest,
         setDetails,
         deleteAccountAddress,
     } = useAccountAddress();
@@ -103,17 +103,17 @@ export default function Page() {
                                 <Input
                                     placeholder="Search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
-                                    value={accountAddressState.getManyRequest.search}
+                                    value={accountAddressState.getAccountAddressesRequest.search}
                                     variant="bordered"
                                     isClearable={true}
-                                    onClear={() => setGetManyRequest({
-                                        page: accountAddressState.getManyRequest.page,
-                                        size: accountAddressState.getManyRequest.size,
+                                    onClear={() => setGetAccountAddressesRequest({
+                                        page: accountAddressState.getAccountAddressesRequest.page,
+                                        size: accountAddressState.getAccountAddressesRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetManyRequest({
-                                        page: accountAddressState.getManyRequest.page,
-                                        size: accountAddressState.getManyRequest.size,
+                                    onValueChange={_.debounce((value) => setGetAccountAddressesRequest({
+                                        page: accountAddressState.getAccountAddressesRequest.page,
+                                        size: accountAddressState.getAccountAddressesRequest.size,
                                         search: value
                                     }), 500)}
                                 />
@@ -128,10 +128,10 @@ export default function Page() {
                                 Rows per page:
                                 <select
                                     className="bg-transparent outline-none text-default-400 text-small"
-                                    onChange={(event) => setGetManyRequest({
-                                        page: accountAddressState.getManyRequest.page,
+                                    onChange={(event) => setGetAccountAddressesRequest({
+                                        page: accountAddressState.getAccountAddressesRequest.page,
                                         size: Number(event.target.value),
-                                        search: accountAddressState.getManyRequest.search
+                                        search: accountAddressState.getAccountAddressesRequest.search
                                     })}
                                 >
                                     <option value="5">5</option>
@@ -146,12 +146,12 @@ export default function Page() {
                             <Pagination
                                 showControls
                                 showShadow
-                                page={accountAddressState.getManyRequest.page + 1}
+                                page={accountAddressState.getAccountAddressesRequest.page + 1}
                                 total={Infinity}
-                                onChange={(page) => setGetManyRequest({
+                                onChange={(page) => setGetAccountAddressesRequest({
                                     page: page - 1,
-                                    size: accountAddressState.getManyRequest.size,
-                                    search: accountAddressState.getManyRequest.search,
+                                    size: accountAddressState.getAccountAddressesRequest.size,
+                                    search: accountAddressState.getAccountAddressesRequest.search,
                                 })}
                             />
                         </div>

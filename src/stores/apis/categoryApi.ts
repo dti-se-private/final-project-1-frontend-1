@@ -12,10 +12,10 @@ export interface CategoryRequest {
     description: string;
 }
 
-export const productApi = createApi({
+export const categoryApi = createApi({
     reducerPath: "categoryApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/product-categories`
+        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/categories`
     }),
     endpoints: (builder) => ({
         getCategories: builder.query<ResponseBody<CategoryResponse[]>, ManyRequest>({
@@ -23,8 +23,7 @@ export const productApi = createApi({
                 const queryParams = [
                     `page=${args.page}`,
                     `size=${args.size}`,
-                    `search=${args.search}`,
-                    ...args.filters.map(filter => `filters=${filter}`)
+                    `search=${args.search}`
                 ];
                 const result = await baseQuery({
                     url: `?${queryParams.join("&")}`,
