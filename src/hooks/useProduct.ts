@@ -2,41 +2,41 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {categoryApi, CategoryResponse} from "@/src/stores/apis/categoryApi";
 import {productApi, ProductResponse} from "@/src/stores/apis/productApi";
-import {landingSlice} from "@/src/stores/slices/landingSlice";
+import {productSlice} from "@/src/stores/slices/productSlice";
 import {ManyRequest} from "@/src/stores/apis";
 import {accountAddressSlice} from "@/src/stores/slices/accountAddressSlice";
 
-export const useLanding = () => {
+export const useProduct = () => {
     const dispatch = useDispatch();
 
-    const landingState = useSelector((state: RootState) => state.landingSlice);
+    const productState = useSelector((state: RootState) => state.productSlice);
 
     const productApiResult = productApi.useGetProductsQuery({
-        page: landingState.getProductsRequest.page,
-        size: landingState.getProductsRequest.size,
-        search: landingState.getProductsRequest.search + (landingState.category?.id ? `${landingState.category?.id}` : '')
+        page: productState.getProductsRequest.page,
+        size: productState.getProductsRequest.size,
+        search: productState.getProductsRequest.search + (productState.category?.id ? `${productState.category?.id}` : '')
     });
 
-    const categoryApiResult = categoryApi.useGetCategoriesQuery(landingState.getCategoriesRequest);
+    const categoryApiResult = categoryApi.useGetCategoriesQuery(productState.getCategoriesRequest);
 
     const setCategory = (category: CategoryResponse) => {
-        dispatch(landingSlice.actions.setCategory(category));
+        dispatch(productSlice.actions.setCategory(category));
     }
 
     const setGetProductsRequest = (request: ManyRequest) => {
-        dispatch(landingSlice.actions.setGetProductsRequest(request));
+        dispatch(productSlice.actions.setGetProductsRequest(request));
     }
 
     const setGetCategoriesRequest = (request: ManyRequest) => {
-        dispatch(landingSlice.actions.setGetCategoriesRequest(request));
+        dispatch(productSlice.actions.setGetCategoriesRequest(request));
     }
 
     const setDetails = (product: ProductResponse) => {
-        dispatch(landingSlice.actions.setDetails(product));
+        dispatch(productSlice.actions.setDetails(product));
     }
 
     return {
-        landingState,
+        productState,
         productApiResult,
         categoryApiResult,
         setCategory,

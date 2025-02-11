@@ -3,15 +3,15 @@ import {ManyRequest} from "@/src/stores/apis";
 import {ProductResponse} from "@/src/stores/apis/productApi";
 import {CategoryResponse} from "@/src/stores/apis/categoryApi";
 
-export interface LandingState {
+export interface ProductState {
     getProductsRequest: ManyRequest
     getCategoriesRequest: ManyRequest
     details?: ProductResponse
     category?: CategoryResponse
 }
 
-export const landingSlice = createSlice({
-    name: 'landingSlice',
+export const productSlice = createSlice({
+    name: 'productSlice',
     initialState: {
         category: undefined,
         getProductsRequest: {
@@ -25,7 +25,7 @@ export const landingSlice = createSlice({
             search: ''
         },
         details: undefined,
-    } as LandingState,
+    } as ProductState,
     reducers: {
         setGetProductsRequest: (state, action) => {
             state.getProductsRequest = action.payload;

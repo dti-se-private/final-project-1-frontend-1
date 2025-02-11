@@ -2,7 +2,8 @@
 import {useModal} from "@/src/hooks/useModal";
 import React, {useEffect, useState} from "react";
 import {useParams, useRouter} from "next/navigation";
-import {useLanding} from "@/src/hooks/useLanding";
+import {useProduct} from "@/src/hooks/useProduct";
+import {useCart} from "@/src/hooks/useCart";
 import Image from "next/image";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import {productApi} from "@/src/stores/apis/productApi";
@@ -14,14 +15,22 @@ export default function Page() {
     const router = useRouter();
     const modal = useModal();
     const {
-        landingState,
+        productState,
         productApiResult,
         categoryApiResult,
         setGetProductsRequest,
         setGetCategoriesRequest,
         setDetails,
         setCategory
-    } = useLanding();
+    } = useProduct();
+
+    const {
+        cartState,
+        cartApiResult,
+        setCartItemsRequest,
+        addCartItemRequest,
+        removeCartItemRequest
+    } = useCart();
 
     const detailProductApiResult = productApi.useGetProductQuery({
         id: productId,
@@ -45,8 +54,8 @@ export default function Page() {
 
     if (detailProductApiResult.isLoading) {
         return (
-            <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
-                <div className="container flex flex-row justify-center items-center gap-8 w-2/3">
+            <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+                <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
                     <Spinner/>
                 </div>
             </div>
@@ -54,14 +63,15 @@ export default function Page() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
-            <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
-                <div className="relative w-full h-[60vh] w-[50vw]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+            <div
+                className="container flex md:flex-row md:justify-center md:items-start flex-col justify-center item-center gap-8 w-3/4">
+                <div className="relative md:h-[65vh] md:w-[55vw] h-[40vh] w-[100%]">
                     <Image
                         className="rounded-md"
                         src={
-                            landingState.details?.image
-                                ? convertHexStringToBase64Data(landingState.details?.image, "image/png")
+                            productState.details?.image
+                                ? convertHexStringToBase64Data(productState.details?.image, "image/png")
                                 : "https://placehold.co/400x400?text=product"
                         }
                         layout="fill"
@@ -69,14 +79,16 @@ export default function Page() {
                         alt='product'
                     />
                 </div>
-                <div className="w-full h-[60vh] flex flex-col justify-start items-start gap-4">
-                    <p className="overflow-hidden truncate w-full text-7xl font-bold">{landingState.details?.name}</p>
-                    <p className="text-5xl">{currencyFormatter.format(landingState.details?.price ?? 0)}</p>
-                    <p className="text-lg">Stock: {landingState.details?.quantity}</p>
-                    <p className="text-md">{landingState.details?.description}</p>
-                    <div className="flex flex-row gap-2">
-                        <div className="flex flex-row gap-2">
+                <div className="w-full min-h-[60vh] flex flex-col justify-start items-start gap-4 text-justify">
+                    <p className="text-6xl font-bold">{productState.details?.name}</p>
+                    <p className="text-3xl">{currencyFormatter.format(productState.details?.price ?? 0)}</p>
+                    <p className="text-lg">Stock: {productState.details?.quantity}</p>
+                    <p className="text-md">{productState.details?.description}</p>
+                    <div className="flex md:flex-row flex-col md:justify-start gap-2 w-full">
+                        <div className="flex flex-row gap-2 w-full">
                             <Button
+                                isIconOnly
+                                className="w-full"
                                 onPress={() => {
                                     if (quantity === 1) {
                                         return;
@@ -84,23 +96,49 @@ export default function Page() {
                                     setQuantity(prevState => prevState - 1)
                                 }}
                             >
-                                {"-"}
+                                <Icon icon="heroicons:minus"/>
                             </Button>
-                            <Button>{quantity}</Button>
                             <Button
+                                className="w-full"
+                            >
+                                {quantity}
+                            </Button>
+                            <Button
+                                isIconOnly
+                                className="w-full"
                                 onPress={() => {
-                                    if (quantity === landingState.details?.quantity) {
+                                    if (quantity === productState.details?.quantity) {
                                         return;
                                     }
                                     setQuantity(prevState => prevState + 1)
                                 }}
                             >
-                                {"+"}
+                                <Icon icon="heroicons:plus"/>
                             </Button>
                         </div>
                         <Button
+                            className="w-full"
                             color="primary"
                             startContent={<Icon icon="heroicons:shopping-cart"/>}
+                            onPress={() => addCartItemRequest({
+                                productId: productState.details!.id,
+                                quantity: quantity
+                            })
+                                .then((data) => {
+                                    modal.setContent({
+                                        header: "Add to Cart Succeed",
+                                        body: `${data.message}`,
+                                    })
+                                })
+                                .catch((error) => {
+                                    modal.setContent({
+                                        header: "Add to Cart Failed",
+                                        body: `${error.data.message}`,
+                                    })
+                                }).finally(() => {
+                                    modal.onOpenChange(true);
+                                })
+                            }
                         >
                             Add to Cart
                         </Button>
