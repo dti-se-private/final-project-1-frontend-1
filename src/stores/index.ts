@@ -17,14 +17,18 @@ import {statisticApi} from "@/src/stores/apis/statisticApi";
 import {verificationApi} from "@/src/stores/apis/verificationApi";
 import {accountAddressApi} from "@/src/stores/apis/accountAddressApi";
 import {accountAddressSlice} from "@/src/stores/slices/accountAddressSlice";
+import {warehouseSlice} from "@/src/stores/slices/warehouseSlice";
+import {warehouseApi} from "@/src/stores/apis/warehouseApi";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
     [landingSlice.reducerPath]: landingSlice.reducer,
     [modalSlice.reducerPath]: modalSlice.reducer,
     [accountAddressSlice.reducerPath]: accountAddressSlice.reducer,
+    [warehouseSlice.reducerPath]: warehouseSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [accountAddressApi.reducerPath]: accountAddressApi.reducer,
+    [warehouseApi.reducerPath]: warehouseApi.reducer,
     [verificationApi.reducerPath]: verificationApi.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
@@ -72,6 +76,7 @@ export const store = configureStore({
         authenticationApi.middleware,
         accountApi.middleware,
         accountAddressApi.middleware,
+        warehouseApi.middleware,
         statisticApi.middleware,
     ),
 })
