@@ -1,6 +1,7 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {axiosBaseQuery, ManyRequest, OneRequest, ResponseBody} from "@/src/stores/apis";
 import {CategoryResponse} from "@/src/stores/apis/categoryApi";
+import { body } from "framer-motion/client";
 
 export interface ProductResponse {
     id: string;
@@ -57,5 +58,47 @@ export const productApi = createApi({
                 return {data: result.data as ResponseBody<ProductResponse>};
             }
         }),
+
+        addProduct: builder.mutation<ResponseBody<ProductResponse>, ProductRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: "/",
+                    method: "POST",
+                    data: args
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<ProductResponse>};
+            }
+        }),
+
+        patchProduct: builder.mutation<ResponseBody<ProductResponse>, {id: string} & ProductRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const {id, ...body} = args;
+                const result = await baseQuery({
+                    url: `/${id}`,
+                    method: "PATCH",
+                    data: body
+            });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<ProductResponse>};
+            }
+        }),
+
+        deleteProduct: builder.mutation<ResponseBody<ProductResponse>, OneRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: `/${args.id}`,
+                    method: "DELETE",
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<ProductResponse>};
+            }
+        })
     })
 });
