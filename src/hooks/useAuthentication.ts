@@ -2,75 +2,68 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {
     authenticationApi,
-    LoginByEmailAndPasswordRequest,
-    RegisterByEmailAndPasswordRequest,
+    LoginByExternalRequest,
+    LoginByInternalRequest,
+    RegisterByExternalRequest,
+    RegisterByInternalRequest,
     Session
 } from "@/src/stores/apis/authenticationApi";
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
-import {accountApi, PatchOneAccountRequest, RetrieveOneAccountRequest} from "@/src/stores/apis/accountApi";
+import {accountApi, PatchAccountRequest} from "@/src/stores/apis/accountApi";
 import {useEffect} from "react";
-import moment from "moment";
+import {OneRequest} from "@/src/stores/apis";
 
 export const useAuthentication = () => {
     const dispatch = useDispatch();
     const state = useSelector((state: RootState) => state.authenticationSlice);
-    const [loginApiTrigger] = authenticationApi.useLazyLoginByEmailAndPasswordQuery();
-    const [registerApiTrigger] = authenticationApi.useRegisterByEmailAndPasswordMutation();
-    const [logoutApiTrigger] = authenticationApi.useLazyLogoutQuery();
-    const [refreshSessionApiTrigger] = authenticationApi.useLazyRefreshSessionQuery();
-    const [retrieveAccountApiTrigger] = accountApi.useLazyRetrieveOneByIdQuery();
-    const [patchAccountApiTrigger] = accountApi.usePatchOneByIdMutation();
+    const [loginByInternalApiTrigger] = authenticationApi.useLoginByInternalMutation();
+    const [registerByInternalApiTrigger] = authenticationApi.useRegisterByInternalMutation();
+    const [loginByExternalApiTrigger] = authenticationApi.useLoginByExternalMutation();
+    const [registerByExternalApiTrigger] = authenticationApi.useRegisterByExternalMutation();
+    const [logoutApiTrigger] = authenticationApi.useLogoutMutation();
+    const [refreshSessionApiTrigger] = authenticationApi.useRefreshSessionMutation();
+    const [getAccountApiTrigger] = accountApi.useLazyGetAccountQuery();
+    const [patchAccountApiTrigger] = accountApi.usePatchAccountMutation();
 
-    const retrieveAccount = async (request: RetrieveOneAccountRequest) => {
-        const retrieveAccountApiResult = await retrieveAccountApiTrigger(request).unwrap();
-        const values = retrieveAccountApiResult.data;
-        if (values) {
-            dispatch(authenticationSlice.actions.setAccount({
-                account: {
-                    ...values,
-                    dob: moment(values.dob).format('YYYY-MM-DD'),
-                },
-            }));
-        } else {
-            dispatch(authenticationSlice.actions.setAccount({
-                account: undefined,
-            }));
-        }
-        return retrieveAccountApiResult;
+    const getAccount = async (request: OneRequest) => {
+        const getAccountApiResult = await getAccountApiTrigger(request).unwrap();
+        dispatch(authenticationSlice.actions.setAccount({
+            account: getAccountApiResult.data
+        }));
     }
 
-    const patchAccount = async (request: PatchOneAccountRequest) => {
+    const patchAccount = async (request: PatchAccountRequest) => {
         const patchAccountApiResult = await patchAccountApiTrigger(request).unwrap();
-        const values = patchAccountApiResult.data;
-        if (values) {
-            dispatch(authenticationSlice.actions.setAccount({
-                account: {
-                    ...values,
-                    dob: moment(values.dob).format('YYYY-MM-DD'),
-                },
-            }));
-        } else {
-            dispatch(authenticationSlice.actions.setAccount({
-                account: undefined,
-            }));
-        }
+        dispatch(authenticationSlice.actions.setAccount({
+            account: patchAccountApiResult.data
+        }));
         return patchAccountApiResult;
     }
 
-    const login = async (request: LoginByEmailAndPasswordRequest) => {
-        const loginApiResult = await loginApiTrigger(request).unwrap();
+    const loginByInternal = async (request: LoginByInternalRequest) => {
+        const loginByInternalApiResult = await loginByInternalApiTrigger(request).unwrap();
         dispatch(authenticationSlice.actions.login({
-            session: loginApiResult.data,
+            session: loginByInternalApiResult.data,
         }));
-        return loginApiResult;
+        return loginByInternalApiResult;
     }
 
-    const register = async (request: RegisterByEmailAndPasswordRequest) => {
-        const registerApiResult = await registerApiTrigger(request).unwrap();
-        dispatch(authenticationSlice.actions.register({
-            account: registerApiResult.data,
+    const registerByInternal = async (request: RegisterByInternalRequest) => {
+        const registerByInternalApiResult = await registerByInternalApiTrigger(request).unwrap();
+        return registerByInternalApiResult;
+    }
+
+    const loginByExternal = async (request: LoginByExternalRequest) => {
+        const loginByExternalApiResult = await loginByExternalApiTrigger(request).unwrap();
+        dispatch(authenticationSlice.actions.login({
+            session: loginByExternalApiResult.data,
         }));
-        return registerApiResult;
+        return loginByExternalApiResult;
+    }
+
+    const registerByExternal = async (request: RegisterByExternalRequest) => {
+        const registerByExternalApiResult = await registerByExternalApiTrigger(request).unwrap();
+        return registerByExternalApiResult;
     }
 
     const logout = async () => {
@@ -78,7 +71,7 @@ export const useAuthentication = () => {
         try {
             logoutApiResult = await logoutApiTrigger(state.session!).unwrap();
         } catch (e) {
-            throw e;
+            console.log(e)
         }
         dispatch(authenticationSlice.actions.logout({}));
         return logoutApiResult
@@ -94,16 +87,18 @@ export const useAuthentication = () => {
 
     useEffect(() => {
         if (state.session) {
-            retrieveAccount({
-                id: state.session.accountId,
+            getAccount({
+                id: state.session.account.id,
             }).then()
         }
-    }, [retrieveAccount, state.session])
+    }, [state.session])
 
     return {
         state,
-        login,
-        register,
+        loginByInternal,
+        registerByInternal,
+        loginByExternal,
+        registerByExternal,
         logout,
         refreshSession,
         patchAccount,

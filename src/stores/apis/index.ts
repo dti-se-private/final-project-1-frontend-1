@@ -4,18 +4,21 @@ import axios from 'axios'
 import {authenticationSlice, AuthenticationState} from "@/src/stores/slices/authenticationSlice";
 import storeRegistry from "@/src/registries/storeRegistry";
 import applyCaseMiddleware from "axios-case-converter";
+import {Session} from "@/src/stores/apis/authenticationApi";
 
 export interface ResponseBody<T> {
     data?: T;
     message: string;
 }
 
-export interface Session {
-    accountId: string;
-    accessToken: string;
-    refreshToken: string;
-    accessTokenExpiredAt: string;
-    refreshTokenExpiredAt: string;
+export interface OneRequest {
+    id: string;
+}
+
+export interface ManyRequest {
+    page: number;
+    size: number;
+    search: string;
 }
 
 export const axiosBaseQuery =

@@ -1,21 +1,26 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {axiosBaseQuery, ResponseBody} from "@/src/stores/apis";
+import {axiosBaseQuery, ManyRequest, OneRequest, ResponseBody} from "@/src/stores/apis";
+import {CategoryResponse} from "@/src/stores/apis/categoryApi";
 
-
-export interface RetrieveProductResponse {
+export interface ProductResponse {
     id: string;
+    category: CategoryResponse;
     name: string;
     description: string;
-    category: string;
+    price: number;
+    quantity: number;
     image: string;
 }
 
-export interface SearchProductRequest {
-    page: number;
-    size: number;
-    search: string;
-    filters: string[];
+export interface ProductRequest {
+    categoryId: string;
+    name: string;
+    description: string;
+    price: number;
+    quantity: number;
+    image: string;
 }
+
 
 export const productApi = createApi({
     reducerPath: "productApi",
@@ -23,26 +28,34 @@ export const productApi = createApi({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/products`
     }),
     endpoints: (builder) => ({
-        searchProducts: builder.query<ResponseBody<RetrieveProductResponse[]>, SearchProductRequest>({
-            // @ts-expect-error: Still compatible even in type lint error.
+        getProducts: builder.query<ResponseBody<ProductResponse[]>, ManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
                     `page=${args.page}`,
                     `size=${args.size}`,
                     `search=${args.search}`,
-                    ...args.filters.map(filter => `filters=${filter}`)
                 ];
-                return baseQuery({
+                const result = await baseQuery({
                     url: `?${queryParams.join("&")}`,
                     method: "GET"
                 });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<ProductResponse[]>};
             }
         }),
-        retrieveProduct: builder.query<ResponseBody<RetrieveProductResponse>, { id: string }>({
-            query: ({id: id}) => ({
-                url: `/${id}`,
-                method: "GET"
-            }),
+        getProduct: builder.query<ResponseBody<ProductResponse>, OneRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: `/${args.id}`,
+                    method: "GET",
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<ProductResponse>};
+            }
         }),
     })
 });

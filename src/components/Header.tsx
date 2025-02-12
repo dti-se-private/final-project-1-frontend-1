@@ -12,20 +12,30 @@ import {
     NavbarContent
 } from "@heroui/react";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
-import {useSearch} from "@/src/hooks/useSearch";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
 import {SearchIcon} from "@heroui/shared-icons";
 import {useModal} from "@/src/hooks/useModal";
 import _ from "lodash";
+import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
+import {useLanding} from "@/src/hooks/useLanding";
 
 export default function Component() {
     const modal = useModal();
     const authentication = useAuthentication();
-    const search = useSearch();
     const router = useRouter();
 
-    const handleLogout = (product: React.MouseProduct<HTMLLIElement>) => {
+    const {
+        landingState,
+        productApiResult,
+        categoryApiResult,
+        setGetProductsRequest,
+        setGetCategoriesRequest,
+        setDetails,
+        setCategory
+    } = useLanding();
+
+    const handleLogout = () => {
         authentication
             .logout()
             .then((data) => {
@@ -33,7 +43,6 @@ export default function Component() {
                     header: "Logout Succeed",
                     body: `${data?.message}`,
                 })
-                router.push("/");
             })
             .catch((error) => {
                 modal.setContent({
@@ -42,33 +51,34 @@ export default function Component() {
                 })
             })
             .finally(() => {
-                window.location.href = '/login';
+                router.push("/login");
                 modal.onOpenChange(true);
             });
     }
 
-    const handleSearch = _.debounce((product: React.ChangeProduct<HTMLInputElement>) => {
-        search.setRequest({
-            ...search.searcherState.request,
-            search: product.target.value
+    const handleSearch = _.debounce((event) => {
+        setGetProductsRequest({
+            page: 0,
+            size: landingState.getProductsRequest.size,
+            search: event.target.value
         });
     }, 500)
 
     return (
         <Navbar isBordered>
             <NavbarBrand className="w-1/5">
-                <Link className="text-xl font-bold" href="/">Ecommerce</Link>
+                <Link className="text-xl font-bold truncate text-clip" href="/">Ecommerce</Link>
             </NavbarBrand>
             <NavbarContent as="div" className="w-3/5 items-center" justify="center">
                 <Input
                     type="text"
                     placeholder="Search..."
                     startContent={<SearchIcon className="text-gray-500"/>}
-                    onChange={(product) => {
-                        if (window.location.pathname !== "/search") {
-                            router.push("/search");
+                    onChange={(event) => {
+                        if (window.location.pathname !== "/browse") {
+                            router.push("/browse");
                         }
-                        handleSearch(product);
+                        handleSearch(event);
                     }}
                 />
             </NavbarContent>
@@ -79,7 +89,11 @@ export default function Component() {
                             isBordered
                             as="button"
                             size="sm"
-                            src={authentication.state.account?.profileImageUrl}
+                            src={
+                                authentication.state.account?.image
+                                    ? convertHexStringToBase64Data(authentication.state.account?.image, "image/png")
+                                    : "https://placehold.co/400x400?text=A"
+                            }
                         />
                     </DropdownTrigger>
                     <DropdownMenu>
@@ -90,25 +104,22 @@ export default function Component() {
                                         <p className="font-semibold">{authentication.state.account?.name}</p>
                                         <p className="font-semibold">{authentication.state.account?.email}</p>
                                     </DropdownItem>
-                                    <DropdownSection showDivider title="Dashboard">
-                                        <DropdownItem key="participant" href="/participant"
-                                                      onClick={() => router.push("/participant")}>
-                                            Participant
+                                    <DropdownSection showDivider title="Menu">
+                                        <DropdownItem key="addresses" href="/addresses">
+                                            Addresses
                                         </DropdownItem>
-                                        <DropdownItem key="organizer" href="/organizer"
-                                                      onClick={() => router.push("/organizer")}>
-                                            Organizer
+                                        <DropdownItem key="orders">
+                                            Orders
                                         </DropdownItem>
                                     </DropdownSection>
                                     <DropdownSection title="Account">
-                                        <DropdownItem key="profile" href="/profile"
-                                                      onClick={() => router.push("/profile")}>
+                                        <DropdownItem key="profile" href="/profile">
                                             Profile
                                         </DropdownItem>
                                         <DropdownItem
                                             key="logout"
                                             color="danger"
-                                            onClick={handleLogout}
+                                            onPress={() => handleLogout()}
                                         >
                                             Logout
                                         </DropdownItem>
@@ -121,14 +132,14 @@ export default function Component() {
                                     <DropdownItem
                                         key="login"
                                         href="/login"
-                                        onClick={() => router.push("/login")}
+                                        onPress={() => router.push("/login")}
                                     >
                                         Login
                                     </DropdownItem>
                                     <DropdownItem
                                         key="register"
                                         href="/register"
-                                        onClick={() => router.push("/register")}
+                                        onPress={() => router.push("/register")}
                                     >
                                         Register
                                     </DropdownItem>

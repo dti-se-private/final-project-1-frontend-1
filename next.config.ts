@@ -1,18 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
-        reactCompiler: true,
-        turbo: {
-            rules: {
-                "*.scss": {
-                    loaders: ["sass-loader"],
-                    as: "*.css",
-                },
-            }
-        },
-    },
-    sassOptions: {
-        silenceDeprecations: ['legacy-js-api'],
+        reactCompiler: false,
     },
     images: {
         dangerouslyAllowSVG: true,

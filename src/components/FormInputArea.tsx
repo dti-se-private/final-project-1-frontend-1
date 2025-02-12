@@ -9,7 +9,6 @@ export default function FormInputArea(props: Readonly<ComponentProps<typeof Text
 
     return (
         <Textarea
-            {...props}
             className="mb-6 w-full"
             disabled={isSubmitting}
             onChange={handleChange}
@@ -36,6 +35,7 @@ export default function FormInputArea(props: Readonly<ComponentProps<typeof Text
                         nameSegments.length === 3 && errors[nameSegments[0]] && errors[nameSegments[0]][Number(nameSegments[1])] && errors[nameSegments[0]][Number(nameSegments[1])][nameSegments[2]]
                 )
             }
+            {...props}
         />
     );
 };

@@ -1,8 +1,7 @@
-import type {Config} from "tailwindcss";
 import {heroui} from "@heroui/react";
 import typography from "@tailwindcss/typography";
 
-export default {
+module.exports = {
     content: [
         "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -19,4 +18,4 @@ export default {
     },
     darkMode: "class",
     plugins: [heroui(), typography],
-} satisfies Config;
+}

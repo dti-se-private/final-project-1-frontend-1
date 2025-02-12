@@ -1,59 +1,47 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {productApi} from "@/src/stores/apis/productApi";
-import {useEffect} from "react";
-import {searcherSlice} from "@/src/stores/slices/searcherSlice";
+import {categoryApi, CategoryResponse} from "@/src/stores/apis/categoryApi";
+import {productApi, ProductResponse} from "@/src/stores/apis/productApi";
 import {landingSlice} from "@/src/stores/slices/landingSlice";
+import {ManyRequest} from "@/src/stores/apis";
+import {accountAddressSlice} from "@/src/stores/slices/accountAddressSlice";
 
 export const useLanding = () => {
     const dispatch = useDispatch();
 
     const landingState = useSelector((state: RootState) => state.landingSlice);
 
-    const searcherState = useSelector((state: RootState) => state.searcherSlice);
+    const productApiResult = productApi.useGetProductsQuery({
+        page: landingState.getProductsRequest.page,
+        size: landingState.getProductsRequest.size,
+        search: landingState.getProductsRequest.search + (landingState.category?.id ? `${landingState.category?.id}` : '')
+    });
 
-    const productApiResult = productApi.useSearchProductsQuery(searcherState.request)
+    const categoryApiResult = categoryApi.useGetCategoriesQuery(landingState.getCategoriesRequest);
 
-    const setCategory = (category: string) => {
-        dispatch(landingSlice.actions.setPage({
-            prevPage: 0,
-            currentPage: 0,
-        }));
-        dispatch(searcherSlice.actions.setRequest({
-            page: 0,
-            search: category === "all" ? "" : category,
-            filters: ["category"]
-        }));
+    const setCategory = (category: CategoryResponse) => {
+        dispatch(landingSlice.actions.setCategory(category));
     }
 
-    const setPage = (page: number) => {
-        if (page >= 0) {
-            dispatch(landingSlice.actions.setPage({
-                currentPage: page
-            }));
-            dispatch(searcherSlice.actions.setRequest({
-                page: page,
-            }));
-        }
+    const setGetProductsRequest = (request: ManyRequest) => {
+        dispatch(landingSlice.actions.setGetProductsRequest(request));
     }
 
-    useEffect(() => {
-        const newProducts = productApiResult.data?.data ?? [];
-        dispatch(searcherSlice.actions.setProducts({products: newProducts}));
-    }, [productApiResult.data]);
+    const setGetCategoriesRequest = (request: ManyRequest) => {
+        dispatch(landingSlice.actions.setGetCategoriesRequest(request));
+    }
 
-    useEffect(() => {
-        productApiResult.refetch();
-    }, [landingState.prevPage, landingState.currentPage]);
-
-    useEffect(() => {
-        productApiResult.refetch();
-    }, []);
+    const setDetails = (product: ProductResponse) => {
+        dispatch(landingSlice.actions.setDetails(product));
+    }
 
     return {
+        landingState,
         productApiResult,
-        searcherState,
+        categoryApiResult,
         setCategory,
-        setPage
+        setGetProductsRequest,
+        setGetCategoriesRequest,
+        setDetails
     };
 }
