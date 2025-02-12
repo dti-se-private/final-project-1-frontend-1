@@ -57,5 +57,46 @@ export const productApi = createApi({
                 return {data: result.data as ResponseBody<ProductResponse>};
             }
         }),
+
+        addProduct: builder.mutation<ResponseBody<ProductResponse>, ProductRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: "/add",
+                    method: "POST",
+                    data: args,
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<ProductResponse>};
+            }
+        }),
+
+        patchProduct: builder.mutation<ResponseBody<ProductResponse>, ProductRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: "/update",
+                    method: "PATCH",
+                    data: args,
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<ProductResponse>};
+            }
+        }),
+
+        deleteProduct: builder.mutation<ResponseBody<ProductResponse>, OneRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: `/${args.id}`,
+                    method: "DELETE",
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<ProductResponse>};
+            }
+        }),
     })
 });

@@ -1,168 +1,176 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { Card, CardBody, CardHeader, Button, Input, Modal, ModalBody, ModalFooter, ModalHeader } from "@heroui/react";
-import axios from "axios";
+"use client"
+import React from "react";
+import {useProduct} from "@/src/hooks/useProduct";
+import {Icon} from "@iconify/react";
+import {
+    Button,
+    getKeyValue,
+    Image,
+    Input,
+    Pagination,
+    Spinner,
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader,
+    TableRow
+} from "@heroui/react";
+import {ProductResponse} from "@/src/stores/apis/productApi";
+import {useRouter} from "next/navigation";
+import _ from "lodash";
+import {useModal} from "@/src/hooks/useModal";
+import {SearchIcon} from "@heroui/shared-icons";
 
-// Define types for Product and Mutation History
-interface Product {
-  id: string;
-  categoryId: string;
-  name: string;
-  description: string;
-  price: number;
-  quantity: number;
-  image: string;
-  mutationLedger: Mutation[];
-}
+export default function Page() {
+    const router = useRouter();
+    const modal = useModal();
+    const {
+        productState,
+        getProductsApiResult,
+        setGetProductsRequest,
+        deleteProduct,
+    } = useProduct();
 
-interface Mutation {
-  timestamp: string;
-  change: number;
-  reason: string;
-}
+    const rowMapper = (item: ProductResponse, key: string): React.JSX.Element => {
+        if (key === "action") {
+            return (
+                <div className="flex flex-row gap-2">
+                    <Button
+                        color="primary"
+                        onPress={() => router.push(`/products/${item.id}`)}
+                    >
+                        Details
+                    </Button>
+                    <Button
+                        color="danger"
+                        onPress={() => deleteProduct({id: item.id})
+                            .then((data) => {
+                                modal.setContent({
+                                    header: "Delete Succeed",
+                                    body: `${data.message}`,
+                                })
+                            })
+                            .catch((error) => {
+                                modal.setContent({
+                                    header: "Delete Failed",
+                                    body: `${error.data.message}`,
+                                })
+                            }).finally(() => {
+                                modal.onOpenChange(true);
+                            })
+                        }
+                    >
+                        Delete
+                    </Button>
+                </div>
+            );
+        }
 
-const ProductManagement = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+        if (key === "image") {
+            return (
+                <Image
+                    src={item.image}
+                    alt={item.name}
+                    className="w-16 h-16 object-cover rounded"
+                />
+            );
+        }
 
-  // Fetch products from backend
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get<Product[]>("http://localhost:8080/products");
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
+        if (key === "category") {
+            return <>{item.category.name}</>;
+        }
 
-    fetchProducts();
-  }, []);
-
-  // Handle adding or editing a product
-  const handleSaveProduct = async (product: Product) => {
-    try {
-      if (product.id) {
-        // Update product
-        await axios.put(`http://localhost:8080/products/${product.id}`, product);
-      } else {
-        // Add new product
-        await axios.post("http://localhost:8080/products", product);
-      }
-      setModalOpen(false);
-      setSelectedProduct(null);
-
-      // Refresh product list
-      const response = await axios.get<Product[]>("http://localhost:8080/products");
-      setProducts(response.data);
-    } catch (error) {
-      console.error("Error saving product:", error);
+        return <>{String(getKeyValue(item, key))}</>;
     }
-  };
 
-  // Handle stock mutation
-  const handleStockMutation = async (productId: string, change: number, reason: string) => {
-    try {
-      await axios.post(`http://localhost:8080/products/${productId}/mutate-stock`, { change, reason });
-      // Refresh product list
-      const response = await axios.get<Product[]>("http://localhost:8080/products");
-      setProducts(response.data);
-    } catch (error) {
-      console.error("Error mutating stock:", error);
-    }
-  };
-
-  return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Warehouse Products</h1>
-        <Button
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-          onClick={() => {
-            setSelectedProduct(null);
-            setModalOpen(true);
-          }}
-        >
-          Add Product
-        </Button>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="min-w-full table-auto border-collapse border border-gray-300">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="border border-gray-300 px-4 py-2">ID</th>
-              <th className="border border-gray-300 px-4 py-2">Category</th>
-              <th className="border border-gray-300 px-4 py-2">Name</th>
-              <th className="border border-gray-300 px-4 py-2">Price</th>
-              <th className="border border-gray-300 px-4 py-2">Quantity</th>
-              <th className="border border-gray-300 px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product.id} className="hover:bg-gray-100">
-                <td className="border border-gray-300 px-4 py-2">{product.id}</td>
-                <td className="border border-gray-300 px-4 py-2">{product.categoryId}</td>
-                <td className="border border-gray-300 px-4 py-2">{product.name}</td>
-                <td className="border border-gray-300 px-4 py-2">${product.price.toFixed(2)}</td>
-                <td className="border border-gray-300 px-4 py-2">{product.quantity}</td>
-                <td className="border border-gray-300 px-4 py-2 text-center">
-                  <Button
-                    size="sm"
-                    className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-                    onClick={() => {
-                      setSelectedProduct(product);
-                      setModalOpen(true);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 ml-2"
-                    onClick={() => handleStockMutation(product.id, -1, "Remove 1 item")}
-                  >
-                    Decrease Stock
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {modalOpen && (
-        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-          <ModalHeader>{selectedProduct ? "Edit Product" : "Add Product"}</ModalHeader>
-          <ModalBody>
-            <Input
-              label="Name"
-              value={selectedProduct?.name || ""}
-              onChange={(e) =>
-                setSelectedProduct({ ...selectedProduct, name: e.target.value } as Product)
-              }
-            />
-            <Input
-              label="Price"
-              type="number"
-              value={selectedProduct?.price || ""}
-              onChange={(e) =>
-                setSelectedProduct({ ...selectedProduct, price: parseFloat(e.target.value) } as Product)
-              }
-            />
-            {/* Add fields for category, description, etc. */}
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={() => handleSaveProduct(selectedProduct as Product)}>
-              Save
-            </Button>
-          </ModalFooter>
-        </Modal>
-      )}
-    </div>
-  );
-};
-
-export default ProductManagement;
+    return (
+        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+            <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
+                <h1 className="mb-8 text-4xl font-bold">Products</h1>
+                <Table
+                    topContent={
+                        <div className="flex flex-col gap-4">
+                            <div className="flex flex-row w-full gap-4">
+                                <Input
+                                    placeholder="Search..."
+                                    startContent={<SearchIcon className="text-default-300"/>}
+                                    value={productState.getProductsRequest.search}
+                                    variant="bordered"
+                                    isClearable={true}
+                                    onClear={() => setGetProductsRequest({
+                                        page: productState.getProductsRequest.page,
+                                        size: productState.getProductsRequest.size,
+                                        search: "",
+                                    })}
+                                    onValueChange={_.debounce((value) => setGetProductsRequest({
+                                        page: productState.getProductsRequest.page,
+                                        size: productState.getProductsRequest.size,
+                                        search: value
+                                    }), 500)}
+                                />
+                                <Button
+                                    startContent={<Icon icon="heroicons:plus"/>}
+                                    onPress={() => router.push(`/products/add`)}
+                                >
+                                    Add
+                                </Button>
+                            </div>
+                            <label className="flex items-center text-default-400 text-small">
+                                Rows per page:
+                                <select
+                                    className="bg-transparent outline-none text-default-400 text-small"
+                                    onChange={(event) => setGetProductsRequest({
+                                        page: productState.getProductsRequest.page,
+                                        size: Number(event.target.value),
+                                        search: productState.getProductsRequest.search
+                                    })}
+                                >
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                </select>
+                            </label>
+                        </div>
+                    }
+                    bottomContent={
+                        <div className="flex w-full justify-center">
+                            <Pagination
+                                showControls
+                                showShadow
+                                page={productState.getProductsRequest.page + 1}
+                                total={Infinity}
+                                onChange={(page) => setGetProductsRequest({
+                                    page: page - 1,
+                                    size: productState.getProductsRequest.size,
+                                    search: productState.getProductsRequest.search,
+                                })}
+                            />
+                        </div>
+                    }
+                >
+                    <TableHeader>
+                        <TableColumn key="id">ID</TableColumn>
+                        <TableColumn key="name">Name</TableColumn>
+                        <TableColumn key="description">Description</TableColumn>
+                        <TableColumn key="price">Price</TableColumn>
+                        <TableColumn key="image">Image</TableColumn>
+                        <TableColumn key="category">Category</TableColumn>
+                        <TableColumn key="action">Action</TableColumn>
+                    </TableHeader>
+                    <TableBody
+                        items={getProductsApiResult.data?.data ?? []}
+                        loadingContent={<Spinner/>}
+                        loadingState={getProductsApiResult.isLoading ? "loading" : "idle"}
+                    >
+                        {(item) => (
+                            <TableRow key={item?.id}>
+                                {(columnKey) => <TableCell>{rowMapper(item, String(columnKey))}</TableCell>}
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+        </div>
+    )
+}
