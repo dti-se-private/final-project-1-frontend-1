@@ -17,6 +17,7 @@ import {
 } from "@heroui/react";
 import {CategoryResponse} from "@/src/stores/apis/categoryApi";
 import {useRouter} from "next/navigation";
+import {SearchIcon} from "@heroui/shared-icons";
 import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
 
