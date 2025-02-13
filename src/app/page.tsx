@@ -103,7 +103,7 @@ export default function Page() {
                                 />
                             </div>
                             <div className="w-full flex flex-col justify-center items-start">
-                                <p className="overflow-hidden truncate w-full text-lg font-bold">{product.name}</p>
+                                <p className="line-clamp-1 w-full text-lg font-bold">{product.name}</p>
                                 <p className="text-md">{currencyFormatter.format(product.price)}</p>
                                 <p className="text-md">Stock: {product.quantity}</p>
                             </div>

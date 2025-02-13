@@ -82,7 +82,7 @@ export default function Page() {
                 <div className="w-full min-h-[60vh] flex flex-col justify-start items-start gap-4 text-justify">
                     <p className="text-6xl font-bold">{productState.details?.name}</p>
                     <p className="text-3xl">{currencyFormatter.format(productState.details?.price ?? 0)}</p>
-                    <p className="text-lg">Stock: {productState.details?.quantity}</p>
+                    <p className="text-lg">Stock: {productState.details?.quantity ? productState.details?.quantity - quantity : 0}</p>
                     <p className="text-md">{productState.details?.description}</p>
                     <div className="flex md:flex-row flex-col md:justify-start gap-2 w-full">
                         <div className="flex flex-row gap-2 w-full">
