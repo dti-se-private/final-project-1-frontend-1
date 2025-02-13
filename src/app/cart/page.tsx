@@ -15,7 +15,7 @@ export default function Page() {
     const modal = useModal();
     const {
         productState,
-        productApiResult,
+        getProductWithCategoryApiResult,
         categoryApiResult,
         setGetProductsRequest,
         setGetCategoriesRequest,
@@ -25,7 +25,7 @@ export default function Page() {
 
     const {
         cartState,
-        cartApiResult,
+        getCartApiResult,
         setCartItemsRequest,
         addCartItemRequest,
         removeCartItemRequest
@@ -39,7 +39,7 @@ export default function Page() {
         maximumFractionDigits: 0
     });
 
-    if (cartApiResult.isLoading) {
+    if (getCartApiResult.isFetching) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
@@ -58,7 +58,7 @@ export default function Page() {
                     <div>All items in your cart to be checked out.</div>
                 </div>
                 <div className="flex flex-col gap-8">
-                    {cartApiResult.data?.data?.map((cartItem, index) => (
+                    {getCartApiResult.data?.data?.map((cartItem, index) => (
                         <div
                             key={cartItem.id}
                             className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full h-[18vh] border-b border-gray-300"

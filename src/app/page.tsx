@@ -13,7 +13,7 @@ export default function Page() {
     const router = useRouter();
     const {
         productState,
-        productApiResult,
+        getProductWithCategoryApiResult,
         categoryApiResult,
         setGetProductsRequest,
         setGetCategoriesRequest,
@@ -83,7 +83,7 @@ export default function Page() {
             {/* Products */}
             <section className="container flex flex-col justify-center items-center px-2">
                 <div className="flex flex-wrap justify-center items-center gap-6 mb-8 min-h-[78vh]">
-                    {productApiResult.data?.data?.map((product, index) => (
+                    {getProductWithCategoryApiResult.data?.data?.map((product, index) => (
                         <Link
                             href={`/products/${product.id}`}
                             key={index}
@@ -109,8 +109,8 @@ export default function Page() {
                             </div>
                         </Link>
                     ))}
-                    {productApiResult.isLoading && (<Spinner/>)}
-                    {!productApiResult.isLoading && productApiResult.data?.data?.length === 0 && (
+                    {getProductWithCategoryApiResult.isFetching && (<Spinner/>)}
+                    {!getProductWithCategoryApiResult.isFetching && getProductWithCategoryApiResult.data?.data?.length === 0 && (
                         <div className="flex justify-center">
                             Empty!
                         </div>

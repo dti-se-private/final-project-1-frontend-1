@@ -9,7 +9,7 @@ export const useCart = () => {
 
     const cartState = useSelector((state: RootState) => state.cartSlice);
 
-    const cartApiResult = cartApi.useGetCartItemsQuery({
+    const getCartApiResult = cartApi.useGetCartItemsQuery({
         page: cartState.getCartItemsRequest.page,
         size: cartState.getCartItemsRequest.size,
         search: cartState.getCartItemsRequest.search
@@ -25,19 +25,19 @@ export const useCart = () => {
 
     const addCartItemRequest = async (request: CartItemRequest) => {
         const addCartItemApiResult = await addCartItemApiTrigger(request).unwrap();
-        cartApiResult.refetch();
+        getCartApiResult.refetch();
         return addCartItemApiResult;
     }
 
     const removeCartItemRequest = async (request: CartItemRequest) => {
         const removeCartItemApiResult = await removeCartItemApiTrigger(request).unwrap();
-        cartApiResult.refetch();
+        getCartApiResult.refetch();
         return removeCartItemApiResult;
     }
 
     return {
         cartState,
-        cartApiResult,
+        getCartApiResult,
         setCartItemsRequest,
         addCartItemRequest,
         removeCartItemRequest,
