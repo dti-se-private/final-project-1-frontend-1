@@ -20,6 +20,7 @@ import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
 import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
+import wkx from "wkx";
 
 export default function WarehouseManagementPage() {
     const router = useRouter();
@@ -64,6 +65,20 @@ export default function WarehouseManagementPage() {
                     </Button>
                 </div>
             );
+        }
+
+        if (key === "location") {
+            const wkbBuffer = Buffer.from(item.location, 'hex')
+            const geometry = wkx.Geometry.parse(wkbBuffer);
+            const geoJson = geometry.toGeoJSON() as { type: string, coordinates: number[] }
+            const mapLink = `https://maps.google.com/?q=${geoJson.coordinates[1]},${geoJson.coordinates[0]}`
+            return (
+                <Button
+                    onPress={() => window.open(mapLink)}
+                >
+                    <Icon icon="heroicons:map-pin"/>
+                </Button>
+            )
         }
 
         return (
@@ -158,7 +173,7 @@ export default function WarehouseManagementPage() {
                                 <TableCell>{item?.id}</TableCell>
                                 <TableCell>{item?.name}</TableCell>
                                 <TableCell>{item?.description}</TableCell>
-                                <TableCell>{item?.location}</TableCell>
+                                <TableCell>{rowMapper(item, "location")}</TableCell>
                                 <TableCell>{rowMapper(item, "action")}</TableCell>
                             </TableRow>
                         )}
