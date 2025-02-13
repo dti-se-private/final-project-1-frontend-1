@@ -27,13 +27,6 @@ export default function Page() {
         id: addressId,
     });
 
-    useEffect(() => {
-        if (detailAccountAddressApiResult.data?.data) {
-            setDetails(detailAccountAddressApiResult.data.data);
-        }
-    }, [detailAccountAddressApiResult.data?.data]);
-
-
     const initialValues = {
         id: accountAddressState.details?.id ?? "",
         name: accountAddressState.details?.name ?? "",
@@ -41,6 +34,13 @@ export default function Page() {
         location: accountAddressState.details?.location ?? "",
         isPrimary: accountAddressState.details?.isPrimary ?? false,
     };
+
+
+    useEffect(() => {
+        if (detailAccountAddressApiResult.data?.data) {
+            setDetails(detailAccountAddressApiResult.data.data);
+        }
+    }, [detailAccountAddressApiResult.data?.data]);
 
     const validationSchema = Yup.object().shape({
         id: Yup.string().required("ID is required."),
@@ -86,7 +86,7 @@ export default function Page() {
     }
 
 
-    if (detailAccountAddressApiResult.isLoading) {
+    if (detailAccountAddressApiResult.isFetching) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
@@ -125,7 +125,7 @@ export default function Page() {
                                 onChange={props.handleChange}
                             >Is Primary
                             </Checkbox>
-                            <Button type="submit" className="w-full mt-8">
+                            <Button type="submit" className="w-full mt-4">
                                 Update
                             </Button>
                         </Form>

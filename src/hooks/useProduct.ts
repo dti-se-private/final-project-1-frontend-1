@@ -1,10 +1,9 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {categoryApi, CategoryResponse} from "@/src/stores/apis/categoryApi";
-import {productApi, ProductRequest, ProductResponse} from "@/src/stores/apis/productApi";
+import {PatchProductRequest, productApi, ProductRequest, ProductResponse} from "@/src/stores/apis/productApi";
 import {productSlice} from "@/src/stores/slices/productSlice";
 import {ManyRequest, OneRequest} from "@/src/stores/apis";
-import {accountAddressSlice} from "@/src/stores/slices/accountAddressSlice";
 
 export const useProduct = () => {
     const dispatch = useDispatch();
@@ -22,21 +21,21 @@ export const useProduct = () => {
     const [patchProductApiTrigger] = productApi.usePatchProductMutation();
     const [deleteProductApiTrigger] = productApi.useDeleteProductMutation();
 
-    const addProduct = async (product: ProductRequest) => {
-        const addProductResult = await addProductApiTrigger(product).unwrap();
+    const addProduct = async (request: ProductRequest) => {
+        const addProductResult = await addProductApiTrigger(request).unwrap();
         getProductsApiResult.refetch();
         return addProductResult;
     }
 
-    const patchProduct = async (product: ProductRequest & {id: string}) => {
-        const patchProductResult = await patchProductApiTrigger(product).unwrap();
+    const patchProduct = async (request: PatchProductRequest) => {
+        const patchProductResult = await patchProductApiTrigger(request).unwrap();
         dispatch(productSlice.actions.setDetails(patchProductResult.data));
         getProductsApiResult.refetch();
         return patchProductResult;
     }
 
-    const deleteProduct = async (product: OneRequest) => {
-        const deleteProductResult = await deleteProductApiTrigger(product).unwrap();
+    const deleteProduct = async (request: OneRequest) => {
+        const deleteProductResult = await deleteProductApiTrigger(request).unwrap();
         getProductsApiResult.refetch();
         return deleteProductResult;
     }
@@ -45,10 +44,13 @@ export const useProduct = () => {
 
     const setCategory = (category: CategoryResponse) => {
         dispatch(productSlice.actions.setCategory(category));
+
     }
 
     const setGetProductsRequest = (request: ManyRequest) => {
         dispatch(productSlice.actions.setGetProductsRequest(request));
+        getProductsApiResult.refetch();
+        getProductWithCategoryApiResult.refetch();
     }
 
     const setGetCategoriesRequest = (request: ManyRequest) => {

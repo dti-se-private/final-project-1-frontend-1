@@ -109,8 +109,8 @@ export default function Page() {
                             </div>
                         </Link>
                     ))}
-                    {getProductWithCategoryApiResult.isLoading && (<Spinner/>)}
-                    {!getProductWithCategoryApiResult.isLoading && getProductWithCategoryApiResult.data?.data?.length === 0 && (
+                    {getProductWithCategoryApiResult.isFetching && (<Spinner/>)}
+                    {!getProductWithCategoryApiResult.isFetching && getProductWithCategoryApiResult.data?.data?.length === 0 && (
                         <div className="flex justify-center">
                             Empty!
                         </div>

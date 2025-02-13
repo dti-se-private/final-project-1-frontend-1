@@ -17,10 +17,13 @@ export interface ProductRequest {
     name: string;
     description: string;
     price: number;
-    quantity: number;
     image: string;
 }
 
+export interface PatchProductRequest {
+    id: string;
+    data: ProductRequest;
+}
 
 export const productApi = createApi({
     reducerPath: "productApi",
@@ -57,11 +60,10 @@ export const productApi = createApi({
                 return {data: result.data as ResponseBody<ProductResponse>};
             }
         }),
-
         addProduct: builder.mutation<ResponseBody<ProductResponse>, ProductRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
-                    url: "/add",
+                    url: "",
                     method: "POST",
                     data: args,
                 });
@@ -71,13 +73,12 @@ export const productApi = createApi({
                 return {data: result.data as ResponseBody<ProductResponse>};
             }
         }),
-
-        patchProduct: builder.mutation<ResponseBody<ProductResponse>, ProductRequest>({
+        patchProduct: builder.mutation<ResponseBody<ProductResponse>, PatchProductRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
-                    url: "/update",
+                    url: `/${args.id}`,
                     method: "PATCH",
-                    data: args,
+                    data: args.data,
                 });
                 if (result.error) {
                     return {error: result.error};
@@ -85,7 +86,6 @@ export const productApi = createApi({
                 return {data: result.data as ResponseBody<ProductResponse>};
             }
         }),
-
         deleteProduct: builder.mutation<ResponseBody<ProductResponse>, OneRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({

@@ -12,7 +12,7 @@ export const categorySlice = createSlice({
     initialState: {
         getCategoriesRequest: {
             page: 0,
-            size: 10,
+            size: 5,
             search: ''
         },
         details: undefined
@@ -27,5 +27,5 @@ export const categorySlice = createSlice({
     },
 });
 
-export const { setGetCategoriesRequest, setDetails } = categorySlice.actions;
+export const {setGetCategoriesRequest, setDetails} = categorySlice.actions;
 export default categorySlice.reducer;

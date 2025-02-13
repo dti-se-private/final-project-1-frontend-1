@@ -38,6 +38,7 @@ export const useAccountAddress = () => {
 
     const setGetAccountAddressesRequest = (request: ManyRequest) => {
         dispatch(accountAddressSlice.actions.setGetAccountAddressesRequest(request));
+        getAccountAddressesApiResult.refetch();
     }
 
     const setDetails = (accountAddress: AccountAddressResponse) => {

@@ -4,6 +4,7 @@ import {persistReducer, persistStore} from "redux-persist";
 import {FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE} from "redux-persist/es/constants";
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
 import {setupListeners} from "@reduxjs/toolkit/query";
+import {categorySlice} from "@/src/stores/slices/categorySlice";
 import {productSlice} from "@/src/stores/slices/productSlice";
 import {modalSlice} from "@/src/stores/slices/modalSlice";
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
@@ -24,6 +25,7 @@ import {accountAddressSlice} from "@/src/stores/slices/accountAddressSlice";
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
     [productSlice.reducerPath]: productSlice.reducer,
+    [categorySlice.reducerPath]: categorySlice.reducer,
     [modalSlice.reducerPath]: modalSlice.reducer,
     [accountAddressSlice.reducerPath]: accountAddressSlice.reducer,
     [cartSlice.reducerPath]: cartSlice.reducer,
