@@ -1,25 +1,58 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {axiosBaseQuery, ManyRequest, ResponseBody} from "@/src/stores/apis";
 import {ProductResponse} from "@/src/stores/apis/productApi";
+import {AccountResponse} from "@/src/stores/apis/accountApi";
 
-export interface CartItemResponse {
+export interface OrderStatusResponse {
+    id: string;
+    status: string;
+    time: Date;
+}
+
+export interface OrderItemResponse {
     id: string;
     product: ProductResponse;
     quantity: number;
 }
 
-export interface CartItemRequest {
+export interface PaymentProofResponse {
+    id: string;
+    file: string;
+    extension: string;
+    time: Date
+}
+
+export interface OrderResponse {
+    id: string;
+    account: AccountResponse
+    product: ProductResponse;
+    shipmentPrice: number;
+    itemPrice: number;
+    statuses: OrderStatusResponse[];
+    items: OrderItemResponse[];
+    paymentProofs: PaymentProofResponse[];
+    shipmentOrigin: string
+    shipmentDestination: string
+}
+
+
+export interface OrderItemRequest {
     productId: string;
     quantity: number;
 }
 
-export const cartApi = createApi({
-    reducerPath: "cartApi",
+export interface OrderCheckoutRequest {
+    addressId: string;
+    items: OrderItemRequest[];
+}
+
+export const orderApi = createApi({
+    reducerPath: "orderApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/carts`
+        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/orders`
     }),
     endpoints: (builder) => ({
-        getCartItems: builder.query<ResponseBody<CartItemResponse[]>, ManyRequest>({
+        getOrders: builder.query<ResponseBody<OrderResponse[]>, ManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
                     `page=${args.page}`,
@@ -33,33 +66,33 @@ export const cartApi = createApi({
                 if (result.error) {
                     return {error: result.error};
                 }
-                return {data: result.data as ResponseBody<CartItemResponse[]>};
+                return {data: result.data as ResponseBody<OrderResponse[]>};
             }
         }),
-        addCartItem: builder.mutation<ResponseBody<CartItemResponse>, CartItemRequest>({
+        tryCheckout: builder.mutation<ResponseBody<OrderResponse>, OrderCheckoutRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
-                    url: "/add",
+                    url: "/try-checkout",
                     method: "POST",
                     data: args,
                 });
                 if (result.error) {
                     return {error: result.error};
                 }
-                return {data: result.data as ResponseBody<CartItemResponse>};
+                return {data: result.data as ResponseBody<OrderResponse>};
             }
         }),
-        removeCartItem: builder.mutation<ResponseBody<CartItemResponse>, CartItemRequest>({
+        checkout: builder.mutation<ResponseBody<OrderResponse>, OrderCheckoutRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
-                    url: "/remove",
+                    url: "/checkout",
                     method: "POST",
                     data: args,
                 });
                 if (result.error) {
                     return {error: result.error};
                 }
-                return {data: result.data as ResponseBody<CartItemResponse>};
+                return {data: result.data as ResponseBody<OrderResponse>};
             }
         }),
     })
