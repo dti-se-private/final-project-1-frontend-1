@@ -5,7 +5,6 @@ import {Icon} from "@iconify/react";
 import {
     Button,
     getKeyValue,
-    Image,
     Input,
     Pagination,
     Spinner,
@@ -18,9 +17,11 @@ import {
 } from "@heroui/react";
 import {ProductResponse} from "@/src/stores/apis/productApi";
 import {useRouter} from "next/navigation";
+import {SearchIcon} from "@heroui/shared-icons";
 import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
-import {SearchIcon} from "@heroui/shared-icons";
+import Image from "next/image";
+import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 
 export default function Page() {
     const router = useRouter();
@@ -29,8 +30,18 @@ export default function Page() {
         productState,
         getProductsApiResult,
         setGetProductsRequest,
+        setDetails,
         deleteProduct,
     } = useProduct();
+
+
+    const currencyFormatter = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        currencySign: 'accounting',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    });
 
     const rowMapper = (item: ProductResponse, key: string): React.JSX.Element => {
         if (key === "action") {
@@ -38,7 +49,7 @@ export default function Page() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/products/${item.id}`)}
+                        onPress={() => router.push(`/admin/products/${item.id}`)}
                     >
                         Details
                     </Button>
@@ -65,27 +76,46 @@ export default function Page() {
                     </Button>
                 </div>
             );
-        }
-
-        if (key === "image") {
+        } else if (key === "category") {
             return (
-                <Image
-                    src={item.image}
-                    alt={item.name}
-                    className="w-16 h-16 object-cover rounded"
-                />
+                <>
+                    {item.category?.name}
+                </>
+            );
+        } else if (key === "price") {
+            return (
+                <>
+                    {currencyFormatter.format(item.price)}
+                </>
+            );
+        } else if (key === "image") {
+            return (
+                <div className="relative w-[10rem] h-[10rem] mb-4">
+                    <Image
+                        className="rounded-md"
+                        src={
+                            item.image
+                                ? convertHexStringToBase64Data(item.image, "image/png")
+                                : "https://placehold.co/400x400?text=product"
+                        }
+                        layout="fill"
+                        objectFit="cover"
+                        alt='product'
+                    />
+                </div>
             );
         }
 
-        if (key === "category") {
-            return <>{item.category.name}</>;
-        }
-
-        return <>{String(getKeyValue(item, key))}</>;
+        return (
+            <>
+                {String(getKeyValue(item, key))}
+            </>
+        );
     }
 
+
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
                 <h1 className="mb-8 text-4xl font-bold">Products</h1>
                 <Table
@@ -111,7 +141,9 @@ export default function Page() {
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/products/add`)}
+                                    onPress={() => router.push(`/admin/products/add`)}
+                                    color="success"
+                                    className="text-white"
                                 >
                                     Add
                                 </Button>
@@ -126,7 +158,7 @@ export default function Page() {
                                         search: productState.getProductsRequest.search
                                     })}
                                 >
-                                    <option value="5">5</option>
+                                    <option selected value="5">5</option>
                                     <option value="10">10</option>
                                     <option value="15">15</option>
                                 </select>
@@ -151,17 +183,18 @@ export default function Page() {
                 >
                     <TableHeader>
                         <TableColumn key="id">ID</TableColumn>
+                        <TableColumn key="category">Category Name</TableColumn>
                         <TableColumn key="name">Name</TableColumn>
-                        <TableColumn key="description">Description</TableColumn>
                         <TableColumn key="price">Price</TableColumn>
+                        <TableColumn key="quantity">Quantity</TableColumn>
                         <TableColumn key="image">Image</TableColumn>
-                        <TableColumn key="category">Category</TableColumn>
                         <TableColumn key="action">Action</TableColumn>
                     </TableHeader>
                     <TableBody
                         items={getProductsApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={getProductsApiResult.isLoading ? "loading" : "idle"}
+                        loadingState={getProductsApiResult.isFetching ? "loading" : "idle"}
+                        emptyContent={"Empty!"}
                     >
                         {(item) => (
                             <TableRow key={item?.id}>

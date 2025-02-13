@@ -18,7 +18,7 @@ import {SearchIcon} from "@heroui/shared-icons";
 import {useModal} from "@/src/hooks/useModal";
 import _ from "lodash";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
-import {useLanding} from "@/src/hooks/useLanding";
+import {useProduct} from "@/src/hooks/useProduct";
 
 export default function Component() {
     const modal = useModal();
@@ -26,14 +26,14 @@ export default function Component() {
     const router = useRouter();
 
     const {
-        landingState,
-        productApiResult,
+        productState,
+        getProductWithCategoryApiResult,
         categoryApiResult,
         setGetProductsRequest,
         setGetCategoriesRequest,
         setDetails,
         setCategory
-    } = useLanding();
+    } = useProduct();
 
     const handleLogout = () => {
         authentication
@@ -59,7 +59,7 @@ export default function Component() {
     const handleSearch = _.debounce((event) => {
         setGetProductsRequest({
             page: 0,
-            size: landingState.getProductsRequest.size,
+            size: productState.getProductsRequest.size,
             search: event.target.value
         });
     }, 500)
@@ -67,7 +67,7 @@ export default function Component() {
     return (
         <Navbar isBordered>
             <NavbarBrand className="w-1/5">
-                <Link className="text-xl font-bold truncate text-clip" href="/">Ecommerce</Link>
+                <Link className="text-xl font-bold truncate" href="/">Ecommerce</Link>
             </NavbarBrand>
             <NavbarContent as="div" className="w-3/5 items-center" justify="center">
                 <Input
@@ -107,6 +107,9 @@ export default function Component() {
                                     <DropdownSection showDivider title="Menu">
                                         <DropdownItem key="addresses" href="/addresses">
                                             Addresses
+                                        </DropdownItem>
+                                        <DropdownItem key="cart" href="/cart">
+                                            Cart
                                         </DropdownItem>
                                         <DropdownItem key="orders">
                                             Orders

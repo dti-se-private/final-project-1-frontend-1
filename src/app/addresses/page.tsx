@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect} from "react";
+import React from "react";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
 import {Icon} from "@iconify/react";
 import {
@@ -90,7 +90,7 @@ export default function Page() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
                 <h1 className="mb-8 text-4xl font-bold">Addresses</h1>
                 <Table
@@ -117,6 +117,8 @@ export default function Page() {
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
                                     onPress={() => router.push(`/addresses/add`)}
+                                    color="success"
+                                    className="text-white"
                                 >
                                     Add
                                 </Button>
@@ -131,7 +133,7 @@ export default function Page() {
                                         search: accountAddressState.getAccountAddressesRequest.search
                                     })}
                                 >
-                                    <option value="5">5</option>
+                                    <option selected value="5">5</option>
                                     <option value="10">10</option>
                                     <option value="15">15</option>
                                 </select>
@@ -165,10 +167,11 @@ export default function Page() {
                     <TableBody
                         items={getAccountAddressesApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={getAccountAddressesApiResult.isLoading ? "loading" : "idle"}
+                        loadingState={getAccountAddressesApiResult.isFetching ? "loading" : "idle"}
+                        emptyContent={"Empty!"}
                     >
                         {(item) => (
-                            <TableRow key={item?.name}>
+                            <TableRow key={item?.id}>
                                 {(columnKey) => <TableCell>{rowMapper(item, String(columnKey))}</TableCell>}
                             </TableRow>
                         )}

@@ -90,7 +90,7 @@ export default function Page() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-center items-center">
                 <h1 className="mb-8 text-4xl font-bold">Profile</h1>
                 <Formik
@@ -114,7 +114,7 @@ export default function Page() {
                                 <FormInput name="password" label="Password" type="password"/>
                                 <FormInput name="name" label="Name" type="text"/>
                                 <FormInput name="phone" label="Phone" type="text"/>
-                                <div className="flex gap-4 mb-6 w-full">
+                                <div className="flex gap-4 w-full">
                                     <div>
                                         <Avatar
                                             isBordered
@@ -128,14 +128,13 @@ export default function Page() {
                                     </div>
                                     <Input name="image" label="Image" type="file"
                                            onChange={async (event) => {
-                                               console.log(event.target.files)
                                                const file = event.target.files?.item(0);
                                                const hexString = await convertFileToHexString(file!);
                                                props.setFieldValue("image", hexString);
                                            }}
                                     />
                                 </div>
-                                <Button type="submit" className="w-full">
+                                <Button type="submit" className="w-full mt-4">
                                     Update
                                 </Button>
                             </Form>

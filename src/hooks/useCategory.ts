@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {categoryApi, CategoryRequest, CategoryResponse} from "@/src/stores/apis/categoryApi";
+import {categoryApi, CategoryRequest, CategoryResponse, PatchCategoryRequest} from "@/src/stores/apis/categoryApi";
 import {categorySlice} from "@/src/stores/slices/categorySlice";
 import {ManyRequest, OneRequest} from "@/src/stores/apis";
 
@@ -18,7 +18,7 @@ export const useCategory = () => {
         return addResult;
     }
 
-    const patchCategory = async (request: CategoryRequest & { id: string }) => {
+    const patchCategory = async (request: PatchCategoryRequest) => {
         const patchResult = await patchCategoryApiTrigger(request).unwrap();
         dispatch(categorySlice.actions.setDetails(patchResult.data));
         getCategoriesApiResult.refetch();
@@ -33,6 +33,7 @@ export const useCategory = () => {
 
     const setGetCategoriesRequest = (request: ManyRequest) => {
         dispatch(categorySlice.actions.setGetCategoriesRequest(request));
+        getCategoriesApiResult.refetch();
     }
 
     const setDetails = (category: CategoryResponse) => {

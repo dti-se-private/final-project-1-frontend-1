@@ -1,7 +1,7 @@
 "use client"
 import {Button, Spinner} from '@heroui/react';
 import Image from 'next/image';
-import {useLanding} from '@/src/hooks/useLanding';
+import {useProduct} from '@/src/hooks/useProduct';
 import {upperFirst} from "tiny-case";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Pagination} from "swiper/modules";
@@ -12,14 +12,14 @@ import Link from "next/link";
 export default function Page() {
     const router = useRouter();
     const {
-        landingState,
-        productApiResult,
+        productState,
+        getProductWithCategoryApiResult,
         categoryApiResult,
         setGetProductsRequest,
         setGetCategoriesRequest,
         setDetails,
         setCategory
-    } = useLanding();
+    } = useProduct();
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -50,7 +50,7 @@ export default function Page() {
                     {
                         [1, 2, 3, 4].map((item, index) => (
                             <SwiperSlide key={index}>
-                                <div className="w-full h-[90vh] relative mb-12">
+                                <div className="w-full h-[88vh] relative mb-12">
                                     <Image
                                         className="rounded-md"
                                         src={`https://placehold.co/1366x768?text=hero${index}`}
@@ -72,7 +72,7 @@ export default function Page() {
                         <Button
                             key={category.id}
                             onPress={() => setCategory(category)}
-                            variant={landingState.category?.id === category.id ? 'solid' : 'bordered'}
+                            variant={productState.category?.id === category.id ? 'solid' : 'bordered'}
                         >
                             {upperFirst(category.name)}
                         </Button>
@@ -82,14 +82,14 @@ export default function Page() {
 
             {/* Products */}
             <section className="container flex flex-col justify-center items-center px-2">
-                <div className="flex flex-wrap justify-center items-center gap-6 mb-8 min-h-[80vh]">
-                    {productApiResult.data?.data?.map((product, index) => (
+                <div className="flex flex-wrap justify-center items-center gap-6 mb-8 min-h-[78vh]">
+                    {getProductWithCategoryApiResult.data?.data?.map((product, index) => (
                         <Link
                             href={`/products/${product.id}`}
                             key={index}
-                            className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md h-full"
+                            className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md md:w-[16vw] h-[50vh] w-[70vw]"
                         >
-                            <div className="relative w-full md:h-[30vh] md:w-[30vh] h-[40vh] w-[40vh] mb-4">
+                            <div className="relative w-[100%] h-[100%] mb-4">
                                 <Image
                                     className="rounded-md"
                                     src={
@@ -109,8 +109,8 @@ export default function Page() {
                             </div>
                         </Link>
                     ))}
-                    {productApiResult.isLoading && (<Spinner/>)}
-                    {!productApiResult.isLoading && productApiResult.data?.data?.length === 0 && (
+                    {getProductWithCategoryApiResult.isFetching && (<Spinner/>)}
+                    {!getProductWithCategoryApiResult.isFetching && getProductWithCategoryApiResult.data?.data?.length === 0 && (
                         <div className="flex justify-center">
                             Empty!
                         </div>
@@ -121,13 +121,13 @@ export default function Page() {
                 <div className="flex justify-center gap-4">
                     <Button
                         onPress={() => {
-                            if (landingState.getProductsRequest.page === 0) {
+                            if (productState.getProductsRequest.page === 0) {
                                 return;
                             }
                             setGetProductsRequest({
-                                page: landingState.getProductsRequest.page - 1,
-                                size: landingState.getProductsRequest.size,
-                                search: landingState.getProductsRequest.search
+                                page: productState.getProductsRequest.page - 1,
+                                size: productState.getProductsRequest.size,
+                                search: productState.getProductsRequest.search
                             });
                         }}
                     >
@@ -136,14 +136,14 @@ export default function Page() {
                     <Button
                         disabled={true}
                     >
-                        {landingState.getProductsRequest.page + 1}
+                        {productState.getProductsRequest.page + 1}
                     </Button>
                     <Button
                         onPress={() => {
                             setGetProductsRequest({
-                                page: landingState.getProductsRequest.page + 1,
-                                size: landingState.getProductsRequest.size,
-                                search: landingState.getProductsRequest.search
+                                page: productState.getProductsRequest.page + 1,
+                                size: productState.getProductsRequest.size,
+                                search: productState.getProductsRequest.search
                             });
                         }}
                     >

@@ -38,7 +38,7 @@ export default function Page() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/categories/${item.id}`)}
+                        onPress={() => router.push(`/admin/categories/${item.id}`)}
                     >
                         Details
                     </Button>
@@ -67,11 +67,15 @@ export default function Page() {
             );
         }
 
-        return <>{String(getKeyValue(item, key))}</>;
+        return (
+            <>
+                {String(getKeyValue(item, key))}
+            </>
+        );
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
                 <h1 className="mb-8 text-4xl font-bold">Categories</h1>
                 <Table
@@ -97,7 +101,9 @@ export default function Page() {
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/categories/add`)}
+                                    onPress={() => router.push(`/admin/categories/add`)}
+                                    color="success"
+                                    className="text-white"
                                 >
                                     Add
                                 </Button>
@@ -112,7 +118,7 @@ export default function Page() {
                                         search: categoryState.getCategoriesRequest.search
                                     })}
                                 >
-                                    <option value="5">5</option>
+                                    <option selected value="5">5</option>
                                     <option value="10">10</option>
                                     <option value="15">15</option>
                                 </select>
@@ -144,7 +150,8 @@ export default function Page() {
                     <TableBody
                         items={getCategoriesApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={getCategoriesApiResult.isLoading ? "loading" : "idle"}
+                        loadingState={getCategoriesApiResult.isFetching ? "loading" : "idle"}
+                        emptyContent={"Empty!"}
                     >
                         {(item) => (
                             <TableRow key={item?.id}>
