@@ -64,6 +64,10 @@ export default function Component() {
         });
     }, 500)
 
+    const hasPermission = (requiredPermissions: string[]) => {
+        return requiredPermissions.some(permission => authentication.state.session?.permissions.includes(permission));
+    };
+
     return (
         <Navbar isBordered>
             <NavbarBrand className="w-1/5">
@@ -100,11 +104,16 @@ export default function Component() {
                         {authentication.state.isLoggedIn ?
                             (
                                 <>
-                                    <DropdownItem key="dashboard" className="gap-2">
+                                    <DropdownItem key="user-info" className="gap-2">
                                         <p className="font-semibold">{authentication.state.account?.name}</p>
                                         <p className="font-semibold">{authentication.state.account?.email}</p>
                                     </DropdownItem>
                                     <DropdownSection showDivider title="Menu">
+                                        {hasPermission(['SUPER_ADMIN', 'WAREHOUSE_ADMIN']) ? (
+                                            <DropdownItem key="dashboard" href="/admin/dashboard">
+                                                Dashboard
+                                            </DropdownItem>
+                                        ) : null}
                                         <DropdownItem key="addresses" href="/addresses">
                                             Addresses
                                         </DropdownItem>
