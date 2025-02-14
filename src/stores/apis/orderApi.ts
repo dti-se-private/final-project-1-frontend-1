@@ -1,12 +1,12 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {axiosBaseQuery, ManyRequest, ResponseBody} from "@/src/stores/apis";
+import {axiosBaseQuery, ManyRequest, OneRequest, ResponseBody} from "@/src/stores/apis";
 import {ProductResponse} from "@/src/stores/apis/productApi";
 import {AccountResponse} from "@/src/stores/apis/accountApi";
 
 export interface OrderStatusResponse {
     id: string;
     status: string;
-    time: Date;
+    time: number;
 }
 
 export interface OrderItemResponse {
@@ -91,6 +91,18 @@ export const orderApi = createApi({
                     return {error: result.error};
                 }
                 return {data: result.data as ResponseBody<OrderResponse[]>};
+            }
+        }),
+        getOrder: builder.query<ResponseBody<OrderResponse>, OneRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: `/${args.id}`,
+                    method: "GET"
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<OrderResponse>};
             }
         }),
         getPaymentConfirmationOrders: builder.query<ResponseBody<OrderResponse[]>, ManyRequest>({

@@ -1,7 +1,5 @@
 "use client"
 import React from "react";
-import {useCategory} from "@/src/hooks/useCategory";
-import {Icon} from "@iconify/react";
 import {
     Button,
     getKeyValue,
@@ -15,55 +13,59 @@ import {
     TableHeader,
     TableRow
 } from "@heroui/react";
-import {CategoryResponse} from "@/src/stores/apis/categoryApi";
+import {OrderResponse} from "@/src/stores/apis/orderApi";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
 import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
+import {useOrder} from "@/src/hooks/useOrder";
 
 export default function Page() {
     const router = useRouter();
     const modal = useModal();
     const {
-        categoryState,
-        getCategoriesApiResult,
-        setGetCategoriesRequest,
-        setDetails,
-        deleteCategory,
-    } = useCategory();
+        orderState,
+        getOrdersApiResult,
+        setGetOrdersRequest
+    } = useOrder();
 
-    const rowMapper = (item: CategoryResponse, key: string): React.JSX.Element => {
+    const currencyFormatter = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        currencySign: 'accounting',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    });
+
+    const rowMapper = (item: OrderResponse, key: string): React.JSX.Element => {
         if (key === "action") {
             return (
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admin/categories/${item.id}`)}
+                        onPress={() => router.push(`/customers/orders/${item.id}`)}
                     >
                         Details
                     </Button>
-                    <Button
-                        color="danger"
-                        onPress={() => deleteCategory({id: item.id})
-                            .then((data) => {
-                                modal.setContent({
-                                    header: "Delete Succeed",
-                                    body: `${data.message}`,
-                                })
-                            })
-                            .catch((error) => {
-                                modal.setContent({
-                                    header: "Delete Failed",
-                                    body: `${error.data.message}`,
-                                })
-                            }).finally(() => {
-                                modal.onOpenChange(true);
-                            })
-                        }
-                    >
-                        Delete
-                    </Button>
                 </div>
+            );
+        } else if (key === "lastStatus") {
+            return (
+                <>
+                    {item.statuses[item.statuses.length - 1].status}
+                </>
+            );
+        } else if (key === "lastStatusTime") {
+            return (
+                <>
+                    {new Date(item.statuses[item.statuses.length - 1].time * 1000).toLocaleString()}
+                </>
+            );
+        } else if (key === "itemPrice" || key === "shipmentPrice" || key === "totalPrice") {
+            return (
+                <>
+                    {currencyFormatter.format(getKeyValue(item, key))}
+                </>
             );
         }
 
@@ -77,7 +79,7 @@ export default function Page() {
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
-                <h1 className="mb-8 text-4xl font-bold">Categories</h1>
+                <div className="mb-8 text-4xl font-bold">Orders</div>
                 <Table
                     topContent={
                         <div className="flex flex-col gap-4">
@@ -85,37 +87,29 @@ export default function Page() {
                                 <Input
                                     placeholder="Search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
-                                    value={categoryState.getCategoriesRequest.search}
+                                    value={orderState.getOrdersRequest.search}
                                     variant="bordered"
                                     isClearable={true}
-                                    onClear={() => setGetCategoriesRequest({
-                                        page: categoryState.getCategoriesRequest.page,
-                                        size: categoryState.getCategoriesRequest.size,
+                                    onClear={() => setGetOrdersRequest({
+                                        page: orderState.getOrdersRequest.page,
+                                        size: orderState.getOrdersRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetCategoriesRequest({
-                                        page: categoryState.getCategoriesRequest.page,
-                                        size: categoryState.getCategoriesRequest.size,
+                                    onValueChange={_.debounce((value) => setGetOrdersRequest({
+                                        page: orderState.getOrdersRequest.page,
+                                        size: orderState.getOrdersRequest.size,
                                         search: value
                                     }), 500)}
                                 />
-                                <Button
-                                    startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/admin/categories/add`)}
-                                    color="success"
-                                    className="text-white"
-                                >
-                                    Add
-                                </Button>
                             </div>
                             <label className="flex items-center text-default-400 text-small">
                                 Rows per page:
                                 <select
                                     className="bg-transparent outline-none text-default-400 text-small"
-                                    onChange={(event) => setGetCategoriesRequest({
-                                        page: categoryState.getCategoriesRequest.page,
+                                    onChange={(event) => setGetOrdersRequest({
+                                        page: orderState.getOrdersRequest.page,
                                         size: Number(event.target.value),
-                                        search: categoryState.getCategoriesRequest.search
+                                        search: orderState.getOrdersRequest.search
                                     })}
                                 >
                                     <option selected value="5">5</option>
@@ -130,12 +124,12 @@ export default function Page() {
                             <Pagination
                                 showControls
                                 showShadow
-                                page={categoryState.getCategoriesRequest.page + 1}
+                                page={orderState.getOrdersRequest.page + 1}
                                 total={Infinity}
-                                onChange={(page) => setGetCategoriesRequest({
+                                onChange={(page) => setGetOrdersRequest({
                                     page: page - 1,
-                                    size: categoryState.getCategoriesRequest.size,
-                                    search: categoryState.getCategoriesRequest.search,
+                                    size: orderState.getOrdersRequest.size,
+                                    search: orderState.getOrdersRequest.search,
                                 })}
                             />
                         </div>
@@ -143,14 +137,17 @@ export default function Page() {
                 >
                     <TableHeader>
                         <TableColumn key="id">ID</TableColumn>
-                        <TableColumn key="name">Name</TableColumn>
-                        <TableColumn key="description">Description</TableColumn>
+                        <TableColumn key="itemPrice">Item Price</TableColumn>
+                        <TableColumn key="shipmentPrice">Shipment Price</TableColumn>
+                        <TableColumn key="totalPrice">Total Price</TableColumn>
+                        <TableColumn key="lastStatus">Last Status</TableColumn>
+                        <TableColumn key="lastStatusTime">Last Status Time</TableColumn>
                         <TableColumn key="action">Action</TableColumn>
                     </TableHeader>
                     <TableBody
-                        items={getCategoriesApiResult.data?.data ?? []}
+                        items={getOrdersApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={getCategoriesApiResult.isFetching ? "loading" : "idle"}
+                        loadingState={getOrdersApiResult.isFetching ? "loading" : "idle"}
                         emptyContent={"Empty!"}
                     >
                         {(item) => (

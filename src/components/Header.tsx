@@ -126,7 +126,7 @@ export default function Component() {
                                         <DropdownItem key="addresses" href="/cusomers/addresses">
                                             Addresses
                                         </DropdownItem>
-                                        <DropdownItem key="orders">
+                                        <DropdownItem key="orders" href="/customers/orders">
                                             Orders
                                         </DropdownItem>
                                     </DropdownSection>

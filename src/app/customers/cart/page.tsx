@@ -253,19 +253,19 @@ export default function Page() {
                                         }))
                                     }
                                     checkout(request)
-                                    .then((data) => {
-                                        modal.setContent({
-                                            header: "Checkout Succeed",
-                                            body: `${data.message}`,
+                                        .then((data) => {
+                                            modal.setContent({
+                                                header: "Checkout Succeed",
+                                                body: `${data.message}`,
+                                            })
+                                            router.push(`/customers/orders/${data.data?.id}`);
                                         })
-                                        router.push(`/customers/orders/${data.data?.id}`);
-                                    })
-                                    .catch((error) => {
-                                        modal.setContent({
-                                            header: "Checkout Failed",
-                                            body: `${error.data.message}`,
-                                        })
-                                    }).finally(() => {
+                                        .catch((error) => {
+                                            modal.setContent({
+                                                header: "Checkout Failed",
+                                                body: `${error.data.message}`,
+                                            })
+                                        }).finally(() => {
                                         modal.onOpenChange(true);
                                     })
                                 }}

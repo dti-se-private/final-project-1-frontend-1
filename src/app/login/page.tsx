@@ -87,7 +87,7 @@ export default function Page() {
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-center items-center gap-8">
-                <h1 className="mb-8 text-4xl font-bold">Login Now!</h1>
+                <div className="mb-8 text-4xl font-bold">Login Now!</div>
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
