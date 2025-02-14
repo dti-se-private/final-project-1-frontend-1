@@ -1,45 +1,21 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {productSlice} from "@/src/stores/slices/productSlice";
-import {ManyRequest} from "@/src/stores/apis";
-import {cartApi, CartItemRequest} from "@/src/stores/apis/cartApi";
+import {orderApi, OrderRequest} from "@/src/stores/apis/orderApi";
 
-export const useCart = () => {
+export const useOrder = () => {
     const dispatch = useDispatch();
 
-    const cartState = useSelector((state: RootState) => state.cartSlice);
+    const orderState = useSelector((state: RootState) => state.orderSlice);
 
-    const getCartApiResult = cartApi.useGetCartItemsQuery({
-        page: cartState.getCartItemsRequest.page,
-        size: cartState.getCartItemsRequest.size,
-        search: cartState.getCartItemsRequest.search
-    });
+    const [tryCheckoutApiTrigger] = orderApi.useTryCheckoutMutation();
 
-    const [addCartItemApiTrigger] = cartApi.useAddCartItemMutation();
-    const [removeCartItemApiTrigger] = cartApi.useRemoveCartItemMutation();
-
-
-    const setCartItemsRequest = (request: ManyRequest) => {
-        dispatch(productSlice.actions.setGetProductsRequest(request));
-    }
-
-    const addCartItemRequest = async (request: CartItemRequest) => {
-        const addCartItemApiResult = await addCartItemApiTrigger(request).unwrap();
-        getCartApiResult.refetch();
-        return addCartItemApiResult;
-    }
-
-    const removeCartItemRequest = async (request: CartItemRequest) => {
-        const removeCartItemApiResult = await removeCartItemApiTrigger(request).unwrap();
-        getCartApiResult.refetch();
-        return removeCartItemApiResult;
+    const tryCheckout = async (request: OrderRequest) => {
+        const tryCheckoutApiResult = await tryCheckoutApiTrigger(request).unwrap();
+        return tryCheckoutApiResult;
     }
 
     return {
-        cartState,
-        getCartApiResult,
-        setCartItemsRequest,
-        addCartItemRequest,
-        removeCartItemRequest,
+        orderState,
+        tryCheckout
     };
 }

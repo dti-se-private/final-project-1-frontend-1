@@ -16,7 +16,7 @@ export const productSlice = createSlice({
         category: undefined,
         getProductsRequest: {
             page: 0,
-            size: 5,
+            size: 10,
             search: ''
         },
         getCategoriesRequest: {

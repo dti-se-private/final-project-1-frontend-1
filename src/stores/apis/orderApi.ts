@@ -28,6 +28,7 @@ export interface OrderResponse {
     product: ProductResponse;
     shipmentPrice: number;
     itemPrice: number;
+    totalPrice: number;
     statuses: OrderStatusResponse[];
     items: OrderItemResponse[];
     paymentProofs: PaymentProofResponse[];
@@ -41,7 +42,7 @@ export interface OrderItemRequest {
     quantity: number;
 }
 
-export interface OrderCheckoutRequest {
+export interface OrderRequest {
     addressId: string;
     items: OrderItemRequest[];
 }
@@ -69,7 +70,7 @@ export const orderApi = createApi({
                 return {data: result.data as ResponseBody<OrderResponse[]>};
             }
         }),
-        tryCheckout: builder.mutation<ResponseBody<OrderResponse>, OrderCheckoutRequest>({
+        tryCheckout: builder.mutation<ResponseBody<OrderResponse>, OrderRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
                     url: "/try-checkout",
@@ -82,7 +83,7 @@ export const orderApi = createApi({
                 return {data: result.data as ResponseBody<OrderResponse>};
             }
         }),
-        checkout: builder.mutation<ResponseBody<OrderResponse>, OrderCheckoutRequest>({
+        checkout: builder.mutation<ResponseBody<OrderResponse>, OrderRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
                     url: "/checkout",

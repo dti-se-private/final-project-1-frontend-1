@@ -76,7 +76,7 @@ export default function Component() {
             <NavbarContent as="div" className="w-3/5 items-center" justify="center">
                 <Input
                     type="text"
-                    placeholder="Search..."
+                    placeholder="Type to search..."
                     startContent={<SearchIcon className="text-gray-500"/>}
                     onChange={(event) => {
                         if (window.location.pathname !== "/browse") {
