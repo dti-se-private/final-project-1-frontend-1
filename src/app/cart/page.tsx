@@ -18,7 +18,8 @@ export default function Page() {
     const modal = useModal();
     const {
         orderState,
-        tryCheckout
+        tryCheckout,
+        checkout
     } = useOrder();
 
     const {
@@ -243,13 +244,31 @@ export default function Page() {
                             <Button
                                 className="w-full"
                                 color="primary"
-                                onPress={() => tryCheckout({
-                                    addressId: accountAddressId!,
-                                    items: (getCartApiResult.data?.data ?? []).map((cartItem) => ({
-                                        productId: cartItem.product.id,
-                                        quantity: cartItem.quantity
-                                    }))
-                                })}
+                                onPress={() => {
+                                    const request: OrderRequest = {
+                                        addressId: accountAddressId!,
+                                        items: (getCartApiResult.data?.data ?? []).map((cartItem) => ({
+                                            productId: cartItem.product.id,
+                                            quantity: cartItem.quantity
+                                        }))
+                                    }
+                                    checkout(request)
+                                    .then((data) => {
+                                        modal.setContent({
+                                            header: "Checkout Succeed",
+                                            body: `${data.message}`,
+                                        })
+                                        router.push(`/orders/${data.data?.id}`);
+                                    })
+                                    .catch((error) => {
+                                        modal.setContent({
+                                            header: "Checkout Failed",
+                                            body: `${error.data.message}`,
+                                        })
+                                    }).finally(() => {
+                                        modal.onOpenChange(true);
+                                    })
+                                }}
                             >
                                 Checkout
                             </Button>
