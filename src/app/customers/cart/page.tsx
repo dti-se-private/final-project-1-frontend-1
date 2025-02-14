@@ -258,7 +258,7 @@ export default function Page() {
                                             header: "Checkout Succeed",
                                             body: `${data.message}`,
                                         })
-                                        router.push(`/orders/${data.data?.id}`);
+                                        router.push(`/customers/orders/${data.data?.id}`);
                                     })
                                     .catch((error) => {
                                         modal.setContent({

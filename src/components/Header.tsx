@@ -93,7 +93,7 @@ export default function Component() {
                 />
             </NavbarContent>
             <NavbarContent as="div" className="w-1/5 items-center gap-8" justify="end">
-                <Link href="/cart" className="flex justify-center items-center">
+                <Link href="/customers/cart" className="flex justify-center items-center">
                     <Badge
                         color="danger"
                         content={getCartApiResult.data?.data?.reduce((acc, item) => acc + item.quantity, 0)}
@@ -123,7 +123,7 @@ export default function Component() {
                                         <p className="font-semibold">{authentication.state.account?.email}</p>
                                     </DropdownItem>
                                     <DropdownSection showDivider title="Menu">
-                                        <DropdownItem key="addresses" href="/addresses">
+                                        <DropdownItem key="addresses" href="/cusomers/addresses">
                                             Addresses
                                         </DropdownItem>
                                         <DropdownItem key="orders">
