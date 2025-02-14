@@ -1,14 +1,12 @@
 "use client"
 import * as Yup from "yup";
-import {Form, Formik} from "formik";
-import FormInput from "@/src/components/FormInput";
-import {Autocomplete, AutocompleteItem, Button, Input, Spinner} from "@heroui/react";
+import {useFormik} from "formik";
+import {Autocomplete, AutocompleteItem, Button, Input, Spinner, Textarea} from "@heroui/react";
 import {useModal} from "@/src/hooks/useModal";
 import React, {useEffect} from "react";
 import {useProduct} from "@/src/hooks/useProduct";
 import {useParams, useRouter} from "next/navigation";
 import {PatchProductRequest, productApi} from "@/src/stores/apis/productApi";
-import FormInputArea from "@/src/components/FormInputArea";
 import Image from "next/image";
 import {convertFileToHexString, convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import {useCategory} from "@/src/hooks/useCategory";
@@ -85,6 +83,25 @@ export default function Page() {
             });
     };
 
+    const formik = useFormik(({
+        initialValues,
+        validationSchema,
+        onSubmit: handleSubmit,
+        enableReinitialize: true
+    }))
+
+    useEffect(() => {
+        if (getCategoriesApiResult.data?.data) {
+            const item = getCategoriesApiResult.data.data[0];
+            formik.setFieldValue("categoryId", item.id);
+            setGetCategoriesRequest({
+                size: categoryState.getCategoriesRequest.size,
+                page: categoryState.getCategoriesRequest.page,
+                search: `${item?.id} - ${item?.name}`,
+            });
+        }
+    }, [getCategoriesApiResult.isLoading]);
+
     if (detailProductApiResult.isFetching) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
@@ -99,75 +116,105 @@ export default function Page() {
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-center items-center">
                 <h1 className="mb-8 text-4xl font-bold">Product Details</h1>
-                <Formik
-                    initialValues={initialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={handleSubmit}
-                    enableReinitialize
-                >
-                    {(props) => (
-                        <Form className="w-2/3 md:w-1/3">
-                            <Autocomplete
-                                className="mb-6 w-full"
-                                label="Category"
-                                name="categoryId"
-                                placeholder="Type to search..."
-                                defaultSelectedKey={props.values.categoryId}
-                                errorMessage={props.errors.categoryId}
-                                isInvalid={!!props.errors.categoryId}
-                                inputValue={categoryState.getCategoriesRequest.search}
-                                isLoading={getCategoriesApiResult.isFetching}
-                                items={getCategoriesApiResult.data?.data || []}
-                                onInputChange={(input) => {
-                                    setGetCategoriesRequest({
-                                        size: categoryState.getCategoriesRequest.size,
-                                        page: categoryState.getCategoriesRequest.page,
-                                        search: input,
-                                    });
-                                }}
-                                onSelectionChange={(key) => {
-                                    props.setFieldValue("categoryId", key);
-                                }}
-                            >
-                                {(item) => (
-                                    <AutocompleteItem key={item.id}>
-                                        {`${item.id} - ${item.name}`}
-                                    </AutocompleteItem>
-                                )}
-                            </Autocomplete>
-                            <FormInput name="name" label="Name" type="text"/>
-                            <FormInputArea name="description" label="Description" type="text"/>
-                            <FormInput name="price" label="Price" type="number"/>
-                            <div className="flex gap-4 w-full">
-                                <div>
-                                    <div className="relative w-[8rem] h-[8rem] mb-4">
-                                        <Image
-                                            className="rounded-md"
-                                            src={
-                                                props.values.image
-                                                    ? convertHexStringToBase64Data(props.values.image, "image/png")
-                                                    : "https://placehold.co/400x400?text=product"
-                                            }
-                                            layout="fill"
-                                            objectFit="cover"
-                                            alt='product'
-                                        />
-                                    </div>
-                                </div>
-                                <Input name="image" label="Image" type="file"
-                                       onChange={async (event) => {
-                                           const file = event.target.files?.item(0);
-                                           const hexString = await convertFileToHexString(file!);
-                                           props.setFieldValue("image", hexString);
-                                       }}
+                <form className="w-2/3 md:w-1/3" onSubmit={formik.handleSubmit}>
+                    <Autocomplete
+                        className="mb-6 w-full"
+                        label="Category"
+                        name="categoryId"
+                        placeholder="Type to search..."
+                        selectedKey={formik.values.categoryId}
+                        errorMessage={formik.errors.categoryId}
+                        isInvalid={Boolean(formik.errors.categoryId)}
+                        inputValue={categoryState.getCategoriesRequest.search}
+                        isLoading={getCategoriesApiResult.isFetching}
+                        items={getCategoriesApiResult.data?.data ?? []}
+                        onInputChange={(input) => {
+                            setGetCategoriesRequest({
+                                size: categoryState.getCategoriesRequest.size,
+                                page: categoryState.getCategoriesRequest.page,
+                                search: input,
+                            });
+                        }}
+                        onSelectionChange={(key) => {
+                            formik.setFieldValue("categoryId", key);
+                            const item = getCategoriesApiResult.data?.data?.find((item) => item.id === key);
+                            setGetCategoriesRequest({
+                                size: categoryState.getCategoriesRequest.size,
+                                page: categoryState.getCategoriesRequest.page,
+                                search: `${item?.id} - ${item?.name}`,
+                            });
+                        }}
+                    >
+                        {(item) => (
+                            <AutocompleteItem key={item.id}>
+                                {`${item.id} - ${item.name}`}
+                            </AutocompleteItem>
+                        )}
+                    </Autocomplete>
+                    <Input
+                        className="mb-6 w-full"
+                        name="name"
+                        label="Name"
+                        type="text"
+                        value={formik.values.name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        isInvalid={Boolean(formik.errors.name)}
+                        errorMessage={formik.errors.name}
+                        disabled={formik.isSubmitting}
+                    />
+                    <Textarea
+                        className="mb-6 w-full"
+                        name="description"
+                        label="Description"
+                        type="text"
+                        value={formik.values.description}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        isInvalid={Boolean(formik.errors.description)}
+                        errorMessage={formik.errors.description}
+                        disabled={formik.isSubmitting}
+                    />
+                    <Input
+                        className="mb-6 w-full"
+                        name="price"
+                        label="Price"
+                        type="number"
+                        value={`${formik.values.price}`}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        isInvalid={Boolean(formik.errors.price)}
+                        errorMessage={formik.errors.price}
+                        disabled={formik.isSubmitting}
+                    />
+                    <div className="flex gap-4 w-full">
+                        <div>
+                            <div className="relative w-[8rem] h-[8rem] mb-4">
+                                <Image
+                                    className="rounded-md"
+                                    src={
+                                        formik.values.image
+                                            ? convertHexStringToBase64Data(formik.values.image, "image/png")
+                                            : "https://placehold.co/400x400?text=product"
+                                    }
+                                    layout="fill"
+                                    objectFit="cover"
+                                    alt='product'
                                 />
                             </div>
-                            <Button type="submit" className="w-full mt-4">
-                                Update
-                            </Button>
-                        </Form>
-                    )}
-                </Formik>
+                        </div>
+                        <Input name="image" label="Image" type="file"
+                               onChange={async (event) => {
+                                   const file = event.target.files?.item(0);
+                                   const hexString = await convertFileToHexString(file!);
+                                   formik.setFieldValue("image", hexString);
+                               }}
+                        />
+                    </div>
+                    <Button type="submit" className="w-full mt-4">
+                        Update
+                    </Button>
+                </form>
             </div>
         </div>
     )

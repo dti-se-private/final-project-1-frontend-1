@@ -80,9 +80,15 @@ export default function Page() {
 
     useEffect(() => {
         if (getAccountAddressesApiResult.data?.data) {
-            setAccountAddressId(getAccountAddressesApiResult.data.data[0].id);
+            const item = getAccountAddressesApiResult.data.data[0];
+            setAccountAddressId(item.id);
+            setGetAccountAddressesRequest({
+                size: accountAddressState.getAccountAddressesRequest.size,
+                page: accountAddressState.getAccountAddressesRequest.page,
+                search: `${item?.name} ${item?.isPrimary ? "- Primary" : ""}`,
+            });
         }
-    }, []);
+    }, [getAccountAddressesApiResult.isLoading]);
 
     if (getCartApiResult.isLoading || getAccountAddressesApiResult.isLoading) {
         return (
@@ -95,14 +101,14 @@ export default function Page() {
     }
 
     return (
-        <div className="flex flex-col md:flex-row justify-center items-center h-[79vh] h-full">
+        <div className="flex flex-col md:flex-row justify-center items-center min-h-[78vh] h-full">
             <section
-                className="p-8 md:overflow-y-scroll w-full md:w-2/3 h-full flex flex-col md:relative md:relative md:left-0 md:top-0 md:bottom-0">
+                className="p-8 md:overflow-y-scroll w-full md:w-2/3 h-[78vh] flex flex-col md:relative md:relative md:left-0 md:top-0 md:bottom-0">
                 <div className="flex flex-col justify-start items-start mb-8">
                     <div className="text-6xl font-bold">Cart</div>
                     <div>All items in your cart to be checked out.</div>
                 </div>
-                <div className="flex flex-col gap-8 w-full h-full">
+                <div className="flex flex-col w-full h-full gap-8">
                     {getCartApiResult.data?.data?.map((cartItem, index) => (
                         <div
                             key={cartItem.id}
@@ -121,12 +127,12 @@ export default function Page() {
                                     alt='product'
                                 />
                             </div>
-                            <div className="flex flex-col gap-2 w-full">
-                                <div className="text-lg font-bold line-clamp-1">{cartItem.product.name}</div>
+                            <div className="flex flex-col md:gap-2 w-full">
+                                <div className="md:text-lg text-md font-bold line-clamp-1">{cartItem.product.name}</div>
                                 <div
-                                    className="text-md">{currencyFormatter.format(cartItem.product.price * cartItem.quantity)}</div>
+                                    className="md:text-md text-sm">{currencyFormatter.format(cartItem.product.price * cartItem.quantity)}</div>
                                 <div
-                                    className="text-md">Stock: {cartItem.product.quantity - cartItem.quantity}</div>
+                                    className="md:text-md text-sm">Stock: {cartItem.product.quantity - cartItem.quantity}</div>
                             </div>
                             <div className="flex flex-row gap-4">
                                 <Button
@@ -168,8 +174,8 @@ export default function Page() {
             </section>
 
             <section
-                className="w-full md:w-1/3 h-full flex md:relative md:right-0 md:top-0 md:bottom-0 md:border-l border-t border-gray-300">
-                <div className="flex w-full h-full flex-col justify-between items-start p-4">
+                className="w-full md:w-1/3 h-[78vh] flex md:relative md:right-0 md:top-0 md:bottom-0 md:border-l border-t border-gray-300">
+                <div className="flex w-full h-full flex-col justify-between items-start p-8">
                     <div className="flex flex-col w-full">
                         <div className="mb-4 md:mb-8 text-2xl font-bold">Summary</div>
                         <div className="mb-4 flex justify-between w-full">
@@ -207,9 +213,10 @@ export default function Page() {
                                 label="Address"
                                 name="addressId"
                                 placeholder="Type to search..."
+                                selectedKey={accountAddressId}
                                 inputValue={accountAddressState.getAccountAddressesRequest.search}
                                 isLoading={getAccountAddressesApiResult.isFetching}
-                                items={getAccountAddressesApiResult.data?.data || []}
+                                items={getAccountAddressesApiResult.data?.data ?? []}
                                 onInputChange={(input) => {
                                     setGetAccountAddressesRequest({
                                         size: accountAddressState.getAccountAddressesRequest.size,
@@ -219,11 +226,17 @@ export default function Page() {
                                 }}
                                 onSelectionChange={(key) => {
                                     setAccountAddressId(key as string);
+                                    const item = getAccountAddressesApiResult.data?.data?.find((item) => item.id === key);
+                                    setGetAccountAddressesRequest({
+                                        size: accountAddressState.getAccountAddressesRequest.size,
+                                        page: accountAddressState.getAccountAddressesRequest.page,
+                                        search: `${item?.name} ${item?.isPrimary ? "- Primary" : ""}`,
+                                    });
                                 }}
                             >
                                 {(item) => (
                                     <AutocompleteItem key={item.id}>
-                                        {`${item.name} - Is Primary: ${item.isPrimary}`}
+                                        {`${item.name} ${item.isPrimary ? "- Primary" : ""}`}
                                     </AutocompleteItem>
                                 )}
                             </Autocomplete>
