@@ -4,7 +4,7 @@ import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {Button, Checkbox} from "@heroui/react";
 import {useModal} from "@/src/hooks/useModal";
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
 import {useRouter} from "next/navigation";
 import {AccountAddressRequest} from "@/src/stores/apis/accountAddressApi";
@@ -18,23 +18,24 @@ export default function Page() {
     const {
         accountAddressState,
         addAccountAddress,
+        setDetails
     } = useAccountAddress();
     const modal = useModal();
 
-    const [initialValues, setInitialValues] = useState({
+    const initialValues = {
         name: "",
         address: "",
         location: new wkx.Point(0, 0).toWkb().toString("hex"),
         isPrimary: false,
-    });
+    };
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((position) => {
             const wkb = new wkx.Point(position.coords.longitude, position.coords.latitude).toWkb();
-            setInitialValues((prevState) => ({
-                ...prevState,
+            setDetails({
+                ...accountAddressState.details!,
                 location: wkb.toString("hex"),
-            }));
+            })
         });
     }, []);
 
@@ -106,7 +107,7 @@ export default function Page() {
                             >
                                 Is Primary
                             </Checkbox>
-                            <Button type="submit" className="w-full mt-8">
+                            <Button type="submit" className="w-full mt-4">
                                 Add
                             </Button>
                         </Form>

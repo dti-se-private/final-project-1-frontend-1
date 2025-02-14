@@ -27,7 +27,7 @@ export default function Component() {
 
     const {
         productState,
-        productApiResult,
+        getProductWithCategoryApiResult,
         categoryApiResult,
         setGetProductsRequest,
         setGetCategoriesRequest,

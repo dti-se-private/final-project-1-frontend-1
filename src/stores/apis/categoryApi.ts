@@ -1,5 +1,5 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {axiosBaseQuery, ManyRequest, ResponseBody} from "@/src/stores/apis";
+import {axiosBaseQuery, ManyRequest, OneRequest, ResponseBody} from "@/src/stores/apis";
 
 export interface CategoryResponse {
     id: string;
@@ -10,6 +10,11 @@ export interface CategoryResponse {
 export interface CategoryRequest {
     name: string;
     description: string;
+}
+
+export interface PatchCategoryRequest {
+    id: string;
+    data: CategoryRequest;
 }
 
 export const categoryApi = createApi({
@@ -35,5 +40,55 @@ export const categoryApi = createApi({
                 return {data: result.data as ResponseBody<CategoryResponse[]>};
             }
         }),
+        getCategory: builder.query<ResponseBody<CategoryResponse>, OneRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: `/${args.id}`,
+                    method: "GET",
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<CategoryResponse>};
+            }
+        }),
+        addCategory: builder.mutation<ResponseBody<CategoryResponse>, CategoryRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: "",
+                    method: "POST",
+                    data: args,
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<CategoryResponse>};
+            }
+        }),
+        patchCategory: builder.mutation<ResponseBody<CategoryResponse>, PatchCategoryRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: `/${args.id}`,
+                    method: "PATCH",
+                    data: args.data,
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<CategoryResponse>};
+            }
+        }),
+        deleteCategory: builder.mutation<ResponseBody<CategoryResponse>, OneRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: `/${args.id}`,
+                    method: "DELETE",
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<CategoryResponse>};
+            }
+        })
     })
 });

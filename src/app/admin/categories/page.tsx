@@ -1,6 +1,6 @@
 "use client"
 import React from "react";
-import {useAccountAddress} from "@/src/hooks/useAccountAddress";
+import {useCategory} from "@/src/hooks/useCategory";
 import {Icon} from "@iconify/react";
 import {
     Button,
@@ -15,9 +15,8 @@ import {
     TableHeader,
     TableRow
 } from "@heroui/react";
-import {AccountAddressResponse} from "@/src/stores/apis/accountAddressApi";
+import {CategoryResponse} from "@/src/stores/apis/categoryApi";
 import {useRouter} from "next/navigation";
-import * as wkx from "wkx";
 import {SearchIcon} from "@heroui/shared-icons";
 import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
@@ -26,26 +25,26 @@ export default function Page() {
     const router = useRouter();
     const modal = useModal();
     const {
-        accountAddressState,
-        getAccountAddressesApiResult,
-        setGetAccountAddressesRequest,
+        categoryState,
+        getCategoriesApiResult,
+        setGetCategoriesRequest,
         setDetails,
-        deleteAccountAddress,
-    } = useAccountAddress();
+        deleteCategory,
+    } = useCategory();
 
-    const rowMapper = (item: AccountAddressResponse, key: string): React.JSX.Element => {
+    const rowMapper = (item: CategoryResponse, key: string): React.JSX.Element => {
         if (key === "action") {
             return (
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/addresses/${item.id}`)}
+                        onPress={() => router.push(`/admin/categories/${item.id}`)}
                     >
                         Details
                     </Button>
                     <Button
                         color="danger"
-                        onPress={() => deleteAccountAddress({id: item.id})
+                        onPress={() => deleteCategory({id: item.id})
                             .then((data) => {
                                 modal.setContent({
                                     header: "Delete Succeed",
@@ -68,20 +67,6 @@ export default function Page() {
             );
         }
 
-        if (key === "location") {
-            const wkbBuffer = Buffer.from(item.location, 'hex')
-            const geometry = wkx.Geometry.parse(wkbBuffer);
-            const geoJson = geometry.toGeoJSON() as { type: string, coordinates: number[] }
-            const mapLink = `https://maps.google.com/?q=${geoJson.coordinates[1]},${geoJson.coordinates[0]}`
-            return (
-                <Button
-                    onPress={() => window.open(mapLink)}
-                >
-                    <Icon icon="heroicons:map-pin"/>
-                </Button>
-            )
-        }
-
         return (
             <>
                 {String(getKeyValue(item, key))}
@@ -92,7 +77,7 @@ export default function Page() {
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
-                <h1 className="mb-8 text-4xl font-bold">Addresses</h1>
+                <h1 className="mb-8 text-4xl font-bold">Categories</h1>
                 <Table
                     topContent={
                         <div className="flex flex-col gap-4">
@@ -100,23 +85,23 @@ export default function Page() {
                                 <Input
                                     placeholder="Search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
-                                    value={accountAddressState.getAccountAddressesRequest.search}
+                                    value={categoryState.getCategoriesRequest.search}
                                     variant="bordered"
                                     isClearable={true}
-                                    onClear={() => setGetAccountAddressesRequest({
-                                        page: accountAddressState.getAccountAddressesRequest.page,
-                                        size: accountAddressState.getAccountAddressesRequest.size,
+                                    onClear={() => setGetCategoriesRequest({
+                                        page: categoryState.getCategoriesRequest.page,
+                                        size: categoryState.getCategoriesRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetAccountAddressesRequest({
-                                        page: accountAddressState.getAccountAddressesRequest.page,
-                                        size: accountAddressState.getAccountAddressesRequest.size,
+                                    onValueChange={_.debounce((value) => setGetCategoriesRequest({
+                                        page: categoryState.getCategoriesRequest.page,
+                                        size: categoryState.getCategoriesRequest.size,
                                         search: value
                                     }), 500)}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/addresses/add`)}
+                                    onPress={() => router.push(`/admin/categories/add`)}
                                     color="success"
                                     className="text-white"
                                 >
@@ -127,10 +112,10 @@ export default function Page() {
                                 Rows per page:
                                 <select
                                     className="bg-transparent outline-none text-default-400 text-small"
-                                    onChange={(event) => setGetAccountAddressesRequest({
-                                        page: accountAddressState.getAccountAddressesRequest.page,
+                                    onChange={(event) => setGetCategoriesRequest({
+                                        page: categoryState.getCategoriesRequest.page,
                                         size: Number(event.target.value),
-                                        search: accountAddressState.getAccountAddressesRequest.search
+                                        search: categoryState.getCategoriesRequest.search
                                     })}
                                 >
                                     <option selected value="5">5</option>
@@ -145,12 +130,12 @@ export default function Page() {
                             <Pagination
                                 showControls
                                 showShadow
-                                page={accountAddressState.getAccountAddressesRequest.page + 1}
+                                page={categoryState.getCategoriesRequest.page + 1}
                                 total={Infinity}
-                                onChange={(page) => setGetAccountAddressesRequest({
+                                onChange={(page) => setGetCategoriesRequest({
                                     page: page - 1,
-                                    size: accountAddressState.getAccountAddressesRequest.size,
-                                    search: accountAddressState.getAccountAddressesRequest.search,
+                                    size: categoryState.getCategoriesRequest.size,
+                                    search: categoryState.getCategoriesRequest.search,
                                 })}
                             />
                         </div>
@@ -159,15 +144,13 @@ export default function Page() {
                     <TableHeader>
                         <TableColumn key="id">ID</TableColumn>
                         <TableColumn key="name">Name</TableColumn>
-                        <TableColumn key="address">Address</TableColumn>
-                        <TableColumn key="location">Location</TableColumn>
-                        <TableColumn key="isPrimary">Is Primary</TableColumn>
+                        <TableColumn key="description">Description</TableColumn>
                         <TableColumn key="action">Action</TableColumn>
                     </TableHeader>
                     <TableBody
-                        items={getAccountAddressesApiResult.data?.data ?? []}
+                        items={getCategoriesApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={getAccountAddressesApiResult.isFetching ? "loading" : "idle"}
+                        loadingState={getCategoriesApiResult.isFetching ? "loading" : "idle"}
                         emptyContent={"Empty!"}
                     >
                         {(item) => (
