@@ -1,6 +1,7 @@
 "use client"
 import {
     Avatar,
+    Badge,
     Dropdown,
     DropdownItem,
     DropdownMenu,
@@ -19,11 +20,20 @@ import {useModal} from "@/src/hooks/useModal";
 import _ from "lodash";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import {useProduct} from "@/src/hooks/useProduct";
+import {Icon} from "@iconify/react";
+import React from "react";
+import {useCart} from "@/src/hooks/useCart";
 
 export default function Component() {
     const modal = useModal();
     const authentication = useAuthentication();
     const router = useRouter();
+
+    const {
+        cartState,
+        getCartApiResult,
+        setCartItemsRequest,
+    } = useCart();
 
     const {
         productState,
@@ -86,7 +96,15 @@ export default function Component() {
                     }}
                 />
             </NavbarContent>
-            <NavbarContent as="div" className="w-1/5 items-center" justify="end">
+            <NavbarContent as="div" className="w-1/5 items-center gap-8" justify="end">
+                <Link href="/customers/cart" className="flex justify-center items-center">
+                    <Badge
+                        color="danger"
+                        content={getCartApiResult.data?.data?.reduce((acc, item) => acc + item.quantity, 0)}
+                    >
+                        <Icon icon="heroicons:shopping-cart" className="text-2xl"/>
+                    </Badge>
+                </Link>
                 <Dropdown placement="bottom-end">
                     <DropdownTrigger>
                         <Avatar
@@ -114,13 +132,10 @@ export default function Component() {
                                                 Dashboard
                                             </DropdownItem>
                                         ) : null}
-                                        <DropdownItem key="addresses" href="/addresses">
+                                        <DropdownItem key="addresses" href="/cusomers/addresses">
                                             Addresses
                                         </DropdownItem>
-                                        <DropdownItem key="cart" href="/cart">
-                                            Cart
-                                        </DropdownItem>
-                                        <DropdownItem key="orders">
+                                        <DropdownItem key="orders" href="/customers/orders">
                                             Orders
                                         </DropdownItem>
                                     </DropdownSection>

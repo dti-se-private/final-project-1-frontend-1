@@ -2,44 +2,48 @@
 import * as Yup from "yup";
 import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
-import {Button, Checkbox} from "@heroui/react";
+import {Button, Checkbox, Spinner} from "@heroui/react";
 import {useModal} from "@/src/hooks/useModal";
 import React, {useEffect} from "react";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
-import {useRouter} from "next/navigation";
-import {AccountAddressRequest} from "@/src/stores/apis/accountAddressApi";
+import {useParams, useRouter} from "next/navigation";
+import {accountAddressApi, PatchAccountAddressRequest} from "@/src/stores/apis/accountAddressApi";
 import LocationPicker from "@/src/components/LocationPicker";
 import L from "leaflet";
 import * as wkx from "wkx";
 import FormInputArea from "@/src/components/FormInputArea";
 
 export default function Page() {
+    const {addressId}: { addressId: string } = useParams();
     const router = useRouter();
     const {
         accountAddressState,
-        addAccountAddress,
+        patchAccountAddress,
         setDetails
     } = useAccountAddress();
     const modal = useModal();
 
+    const detailAccountAddressApiResult = accountAddressApi.useGetAccountAddressQuery({
+        id: addressId,
+    });
+
     const initialValues = {
-        name: "",
-        address: "",
-        location: new wkx.Point(0, 0).toWkb().toString("hex"),
-        isPrimary: false,
+        id: accountAddressState.details?.id ?? "",
+        name: accountAddressState.details?.name ?? "",
+        address: accountAddressState.details?.address ?? "",
+        location: accountAddressState.details?.location ?? "",
+        isPrimary: accountAddressState.details?.isPrimary ?? false,
     };
 
+
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            const wkb = new wkx.Point(position.coords.longitude, position.coords.latitude).toWkb();
-            setDetails({
-                ...accountAddressState.details!,
-                location: wkb.toString("hex"),
-            })
-        });
-    }, []);
+        if (detailAccountAddressApiResult.data?.data) {
+            setDetails(detailAccountAddressApiResult.data.data);
+        }
+    }, [detailAccountAddressApiResult.data?.data]);
 
     const validationSchema = Yup.object().shape({
+        id: Yup.string().required("ID is required."),
         name: Yup.string().required("Name is required."),
         address: Yup.string().required("Address is required."),
         location: Yup.string().required("Location is required."),
@@ -47,22 +51,25 @@ export default function Page() {
     });
 
     const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
-        const request: AccountAddressRequest = {
-            name: values.name,
-            address: values.address,
-            location: values.location,
-            isPrimary: values.isPrimary
+        const request: PatchAccountAddressRequest = {
+            id: values.id,
+            data: {
+                name: values.name,
+                address: values.address,
+                location: values.location,
+                isPrimary: values.isPrimary,
+            }
         }
-        return addAccountAddress(request)
+        return patchAccountAddress(request)
             .then((data) => {
                 modal.setContent({
-                    header: "Add Succeed",
+                    header: "Update Succeed",
                     body: `${data.message}`,
                 })
             })
             .catch((error) => {
                 modal.setContent({
-                    header: "Add Failed",
+                    header: "Update Failed",
                     body: `${error.data.message}`,
                 })
             }).finally(() => {
@@ -78,10 +85,21 @@ export default function Page() {
         return {lat: geoJson.coordinates[1], lng: geoJson.coordinates[0]};
     }
 
+
+    if (detailAccountAddressApiResult.isFetching) {
+        return (
+            <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+                <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
+                    <Spinner/>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-center items-center">
-                <h1 className="mb-8 text-4xl font-bold">Add Address</h1>
+                <div className="mb-8 text-4xl font-bold">Address Details</div>
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
@@ -90,6 +108,7 @@ export default function Page() {
                 >
                     {(props) => (
                         <Form className="w-2/3 md:w-1/3">
+                            <FormInput name="id" label="ID" type="text" isDisabled/>
                             <FormInput name="name" label="Name" type="text"/>
                             <FormInputArea name="address" label="Address" type="text"/>
                             <LocationPicker
@@ -104,11 +123,10 @@ export default function Page() {
                                 name="isPrimary"
                                 isSelected={props.values.isPrimary}
                                 onChange={props.handleChange}
-                            >
-                                Is Primary
+                            >Is Primary
                             </Checkbox>
                             <Button type="submit" className="w-full mt-4">
-                                Add
+                                Update
                             </Button>
                         </Form>
                     )}

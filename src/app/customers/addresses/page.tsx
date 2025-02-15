@@ -1,6 +1,6 @@
 "use client"
 import React from "react";
-import {useProduct} from "@/src/hooks/useProduct";
+import {useAccountAddress} from "@/src/hooks/useAccountAddress";
 import {Icon} from "@iconify/react";
 import {
     Button,
@@ -15,47 +15,37 @@ import {
     TableHeader,
     TableRow
 } from "@heroui/react";
-import {ProductResponse} from "@/src/stores/apis/productApi";
+import {AccountAddressResponse} from "@/src/stores/apis/accountAddressApi";
 import {useRouter} from "next/navigation";
+import * as wkx from "wkx";
 import {SearchIcon} from "@heroui/shared-icons";
 import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
-import Image from "next/image";
-import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 
 export default function Page() {
     const router = useRouter();
     const modal = useModal();
     const {
-        productState,
-        getProductsApiResult,
-        setGetProductsRequest,
+        accountAddressState,
+        getAccountAddressesApiResult,
+        setGetAccountAddressesRequest,
         setDetails,
-        deleteProduct,
-    } = useProduct();
+        deleteAccountAddress,
+    } = useAccountAddress();
 
-
-    const currencyFormatter = new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        currencySign: 'accounting',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    });
-
-    const rowMapper = (item: ProductResponse, key: string): React.JSX.Element => {
+    const rowMapper = (item: AccountAddressResponse, key: string): React.JSX.Element => {
         if (key === "action") {
             return (
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admin/products/${item.id}`)}
+                        onPress={() => router.push(`/customers/addresses/${item.id}`)}
                     >
                         Details
                     </Button>
                     <Button
                         color="danger"
-                        onPress={() => deleteProduct({id: item.id})
+                        onPress={() => deleteAccountAddress({id: item.id})
                             .then((data) => {
                                 modal.setContent({
                                     header: "Delete Succeed",
@@ -76,34 +66,20 @@ export default function Page() {
                     </Button>
                 </div>
             );
-        } else if (key === "category") {
+        }
+
+        if (key === "location") {
+            const wkbBuffer = Buffer.from(item.location, 'hex')
+            const geometry = wkx.Geometry.parse(wkbBuffer);
+            const geoJson = geometry.toGeoJSON() as { type: string, coordinates: number[] }
+            const mapLink = `https://maps.google.com/?q=${geoJson.coordinates[1]},${geoJson.coordinates[0]}`
             return (
-                <>
-                    {item.category?.name}
-                </>
-            );
-        } else if (key === "price") {
-            return (
-                <>
-                    {currencyFormatter.format(item.price)}
-                </>
-            );
-        } else if (key === "image") {
-            return (
-                <div className="relative w-[10rem] h-[10rem] mb-4">
-                    <Image
-                        className="rounded-md"
-                        src={
-                            item.image
-                                ? convertHexStringToBase64Data(item.image, "image/png")
-                                : "https://placehold.co/400x400?text=product"
-                        }
-                        layout="fill"
-                        objectFit="cover"
-                        alt='product'
-                    />
-                </div>
-            );
+                <Button
+                    onPress={() => window.open(mapLink)}
+                >
+                    <Icon icon="heroicons:map-pin"/>
+                </Button>
+            )
         }
 
         return (
@@ -113,11 +89,10 @@ export default function Page() {
         );
     }
 
-
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
-                <h1 className="mb-8 text-4xl font-bold">Products</h1>
+                <div className="mb-8 text-4xl font-bold">Addresses</div>
                 <Table
                     topContent={
                         <div className="flex flex-col gap-4">
@@ -125,23 +100,23 @@ export default function Page() {
                                 <Input
                                     placeholder="Search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
-                                    value={productState.getProductsRequest.search}
+                                    value={accountAddressState.getAccountAddressesRequest.search}
                                     variant="bordered"
                                     isClearable={true}
-                                    onClear={() => setGetProductsRequest({
-                                        page: productState.getProductsRequest.page,
-                                        size: productState.getProductsRequest.size,
+                                    onClear={() => setGetAccountAddressesRequest({
+                                        page: accountAddressState.getAccountAddressesRequest.page,
+                                        size: accountAddressState.getAccountAddressesRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetProductsRequest({
-                                        page: productState.getProductsRequest.page,
-                                        size: productState.getProductsRequest.size,
+                                    onValueChange={_.debounce((value) => setGetAccountAddressesRequest({
+                                        page: accountAddressState.getAccountAddressesRequest.page,
+                                        size: accountAddressState.getAccountAddressesRequest.size,
                                         search: value
                                     }), 500)}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/admin/products/add`)}
+                                    onPress={() => router.push(`/customers/addresses/add`)}
                                     color="success"
                                     className="text-white"
                                 >
@@ -152,10 +127,10 @@ export default function Page() {
                                 Rows per page:
                                 <select
                                     className="bg-transparent outline-none text-default-400 text-small"
-                                    onChange={(event) => setGetProductsRequest({
-                                        page: productState.getProductsRequest.page,
+                                    onChange={(event) => setGetAccountAddressesRequest({
+                                        page: accountAddressState.getAccountAddressesRequest.page,
                                         size: Number(event.target.value),
-                                        search: productState.getProductsRequest.search
+                                        search: accountAddressState.getAccountAddressesRequest.search
                                     })}
                                 >
                                     <option selected value="5">5</option>
@@ -170,12 +145,12 @@ export default function Page() {
                             <Pagination
                                 showControls
                                 showShadow
-                                page={productState.getProductsRequest.page + 1}
+                                page={accountAddressState.getAccountAddressesRequest.page + 1}
                                 total={Infinity}
-                                onChange={(page) => setGetProductsRequest({
+                                onChange={(page) => setGetAccountAddressesRequest({
                                     page: page - 1,
-                                    size: productState.getProductsRequest.size,
-                                    search: productState.getProductsRequest.search,
+                                    size: accountAddressState.getAccountAddressesRequest.size,
+                                    search: accountAddressState.getAccountAddressesRequest.search,
                                 })}
                             />
                         </div>
@@ -183,17 +158,16 @@ export default function Page() {
                 >
                     <TableHeader>
                         <TableColumn key="id">ID</TableColumn>
-                        <TableColumn key="category">Category Name</TableColumn>
                         <TableColumn key="name">Name</TableColumn>
-                        <TableColumn key="price">Price</TableColumn>
-                        <TableColumn key="quantity">Quantity</TableColumn>
-                        <TableColumn key="image">Image</TableColumn>
+                        <TableColumn key="address">Address</TableColumn>
+                        <TableColumn key="location">Location</TableColumn>
+                        <TableColumn key="isPrimary">Is Primary</TableColumn>
                         <TableColumn key="action">Action</TableColumn>
                     </TableHeader>
                     <TableBody
-                        items={getProductsApiResult.data?.data ?? []}
+                        items={getAccountAddressesApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={getProductsApiResult.isFetching ? "loading" : "idle"}
+                        loadingState={getAccountAddressesApiResult.isFetching ? "loading" : "idle"}
                         emptyContent={"Empty!"}
                     >
                         {(item) => (
