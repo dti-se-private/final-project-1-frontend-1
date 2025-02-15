@@ -100,6 +100,8 @@ export default function WarehouseAdminsManagementPage() {
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
+                                    color="success"
+                                    className={"text-white"}
                                     onPress={() => router.push(`/admin/warehouse-admins/add`)}
                                 >
                                     Add

@@ -56,5 +56,17 @@ export const accountApi = createApi({
                 return {data: result.data as ResponseBody<AccountResponse>};
             }
         }),
+        getAdmins: builder.query<ResponseBody<AccountResponse[]>, void>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: `/admins`,
+                    method: "GET",
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<AccountResponse[]>};
+            }
+        }),
     })
 });
