@@ -13,7 +13,9 @@ const buttonList = {
     SUPER_ADMIN: [
         { text: "Warehouse Management", link: "/admin/warehouses" },
         { text: "Warehouse Admin Management", link: "/admin/warehouse-admins" },
-        { text: "Customer Order Management", link: "/orders" },
+        { text: "Product Management", link: "/admin/products" },
+        { text: "Category Management", link: "/admin/categories" },
+        { text: "Warehouse Product Management", link: "/admin/warehouse-products" },
     ],
     WAREHOUSE_ADMIN: [
         { text: "Warehouse Management", link: "/admin/warehouses" },

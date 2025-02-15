@@ -5,7 +5,6 @@ import {FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE} from "redux-persist/e
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
 import {setupListeners} from "@reduxjs/toolkit/query";
 import {categorySlice} from "@/src/stores/slices/categorySlice";
-import {productSlice} from "@/src/stores/slices/productSlice";
 import {modalSlice} from "@/src/stores/slices/modalSlice";
 import {productSlice} from "@/src/stores/slices/productSlice";
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
@@ -26,11 +25,11 @@ import {warehouseSlice} from "@/src/stores/slices/warehouseSlice";
 import {warehouseApi} from "@/src/stores/apis/warehouseApi";
 import {warehouseAdminSlice} from "@/src/stores/slices/warehouseAdminSlice";
 import {warehouseAdminApi} from "@/src/stores/apis/warehouseAdminApi";
-
+import {warehouseProductSlice} from "@/src/stores/slices/warehouseProductSlice";
+import {warehouseProductApi} from "@/src/stores/apis/warehouseProductApi";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
-    [productSlice.reducerPath]: productSlice.reducer,
     [categorySlice.reducerPath]: categorySlice.reducer,
     [modalSlice.reducerPath]: modalSlice.reducer,
     [productSlice.reducerPath]: productSlice.reducer,
@@ -39,10 +38,12 @@ const rootReducer = combineReducers({
     [orderSlice.reducerPath]: orderSlice.reducer,
     [warehouseSlice.reducerPath]: warehouseSlice.reducer,
     [warehouseAdminSlice.reducerPath]: warehouseAdminSlice.reducer,
+    [warehouseProductSlice.reducerPath]: warehouseProductSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [accountAddressApi.reducerPath]: accountAddressApi.reducer,
     [warehouseApi.reducerPath]: warehouseApi.reducer,
     [warehouseAdminApi.reducerPath]: warehouseAdminApi.reducer,
+    [warehouseProductApi.reducerPath]: warehouseProductApi.reducer,
     [verificationApi.reducerPath]: verificationApi.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
@@ -94,6 +95,7 @@ export const store = configureStore({
         accountAddressApi.middleware,
         warehouseApi.middleware,
         warehouseAdminApi.middleware,
+        warehouseProductApi.middleware,
         statisticApi.middleware,
     ),
 })
