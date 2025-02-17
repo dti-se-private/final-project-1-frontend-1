@@ -29,3 +29,6 @@ export const warehouseLedgerSlice = createSlice({
         },
     },
 });
+
+export const { setGetWarehouseLedgersRequest, setDetails } = warehouseLedgerSlice.actions;
+export default warehouseLedgerSlice.reducer;

@@ -27,6 +27,8 @@ import {warehouseAdminSlice} from "@/src/stores/slices/warehouseAdminSlice";
 import {warehouseAdminApi} from "@/src/stores/apis/warehouseAdminApi";
 import {warehouseProductSlice} from "@/src/stores/slices/warehouseProductSlice";
 import {warehouseProductApi} from "@/src/stores/apis/warehouseProductApi";
+import {warehouseLedgerSlice} from "@/src/stores/slices/warehouseLedgerSlice";
+import {warehouseLedgerApi} from "@/src/stores/apis/warehouseLedgerApi";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
@@ -39,11 +41,13 @@ const rootReducer = combineReducers({
     [warehouseSlice.reducerPath]: warehouseSlice.reducer,
     [warehouseAdminSlice.reducerPath]: warehouseAdminSlice.reducer,
     [warehouseProductSlice.reducerPath]: warehouseProductSlice.reducer,
+    [warehouseLedgerSlice.reducerPath]: warehouseLedgerSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [accountAddressApi.reducerPath]: accountAddressApi.reducer,
     [warehouseApi.reducerPath]: warehouseApi.reducer,
     [warehouseAdminApi.reducerPath]: warehouseAdminApi.reducer,
     [warehouseProductApi.reducerPath]: warehouseProductApi.reducer,
+    [warehouseLedgerApi.reducerPath]: warehouseLedgerApi.reducer,
     [verificationApi.reducerPath]: verificationApi.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
@@ -96,6 +100,7 @@ export const store = configureStore({
         warehouseApi.middleware,
         warehouseAdminApi.middleware,
         warehouseProductApi.middleware,
+        warehouseLedgerApi.middleware,
         statisticApi.middleware,
     ),
 })
