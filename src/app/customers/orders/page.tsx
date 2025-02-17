@@ -19,6 +19,7 @@ import {SearchIcon} from "@heroui/shared-icons";
 import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
 import {useOrder} from "@/src/hooks/useOrder";
+import moment from "moment";
 
 export default function Page() {
     const router = useRouter();
@@ -58,7 +59,7 @@ export default function Page() {
         } else if (key === "lastStatusTime") {
             return (
                 <>
-                    {new Date(item.statuses[item.statuses.length - 1].time * 1000).toLocaleString()}
+                    {moment(item.statuses[item.statuses.length - 1].time).local().toString()}
                 </>
             );
         } else if (key === "itemPrice" || key === "shipmentPrice" || key === "totalPrice") {

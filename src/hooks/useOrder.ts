@@ -1,6 +1,13 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {orderApi, OrderRequest, OrderResponse, PaymentGatewayRequest} from "@/src/stores/apis/orderApi";
+import {
+    ManualPaymentProcessRequest,
+    orderApi,
+    OrderProcessRequest,
+    OrderRequest,
+    OrderResponse,
+    PaymentGatewayRequest
+} from "@/src/stores/apis/orderApi";
 import {orderSlice} from "@/src/stores/slices/orderSlice";
 import {ManyRequest} from "@/src/stores/apis";
 
@@ -10,7 +17,10 @@ export const useOrder = () => {
     const [tryCheckoutApiTrigger] = orderApi.useTryCheckoutMutation();
     const [checkoutApiTrigger] = orderApi.useCheckoutMutation();
     const getOrdersApiResult = orderApi.useGetOrdersQuery(orderState.getOrdersRequest);
+    const [processCancellationApiTrigger] = orderApi.useProcessCancellationMutation();
     const [processPaymentGatewayApiTrigger] = orderApi.useProcessPaymentGatewayMutation();
+    const [processManualPaymentApiTrigger] = orderApi.useProcessManualPaymentMutation();
+    const [processShipmentConfirmationApiTrigger] = orderApi.useProcessShipmentConfirmationMutation();
 
     const tryCheckout = async (request: OrderRequest) => {
         const tryCheckoutApiResult = await tryCheckoutApiTrigger(request).unwrap();
@@ -31,10 +41,30 @@ export const useOrder = () => {
         dispatch(orderSlice.actions.setDetails(order));
     }
 
+    const processCancellation = async (request: OrderProcessRequest) => {
+        const processCancellationApiResult = await processCancellationApiTrigger(request).unwrap();
+        getOrdersApiResult.refetch();
+        return processCancellationApiResult;
+    }
+
     const processPaymentGateway = async (request: PaymentGatewayRequest) => {
         const processPaymentGatewayApiResult = await processPaymentGatewayApiTrigger(request).unwrap();
+        getOrdersApiResult.refetch();
         return processPaymentGatewayApiResult;
     }
+
+    const processManualPayment = async (request: ManualPaymentProcessRequest) => {
+        const processManualPaymentApiResult = await processManualPaymentApiTrigger(request).unwrap();
+        getOrdersApiResult.refetch();
+        return processManualPaymentApiResult;
+    }
+
+    const processShipmentConfirmation = async (request: OrderProcessRequest) => {
+        const processShipmentConfirmationApiResult = await processShipmentConfirmationApiTrigger(request).unwrap();
+        getOrdersApiResult.refetch();
+        return processShipmentConfirmationApiResult;
+    }
+
 
     return {
         orderState,
@@ -43,6 +73,9 @@ export const useOrder = () => {
         getOrdersApiResult,
         setGetOrdersRequest,
         setDetails,
-        processPaymentGateway
+        processCancellation,
+        processPaymentGateway,
+        processManualPayment,
+        processShipmentConfirmation
     };
 }

@@ -66,11 +66,13 @@ export default function Page() {
             });
     }, 500)
 
+    const isValidToTryCheckout = Boolean(getCartApiResult.data?.data && getCartApiResult.data?.data.length > 0 && accountAddressId);
+
     useEffect(() => {
-        if (getCartApiResult.data?.data && accountAddressId) {
+        if (isValidToTryCheckout) {
             const request: OrderRequest = {
                 addressId: accountAddressId!,
-                items: getCartApiResult.data?.data.map((cartItem) => ({
+                items: getCartApiResult.data!.data!.map((cartItem) => ({
                     productId: cartItem.product.id,
                     quantity: cartItem.quantity
                 }))
@@ -184,7 +186,7 @@ export default function Page() {
                             <div>
                                 {
                                     isTryCheckoutFetching ? (<Spinner size="sm"/>)
-                                        : (orderResponse?.itemPrice ? currencyFormatter.format(orderResponse?.itemPrice) : "-")
+                                        : (isValidToTryCheckout && orderResponse?.itemPrice ? currencyFormatter.format(orderResponse?.itemPrice) : "-")
                                 }
                             </div>
                         </div>
@@ -193,7 +195,7 @@ export default function Page() {
                             <div>
                                 {
                                     isTryCheckoutFetching ? (<Spinner size="sm"/>)
-                                        : (orderResponse?.shipmentPrice ? currencyFormatter.format(orderResponse?.shipmentPrice) : "-")
+                                        : (isValidToTryCheckout && orderResponse?.shipmentPrice ? currencyFormatter.format(orderResponse?.shipmentPrice) : "-")
                                 }
                             </div>
                         </div>
@@ -204,7 +206,7 @@ export default function Page() {
                             <div>
                                 {
                                     isTryCheckoutFetching ? (<Spinner size="sm"/>)
-                                        : (orderResponse?.totalPrice ? currencyFormatter.format(orderResponse?.totalPrice) : "-")
+                                        : (isValidToTryCheckout && orderResponse?.totalPrice ? currencyFormatter.format(orderResponse?.totalPrice) : "-")
                                 }
                             </div>
                         </div>
@@ -265,9 +267,11 @@ export default function Page() {
                                                 header: "Checkout Failed",
                                                 body: `${error.data.message}`,
                                             })
-                                        }).finally(() => {
-                                        modal.onOpenChange(true);
-                                    })
+                                        })
+                                        .finally(() => {
+                                            modal.onOpenChange(true);
+                                            getCartApiResult.refetch();
+                                        })
                                 }}
                             >
                                 Checkout
