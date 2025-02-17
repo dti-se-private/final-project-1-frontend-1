@@ -26,6 +26,7 @@ import {
     OrderStatusResponse,
     PaymentGatewayRequest
 } from "@/src/stores/apis/orderApi";
+import moment from "moment";
 
 export default function Page() {
     const {orderId}: { orderId: string } = useParams();
@@ -253,7 +254,7 @@ export default function Page() {
         } else if (key === "time") {
             return (
                 <>
-                    {new Date(item.time * 1000).toLocaleString()}
+                    {moment(item.time).local().toString()}
                 </>
             );
         }

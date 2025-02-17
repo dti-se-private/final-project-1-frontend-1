@@ -267,9 +267,11 @@ export default function Page() {
                                                 header: "Checkout Failed",
                                                 body: `${error.data.message}`,
                                             })
-                                        }).finally(() => {
-                                        modal.onOpenChange(true);
-                                    })
+                                        })
+                                        .finally(() => {
+                                            modal.onOpenChange(true);
+                                            getCartApiResult.refetch();
+                                        })
                                 }}
                             >
                                 Checkout

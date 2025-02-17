@@ -6,7 +6,7 @@ import {AccountResponse} from "@/src/stores/apis/accountApi";
 export interface OrderStatusResponse {
     id: string;
     status: string;
-    time: number;
+    time: string;
 }
 
 export interface OrderItemResponse {
@@ -19,7 +19,7 @@ export interface PaymentProofResponse {
     id: string;
     file: string;
     extension: string;
-    time: number;
+    time: string;
 }
 
 export interface PaymentProofRequest {

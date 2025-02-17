@@ -19,6 +19,7 @@ import {useOrder} from "@/src/hooks/useOrder";
 import {ManualPaymentProcessRequest, orderApi, PaymentProofResponse} from "@/src/stores/apis/orderApi";
 import Image from "next/image";
 import {convertFileToHexString, convertHexStringToBase64Data} from "@/src/tools/converterTool";
+import moment from "moment";
 
 export default function Page() {
     const {orderId}: { orderId: string } = useParams();
@@ -82,7 +83,7 @@ export default function Page() {
         } else if (key === "time") {
             return (
                 <>
-                    {new Date(item.time * 1000).toLocaleString()}
+                    {moment(item.time).local().toString()}
                 </>
             );
         }
