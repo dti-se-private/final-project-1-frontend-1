@@ -2,10 +2,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {warehouseProductSlice} from "@/src/stores/slices/warehouseProductSlice";
 import {
+    PatchWarehouseProductRequest,
     warehouseProductApi,
     WarehouseProductRequest,
-    WarehouseProductResponse,
-    PatchWarehouseProductRequest
+    WarehouseProductResponse
 } from "@/src/stores/apis/warehouseProductApi";
 import {ManyRequest, OneRequest} from "@/src/stores/apis";
 

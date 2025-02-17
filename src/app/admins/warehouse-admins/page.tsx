@@ -1,5 +1,5 @@
 "use client"
-import React, {Key} from "react";
+import React from "react";
 import {useWarehouseAdmin} from "@/src/hooks/useWarehouseAdmin";
 import {WarehouseAdminResponse} from "@/src/stores/apis/warehouseAdminApi";
 import {Icon} from "@iconify/react";
@@ -37,7 +37,7 @@ export default function WarehouseAdminsManagementPage() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admin/warehouse-admins/${item.id}`)}
+                        onPress={() => router.push(`/admins/warehouse-admins/${item.id}`)}
                     >
                         Details
                     </Button>
@@ -100,7 +100,7 @@ export default function WarehouseAdminsManagementPage() {
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/admin/warehouse-admins/add`)}
+                                    onPress={() => router.push(`/admins/warehouse-admins/add`)}
                                 >
                                     Add
                                 </Button>

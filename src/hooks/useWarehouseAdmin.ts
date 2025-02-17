@@ -2,10 +2,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {warehouseAdminSlice} from "@/src/stores/slices/warehouseAdminSlice";
 import {
+    PatchWarehouseAdminRequest,
     warehouseAdminApi,
     WarehouseAdminRequest,
-    WarehouseAdminResponse,
-    PatchWarehouseAdminRequest
+    WarehouseAdminResponse
 } from "@/src/stores/apis/warehouseAdminApi";
 import {ManyRequest, OneRequest} from "@/src/stores/apis";
 

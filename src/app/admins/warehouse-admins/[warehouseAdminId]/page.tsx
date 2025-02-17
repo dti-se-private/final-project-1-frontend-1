@@ -7,7 +7,7 @@ import {useModal} from "@/src/hooks/useModal";
 import React, {useEffect} from "react";
 import {useWarehouseAdmin} from "@/src/hooks/useWarehouseAdmin";
 import {useParams, useRouter} from "next/navigation";
-import {warehouseAdminApi, PatchWarehouseAdminRequest} from "@/src/stores/apis/warehouseAdminApi";
+import {PatchWarehouseAdminRequest, warehouseAdminApi} from "@/src/stores/apis/warehouseAdminApi";
 
 export default function Page() {
     const {warehouseAdminId}: { warehouseAdminId: string } = useParams();

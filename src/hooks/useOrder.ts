@@ -1,6 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {
+    ManualPaymentProcessRequest,
     orderApi,
     OrderProcessRequest,
     OrderRequest,
@@ -18,6 +19,7 @@ export const useOrder = () => {
     const getOrdersApiResult = orderApi.useGetOrdersQuery(orderState.getOrdersRequest);
     const [processCancellationApiTrigger] = orderApi.useProcessCancellationMutation();
     const [processPaymentGatewayApiTrigger] = orderApi.useProcessPaymentGatewayMutation();
+    const [processManualPaymentApiTrigger] = orderApi.useProcessManualPaymentMutation();
     const [processShipmentConfirmationApiTrigger] = orderApi.useProcessShipmentConfirmationMutation();
 
     const tryCheckout = async (request: OrderRequest) => {
@@ -51,6 +53,12 @@ export const useOrder = () => {
         return processPaymentGatewayApiResult;
     }
 
+    const processManualPayment = async (request: ManualPaymentProcessRequest) => {
+        const processManualPaymentApiResult = await processManualPaymentApiTrigger(request).unwrap();
+        getOrdersApiResult.refetch();
+        return processManualPaymentApiResult;
+    }
+
     const processShipmentConfirmation = async (request: OrderProcessRequest) => {
         const processShipmentConfirmationApiResult = await processShipmentConfirmationApiTrigger(request).unwrap();
         getOrdersApiResult.refetch();
@@ -67,6 +75,7 @@ export const useOrder = () => {
         setDetails,
         processCancellation,
         processPaymentGateway,
+        processManualPayment,
         processShipmentConfirmation
     };
 }

@@ -1,5 +1,5 @@
 "use client"
-import React, {Key} from "react";
+import React from "react";
 import {useWarehouse} from "@/src/hooks/useWarehouse";
 import {WarehouseResponse} from "@/src/stores/apis/warehouseApi";
 import {Icon} from "@iconify/react";
@@ -38,7 +38,7 @@ export default function WarehouseManagementPage() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admin/warehouses/${item.id}`)}
+                        onPress={() => router.push(`/admins/warehouses/${item.id}`)}
                     >
                         Details
                     </Button>
@@ -115,7 +115,7 @@ export default function WarehouseManagementPage() {
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/admin/warehouses/add`)}
+                                    onPress={() => router.push(`/admins/warehouses/add`)}
                                 >
                                     Add
                                 </Button>
@@ -168,15 +168,15 @@ export default function WarehouseManagementPage() {
                     >
                         {
                             (item: WarehouseResponse) => (
-                            <TableRow key={item?.id}>
-                                <TableCell>{getWarehousesApiResult.data?.data?.indexOf(item) ? getWarehousesApiResult.data?.data?.indexOf(item) + 1 : 0 + 1}</TableCell>
-                                <TableCell>{item?.id}</TableCell>
-                                <TableCell>{item?.name}</TableCell>
-                                <TableCell>{item?.description}</TableCell>
-                                <TableCell>{rowMapper(item, "location")}</TableCell>
-                                <TableCell>{rowMapper(item, "action")}</TableCell>
-                            </TableRow>
-                        )}
+                                <TableRow key={item?.id}>
+                                    <TableCell>{getWarehousesApiResult.data?.data?.indexOf(item) ? getWarehousesApiResult.data?.data?.indexOf(item) + 1 : 0 + 1}</TableCell>
+                                    <TableCell>{item?.id}</TableCell>
+                                    <TableCell>{item?.name}</TableCell>
+                                    <TableCell>{item?.description}</TableCell>
+                                    <TableCell>{rowMapper(item, "location")}</TableCell>
+                                    <TableCell>{rowMapper(item, "action")}</TableCell>
+                                </TableRow>
+                            )}
                     </TableBody>
                 </Table>
             </div>

@@ -1,17 +1,17 @@
 "use client"
 import * as Yup from "yup";
-import { useFormik } from "formik";
-import { Autocomplete, AutocompleteItem, Button, Input, Spinner } from "@heroui/react";
-import { useModal } from "@/src/hooks/useModal";
-import React, { useEffect, useState } from "react";
-import { useWarehouseProduct } from "@/src/hooks/useWarehouseProduct";
-import { useParams, useRouter } from "next/navigation";
-import { PatchWarehouseProductRequest, warehouseProductApi } from "@/src/stores/apis/warehouseProductApi";
-import { useProduct } from "@/src/hooks/useProduct";
-import { useWarehouse } from "@/src/hooks/useWarehouse";
+import {useFormik} from "formik";
+import {Autocomplete, AutocompleteItem, Button, Input, Spinner} from "@heroui/react";
+import {useModal} from "@/src/hooks/useModal";
+import React, {useEffect, useState} from "react";
+import {useWarehouseProduct} from "@/src/hooks/useWarehouseProduct";
+import {useParams, useRouter} from "next/navigation";
+import {PatchWarehouseProductRequest, warehouseProductApi} from "@/src/stores/apis/warehouseProductApi";
+import {useProduct} from "@/src/hooks/useProduct";
+import {useWarehouse} from "@/src/hooks/useWarehouse";
 
 export default function Page() {
-    const { warehouseProductId }: { warehouseProductId: string } = useParams();
+    const {warehouseProductId}: { warehouseProductId: string } = useParams();
     const router = useRouter();
     const modal = useModal();
     const [isLoading, setIsLoading] = useState(true);
@@ -108,7 +108,7 @@ export default function Page() {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
-                    <Spinner />
+                    <Spinner/>
                 </div>
             </div>
         )

@@ -12,7 +12,7 @@ export const warehouseAdminSlice = createSlice({
     initialState: {
         getWarehouseAdminRequest: {
             page: 0,
-            size: 10,
+            size: 5,
             search: ''
         },
         details: undefined

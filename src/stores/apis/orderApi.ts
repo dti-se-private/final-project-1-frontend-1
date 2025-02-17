@@ -19,7 +19,7 @@ export interface PaymentProofResponse {
     id: string;
     file: string;
     extension: string;
-    time: Date
+    time: number;
 }
 
 export interface PaymentProofRequest {
@@ -51,9 +51,8 @@ export interface OrderRequest {
     items: OrderItemRequest[];
 }
 
-export interface PaymentProcessRequest {
+export interface ManualPaymentProcessRequest {
     orderId: string;
-    paymentMethod: string;
     paymentProofs: PaymentProofRequest[];
 }
 
@@ -148,10 +147,10 @@ export const orderApi = createApi({
                 return {data: result.data as ResponseBody<OrderResponse>};
             }
         }),
-        processPayment: builder.mutation<ResponseBody<OrderResponse>, PaymentProcessRequest>({
+        processManualPayment: builder.mutation<ResponseBody<OrderResponse>, ManualPaymentProcessRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
-                    url: "/payments/process",
+                    url: "/manual-payments/process",
                     method: "POST",
                     data: args,
                 });

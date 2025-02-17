@@ -138,7 +138,12 @@ export default function Page() {
                                 >
                                     Automatic
                                 </DropdownItem>
-                                <DropdownItem key="manual">Manual</DropdownItem>
+                                <DropdownItem
+                                    key="manual"
+                                    onPress={() => router.push(`/customers/orders/${orderId}/payment-proofs`)}
+                                >
+                                    Manual
+                                </DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
                         <Button
@@ -171,6 +176,45 @@ export default function Page() {
                         </Button>
                     </div>
                 );
+            } else if (item.status === "WAITING_FOR_PAYMENT_CONFIRMATION" && lastStatus === "WAITING_FOR_PAYMENT_CONFIRMATION") {
+                return (
+                    <div className="flex flex-row gap-2">
+                        <Button
+                            color="primary"
+                            onPress={() => router.push(`/customers/orders/${orderId}/payment-proofs`)}
+                        >
+                            Details
+                        </Button>
+                        <Button
+                            color="danger"
+                            onPress={() => {
+                                const request: OrderProcessRequest = {
+                                    orderId: orderId,
+                                    action: "CANCEL"
+                                }
+                                processCancellation(request)
+                                    .then((data) => {
+                                        modal.setContent({
+                                            header: "Process Cancellation Succeed",
+                                            body: `${data.message}`,
+                                        })
+                                    })
+                                    .catch((error) => {
+                                        modal.setContent({
+                                            header: "Process Cancellation Failed",
+                                            body: `${error.data.message}`,
+                                        })
+                                    })
+                                    .finally(() => {
+                                        modal.onOpenChange(true);
+                                        detailOrderApiResult.refetch();
+                                    });
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                )
             } else if (item.status === "SHIPPING" && lastStatus === "SHIPPING") {
                 return (
                     <Button
