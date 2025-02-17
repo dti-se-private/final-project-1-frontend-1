@@ -1,6 +1,12 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {orderApi, OrderRequest, OrderResponse, PaymentGatewayRequest} from "@/src/stores/apis/orderApi";
+import {
+    orderApi,
+    OrderProcessRequest,
+    OrderRequest,
+    OrderResponse,
+    PaymentGatewayRequest
+} from "@/src/stores/apis/orderApi";
 import {orderSlice} from "@/src/stores/slices/orderSlice";
 import {ManyRequest} from "@/src/stores/apis";
 
@@ -11,6 +17,7 @@ export const useOrder = () => {
     const [checkoutApiTrigger] = orderApi.useCheckoutMutation();
     const getOrdersApiResult = orderApi.useGetOrdersQuery(orderState.getOrdersRequest);
     const [processPaymentGatewayApiTrigger] = orderApi.useProcessPaymentGatewayMutation();
+    const [processShipmentConfirmationApiTrigger] = orderApi.useProcessShipmentConfirmationMutation();
 
     const tryCheckout = async (request: OrderRequest) => {
         const tryCheckoutApiResult = await tryCheckoutApiTrigger(request).unwrap();
@@ -33,7 +40,14 @@ export const useOrder = () => {
 
     const processPaymentGateway = async (request: PaymentGatewayRequest) => {
         const processPaymentGatewayApiResult = await processPaymentGatewayApiTrigger(request).unwrap();
+        getOrdersApiResult.refetch();
         return processPaymentGatewayApiResult;
+    }
+
+    const processShipmentConfirmation = async (request: OrderProcessRequest) => {
+        const processShipmentConfirmationApiResult = await processShipmentConfirmationApiTrigger(request).unwrap();
+        getOrdersApiResult.refetch();
+        return processShipmentConfirmationApiResult;
     }
 
     return {
@@ -43,6 +57,7 @@ export const useOrder = () => {
         getOrdersApiResult,
         setGetOrdersRequest,
         setDetails,
-        processPaymentGateway
+        processPaymentGateway,
+        processShipmentConfirmation
     };
 }

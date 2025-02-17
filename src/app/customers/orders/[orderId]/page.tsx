@@ -19,7 +19,13 @@ import {useModal} from "@/src/hooks/useModal";
 import React, {useEffect} from "react";
 import {useOrder} from "@/src/hooks/useOrder";
 import {useParams, useRouter} from "next/navigation";
-import {orderApi, OrderItemResponse, OrderStatusResponse, PaymentGatewayRequest} from "@/src/stores/apis/orderApi";
+import {
+    orderApi,
+    OrderItemResponse,
+    OrderProcessRequest,
+    OrderStatusResponse,
+    PaymentGatewayRequest
+} from "@/src/stores/apis/orderApi";
 
 export default function Page() {
     const {orderId}: { orderId: string } = useParams();
@@ -27,7 +33,8 @@ export default function Page() {
     const {
         orderState,
         setDetails,
-        processPaymentGateway
+        processPaymentGateway,
+        processShipmentConfirmation
     } = useOrder();
     const modal = useModal();
 
@@ -92,12 +99,11 @@ export default function Page() {
             </>
         );
     }
-
-
     const rowMapperStatuses = (item: OrderStatusResponse, key: string): React.JSX.Element => {
-        if (key === "action" && item.status === "WAITING_FOR_PAYMENT") {
-            return (
-                <div className="flex flex-row gap-2">
+        const lastStatus = orderState.details?.statuses[orderState.details?.statuses.length - 1].status;
+        if (key === "action") {
+            if (item.status === "WAITING_FOR_PAYMENT" && lastStatus === "WAITING_FOR_PAYMENT") {
+                return (
                     <Dropdown placement="bottom-end">
                         <DropdownTrigger>
                             <Button color="primary">Pay</Button>
@@ -133,8 +139,42 @@ export default function Page() {
                             <DropdownItem key="manual">Manual</DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
-                </div>
-            );
+                );
+            } else if (item.status === "SHIPPING" && lastStatus === "SHIPPING") {
+                return (
+                    <Button
+                        color="primary"
+                        onPress={() => {
+                            const request: OrderProcessRequest = {
+                                orderId: orderId,
+                                action: "APPROVE"
+                            }
+                            processShipmentConfirmation(request)
+                                .then((data) => {
+                                    modal.setContent({
+                                        header: "Process Shipment Confirmation Succeed",
+                                        body: `${data.message}`,
+                                    })
+                                })
+                                .catch((error) => {
+                                    modal.setContent({
+                                        header: "Process Shipment Confirmation Failed",
+                                        body: `${error.data.message}`,
+                                    })
+                                })
+                                .finally(() => {
+                                    modal.onOpenChange(true);
+                                    detailOrderApiResult.refetch();
+                                });
+                        }}
+                    >
+                        Approve
+                    </Button>
+                );
+            }
+            {
+                return (<></>);
+            }
         } else if (key === "time") {
             return (
                 <>
@@ -188,15 +228,14 @@ export default function Page() {
                                 <TableColumn key="action">Action</TableColumn>
                             </TableHeader>
                             <TableBody
-                                items={orderState.details?.items ?? []}
                                 emptyContent={"Empty!"}
                             >
-                                {(item) => (
+                                {(orderState.details?.items ?? []).map((item) => (
                                     <TableRow key={item?.id}>
                                         {(columnKey) =>
                                             <TableCell>{rowMapperItems(item, String(columnKey))}</TableCell>}
                                     </TableRow>
-                                )}
+                                ))}
                             </TableBody>
                         </Table>
                     </div>
@@ -210,15 +249,14 @@ export default function Page() {
                                 <TableColumn key="action">Action</TableColumn>
                             </TableHeader>
                             <TableBody
-                                items={orderState.details?.statuses ?? []}
                                 emptyContent={"Empty!"}
                             >
-                                {(item) => (
+                                {(orderState.details?.statuses ?? []).map((item) => (
                                     <TableRow key={item?.id}>
                                         {(columnKey) =>
                                             <TableCell>{rowMapperStatuses(item, String(columnKey))}</TableCell>}
                                     </TableRow>
-                                )}
+                                ))}
                             </TableBody>
                         </Table>
                     </div>

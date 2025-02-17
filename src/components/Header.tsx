@@ -123,7 +123,7 @@ export default function Component() {
                                         <p className="font-semibold">{authentication.state.account?.email}</p>
                                     </DropdownItem>
                                     <DropdownSection showDivider title="Menu">
-                                        <DropdownItem key="addresses" href="/cusomers/addresses">
+                                        <DropdownItem key="addresses" href="/customers/addresses">
                                             Addresses
                                         </DropdownItem>
                                         <DropdownItem key="orders" href="/customers/orders">
