@@ -128,11 +128,11 @@ export default function Component() {
                                     </DropdownItem>
                                     <DropdownSection showDivider title="Menu">
                                         {hasPermission(['SUPER_ADMIN', 'WAREHOUSE_ADMIN']) ? (
-                                            <DropdownItem key="dashboard" href="/admin/dashboard">
+                                            <DropdownItem key="dashboard" href="/admins/dashboard">
                                                 Dashboard
                                             </DropdownItem>
                                         ) : null}
-                                        <DropdownItem key="addresses" href="/cusomers/addresses">
+                                        <DropdownItem key="addresses" href="/customers/addresses">
                                             Addresses
                                         </DropdownItem>
                                         <DropdownItem key="orders" href="/customers/orders">

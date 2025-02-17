@@ -56,6 +56,9 @@ export default function Page() {
             (item) => item.product.id === values.productId && item.warehouse.id === values.warehouseId
         );
 
+        console.log("WarehouseProduct Data: ", warehouseProducts)
+        console.log("Existing pair: ", existing)
+
         if (existing) {
             setExistingPair(existing);
             setIsModalOpen(true);
@@ -82,7 +85,7 @@ export default function Page() {
         return addWarehouseProduct(request)
             .then((data) => {
                 setIsModalOpen(false);
-                router.push("/admin/warehouse-products");
+                router.push("/admins/warehouse-products");
             })
             .catch((error) => {
                 setIsModalOpen(false);
@@ -242,7 +245,7 @@ export default function Page() {
                                         <TableCell>{existingPair.warehouse.id}</TableCell>
                                         <TableCell>{existingPair.quantity}</TableCell>
                                         <TableCell>
-                                            <Button color="primary" onClick={() => router.push(`/admin/warehouse-products/${existingPair.id}`)}>
+                                            <Button color="primary" onClick={() => router.push(`/admins/warehouse-products/${existingPair.id}`)}>
                                                 Details
                                             </Button>
                                         </TableCell>

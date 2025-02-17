@@ -49,7 +49,7 @@ export default function Page() {
                 <div className="flex flex-col gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admin/products/${item.id}`)}
+                        onPress={() => router.push(`/admins/products/${item.id}`)}
                     >
                         Details
                     </Button>
@@ -141,7 +141,7 @@ export default function Page() {
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/admin/products/add`)}
+                                    onPress={() => router.push(`/admins/products/add`)}
                                     color="success"
                                     className="text-white"
                                 >

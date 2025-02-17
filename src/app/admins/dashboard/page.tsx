@@ -11,14 +11,14 @@ const permissions = {
 
 const buttonList = {
     SUPER_ADMIN: [
-        { text: "Warehouse Management", link: "/admin/warehouses" },
-        { text: "Warehouse Admin Management", link: "/admin/warehouse-admins" },
-        { text: "Product Management", link: "/admin/products" },
-        { text: "Category Management", link: "/admin/categories" },
-        { text: "Warehouse Product Management", link: "/admin/warehouse-products" },
+        { text: "Warehouse Management", link: "/admins/warehouses" },
+        { text: "Warehouse Admin Management", link: "/admins/warehouse-admins" },
+        { text: "Product Management", link: "/admins/products" },
+        { text: "Category Management", link: "/admins/categories" },
+        { text: "Warehouse Product Management", link: "/admins/warehouse-products" },
     ],
     WAREHOUSE_ADMIN: [
-        { text: "Warehouse Management", link: "/admin/warehouses" },
+        { text: "Warehouse Management", link: "/admins/warehouses" },
     ],
 };
 

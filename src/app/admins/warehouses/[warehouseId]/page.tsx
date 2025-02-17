@@ -77,7 +77,7 @@ export default function Page() {
 
     const getPosition = (location: string): { lat: number, lng: number } => {
         if (!location || location.length % 2 !== 0) {
-            return { lat: 0, lng: 0 }; // Return a default position or handle the error as needed
+            return { lat: 0, lng: 0 };
         }
         const buffer = Buffer.from(location, "hex");
         const geometry = wkx.Geometry.parse(buffer);

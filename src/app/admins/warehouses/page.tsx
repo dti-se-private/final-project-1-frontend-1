@@ -1,7 +1,7 @@
 "use client"
 import React, {Key} from "react";
-import {useWarehouseAdmin} from "@/src/hooks/useWarehouseAdmin";
-import {WarehouseAdminResponse} from "@/src/stores/apis/warehouseAdminApi";
+import {useWarehouse} from "@/src/hooks/useWarehouse";
+import {WarehouseResponse} from "@/src/stores/apis/warehouseApi";
 import {Icon} from "@iconify/react";
 import {
     Button,
@@ -20,30 +20,31 @@ import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
 import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
+import wkx from "wkx";
 
-export default function WarehouseAdminsManagementPage() {
+export default function WarehouseManagementPage() {
     const router = useRouter();
     const modal = useModal();
     const {
-        warehouseAdminState,
-        getWarehouseAdminsApiResult,
-        setGetWarehouseAdminsRequest,
-        deleteWarehouseAdmin,
-    } = useWarehouseAdmin();
+        warehouseState,
+        getWarehousesApiResult,
+        setGetWarehousesRequest,
+        deleteWarehouse,
+    } = useWarehouse();
 
-    const rowMapper = (item: WarehouseAdminResponse, key: string) => {
+    const rowMapper = (item: WarehouseResponse, key: string) => {
         if (key === "action") {
             return (
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admin/warehouse-admins/${item.id}`)}
+                        onPress={() => router.push(`/admins/warehouses/${item.id}`)}
                     >
                         Details
                     </Button>
                     <Button
                         color="danger"
-                        onPress={() => deleteWarehouseAdmin({id: item.id})
+                        onPress={() => deleteWarehouse({id: item.id})
                             .then((data) => {
                                 modal.setContent({
                                     header: "Delete Succeed",
@@ -66,6 +67,20 @@ export default function WarehouseAdminsManagementPage() {
             );
         }
 
+        if (key === "location") {
+            const wkbBuffer = Buffer.from(item.location, 'hex')
+            const geometry = wkx.Geometry.parse(wkbBuffer);
+            const geoJson = geometry.toGeoJSON() as { type: string, coordinates: number[] }
+            const mapLink = `https://maps.google.com/?q=${geoJson.coordinates[1]},${geoJson.coordinates[0]}`
+            return (
+                <Button
+                    onPress={() => window.open(mapLink)}
+                >
+                    <Icon icon="heroicons:map-pin"/>
+                </Button>
+            )
+        }
+
         return (
             <>
                 {String(getKeyValue(item, key))}
@@ -76,7 +91,7 @@ export default function WarehouseAdminsManagementPage() {
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
-                <h1 className="mb-8 text-4xl font-bold">Warehouse Admins</h1>
+                <h1 className="mb-8 text-4xl font-bold">Warehouses</h1>
                 <Table
                     topContent={
                         <div className="flex flex-col gap-4">
@@ -84,17 +99,17 @@ export default function WarehouseAdminsManagementPage() {
                                 <Input
                                     placeholder="Search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
-                                    value={warehouseAdminState.getWarehouseAdminRequest.search}
+                                    value={warehouseState.getWarehousesRequest.search}
                                     variant="bordered"
                                     isClearable={true}
-                                    onClear={() => setGetWarehouseAdminsRequest({
-                                        page: warehouseAdminState.getWarehouseAdminRequest.page,
-                                        size: warehouseAdminState.getWarehouseAdminRequest.size,
+                                    onClear={() => setGetWarehousesRequest({
+                                        page: warehouseState.getWarehousesRequest.page,
+                                        size: warehouseState.getWarehousesRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetWarehouseAdminsRequest({
-                                        page: warehouseAdminState.getWarehouseAdminRequest.page,
-                                        size: warehouseAdminState.getWarehouseAdminRequest.size,
+                                    onValueChange={_.debounce((value) => setGetWarehousesRequest({
+                                        page: warehouseState.getWarehousesRequest.page,
+                                        size: warehouseState.getWarehousesRequest.size,
                                         search: value
                                     }), 500)}
                                 />
@@ -102,7 +117,7 @@ export default function WarehouseAdminsManagementPage() {
                                     startContent={<Icon icon="heroicons:plus"/>}
                                     color="success"
                                     className={"text-white"}
-                                    onPress={() => router.push(`/admin/warehouse-admins/add`)}
+                                    onPress={() => router.push(`/admins/warehouses/add`)}
                                 >
                                     Add
                                 </Button>
@@ -111,10 +126,10 @@ export default function WarehouseAdminsManagementPage() {
                                 Rows per page:
                                 <select
                                     className="bg-transparent outline-none text-default-400 text-small"
-                                    onChange={(event) => setGetWarehouseAdminsRequest({
-                                        page: warehouseAdminState.getWarehouseAdminRequest.page,
+                                    onChange={(event) => setGetWarehousesRequest({
+                                        page: warehouseState.getWarehousesRequest.page,
                                         size: Number(event.target.value),
-                                        search: warehouseAdminState.getWarehouseAdminRequest.search
+                                        search: warehouseState.getWarehousesRequest.search
                                     })}
                                 >
                                     <option value="5">5</option>
@@ -129,12 +144,12 @@ export default function WarehouseAdminsManagementPage() {
                             <Pagination
                                 showControls
                                 showShadow
-                                page={warehouseAdminState.getWarehouseAdminRequest.page + 1}
+                                page={warehouseState.getWarehousesRequest.page + 1}
                                 total={Infinity}
-                                onChange={(page) => setGetWarehouseAdminsRequest({
+                                onChange={(page) => setGetWarehousesRequest({
                                     page: page - 1,
-                                    size: warehouseAdminState.getWarehouseAdminRequest.size,
-                                    search: warehouseAdminState.getWarehouseAdminRequest.search,
+                                    size: warehouseState.getWarehousesRequest.size,
+                                    search: warehouseState.getWarehousesRequest.search,
                                 })}
                             />
                         </div>
@@ -142,27 +157,28 @@ export default function WarehouseAdminsManagementPage() {
                 >
                     <TableHeader>
                         <TableColumn key="rowNumber">#</TableColumn>
-                        <TableColumn key="id">ID</TableColumn>
-                        <TableColumn key="accountId">Account ID</TableColumn>
-                        <TableColumn key="warehouseId">Warehouse ID</TableColumn>
+                        <TableColumn key="id">Warehouse ID</TableColumn>
+                        <TableColumn key="name">Name</TableColumn>
+                        <TableColumn key="description">Description</TableColumn>
+                        <TableColumn key="location">Location</TableColumn>
                         <TableColumn key="action">Action</TableColumn>
                     </TableHeader>
                     <TableBody
-                        items={getWarehouseAdminsApiResult.data?.data ?? []}
+                        items={getWarehousesApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={getWarehouseAdminsApiResult.isLoading ? "loading" : "idle"}
+                        loadingState={getWarehousesApiResult.isLoading ? "loading" : "idle"}
                     >
                         {
-                            (item: WarehouseAdminResponse) => (
-                                <TableRow key={item?.id}>
-                                    <TableCell>{getWarehouseAdminsApiResult.data?.data?.indexOf(item) ? getWarehouseAdminsApiResult.data?.data?.indexOf(item) + 1 : 0 + 1}</TableCell>
-                                    <TableCell>{item?.id}</TableCell>
-                                    <TableCell>{item?.accountId}</TableCell>
-                                    <TableCell>{item?.warehouseId}</TableCell>
-                                    <TableCell>{rowMapper(item, "action")}</TableCell>
-                                </TableRow>
-                            )
-                        }
+                            (item: WarehouseResponse) => (
+                            <TableRow key={item?.id}>
+                                <TableCell>{getWarehousesApiResult.data?.data?.indexOf(item) ? getWarehousesApiResult.data?.data?.indexOf(item) + 1 : 0 + 1}</TableCell>
+                                <TableCell>{item?.id}</TableCell>
+                                <TableCell>{item?.name}</TableCell>
+                                <TableCell>{item?.description}</TableCell>
+                                <TableCell>{rowMapper(item, "location")}</TableCell>
+                                <TableCell>{rowMapper(item, "action")}</TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </div>

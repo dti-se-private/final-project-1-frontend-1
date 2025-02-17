@@ -79,11 +79,20 @@ export default function Page() {
     };
 
     const getPosition = (location: string): { lat: number, lng: number } => {
-        const buffer = Buffer.from(location, "hex");
-        const geometry = wkx.Geometry.parse(buffer);
-        const geoJson = geometry.toGeoJSON() as { type: string, coordinates: number[] };
-        return {lat: geoJson.coordinates[1], lng: geoJson.coordinates[0]};
-    }
+        if (!location || location.length % 2 !== 0) {
+            return { lat: 0, lng: 0 };
+        }
+
+        try {
+            const buffer = Buffer.from(location, "hex");
+            const geometry = wkx.Geometry.parse(buffer);
+            const geoJson = geometry.toGeoJSON() as { type: string, coordinates: number[] };
+            return { lat: geoJson.coordinates[1], lng: geoJson.coordinates[0] };
+        } catch (error) {
+            console.error("Error parsing location:", error);
+            return { lat: 0, lng: 0 };
+        }
+    };
 
 
     if (detailAccountAddressApiResult.isFetching) {

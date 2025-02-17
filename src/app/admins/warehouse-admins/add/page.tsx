@@ -66,7 +66,7 @@ export default function Page() {
         return addWarehouseAdmin(request)
             .then((data) => {
                 setIsModalOpen(false);
-                router.push("/admin/warehouse-admins");
+                router.push("/admins/warehouse-admins");
             })
             .catch((error) => {
                 setIsModalOpen(false);
