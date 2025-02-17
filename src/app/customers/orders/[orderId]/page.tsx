@@ -33,6 +33,7 @@ export default function Page() {
     const {
         orderState,
         setDetails,
+        processCancellation,
         processPaymentGateway,
         processShipmentConfirmation
     } = useOrder();
@@ -104,41 +105,71 @@ export default function Page() {
         if (key === "action") {
             if (item.status === "WAITING_FOR_PAYMENT" && lastStatus === "WAITING_FOR_PAYMENT") {
                 return (
-                    <Dropdown placement="bottom-end">
-                        <DropdownTrigger>
-                            <Button color="primary">Pay</Button>
-                        </DropdownTrigger>
-                        <DropdownMenu>
-                            <DropdownItem
-                                key="automatic"
-                                onPress={() => {
-                                    const request: PaymentGatewayRequest = {
-                                        orderId: orderId,
-                                    };
-                                    processPaymentGateway(request)
-                                        .then((data) => {
-                                            modal.setContent({
-                                                header: "Process Payment Gateway Succeed",
-                                                body: `${data.message}`,
+                    <div className="flex flex-row gap-2">
+                        <Dropdown placement="bottom-end">
+                            <DropdownTrigger>
+                                <Button color="primary">Pay</Button>
+                            </DropdownTrigger>
+                            <DropdownMenu>
+                                <DropdownItem
+                                    key="automatic"
+                                    onPress={() => {
+                                        const request: PaymentGatewayRequest = {
+                                            orderId: orderId,
+                                        };
+                                        processPaymentGateway(request)
+                                            .then((data) => {
+                                                modal.setContent({
+                                                    header: "Process Payment Gateway Succeed",
+                                                    body: `${data.message}`,
+                                                })
+                                                window.open(data.data?.url, "_blank");
                                             })
-                                            window.open(data.data?.url, "_blank");
-                                        })
-                                        .catch((error) => {
-                                            modal.setContent({
-                                                header: "Process Payment Gateway Failed",
-                                                body: `${error.data.message}`,
+                                            .catch((error) => {
+                                                modal.setContent({
+                                                    header: "Process Payment Gateway Failed",
+                                                    body: `${error.data.message}`,
+                                                })
                                             })
+                                            .finally(() => {
+                                                modal.onOpenChange(true);
+                                            });
+                                    }}
+                                >
+                                    Automatic
+                                </DropdownItem>
+                                <DropdownItem key="manual">Manual</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                        <Button
+                            color="danger"
+                            onPress={() => {
+                                const request: OrderProcessRequest = {
+                                    orderId: orderId,
+                                    action: "CANCEL"
+                                }
+                                processCancellation(request)
+                                    .then((data) => {
+                                        modal.setContent({
+                                            header: "Process Cancellation Succeed",
+                                            body: `${data.message}`,
                                         })
-                                        .finally(() => {
-                                            modal.onOpenChange(true);
-                                        });
-                                }}
-                            >
-                                Automatic
-                            </DropdownItem>
-                            <DropdownItem key="manual">Manual</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
+                                    })
+                                    .catch((error) => {
+                                        modal.setContent({
+                                            header: "Process Cancellation Failed",
+                                            body: `${error.data.message}`,
+                                        })
+                                    })
+                                    .finally(() => {
+                                        modal.onOpenChange(true);
+                                        detailOrderApiResult.refetch();
+                                    });
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
                 );
             } else if (item.status === "SHIPPING" && lastStatus === "SHIPPING") {
                 return (

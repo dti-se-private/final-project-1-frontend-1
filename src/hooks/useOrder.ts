@@ -16,6 +16,7 @@ export const useOrder = () => {
     const [tryCheckoutApiTrigger] = orderApi.useTryCheckoutMutation();
     const [checkoutApiTrigger] = orderApi.useCheckoutMutation();
     const getOrdersApiResult = orderApi.useGetOrdersQuery(orderState.getOrdersRequest);
+    const [processCancellationApiTrigger] = orderApi.useProcessCancellationMutation();
     const [processPaymentGatewayApiTrigger] = orderApi.useProcessPaymentGatewayMutation();
     const [processShipmentConfirmationApiTrigger] = orderApi.useProcessShipmentConfirmationMutation();
 
@@ -38,6 +39,12 @@ export const useOrder = () => {
         dispatch(orderSlice.actions.setDetails(order));
     }
 
+    const processCancellation = async (request: OrderProcessRequest) => {
+        const processCancellationApiResult = await processCancellationApiTrigger(request).unwrap();
+        getOrdersApiResult.refetch();
+        return processCancellationApiResult;
+    }
+
     const processPaymentGateway = async (request: PaymentGatewayRequest) => {
         const processPaymentGatewayApiResult = await processPaymentGatewayApiTrigger(request).unwrap();
         getOrdersApiResult.refetch();
@@ -50,6 +57,7 @@ export const useOrder = () => {
         return processShipmentConfirmationApiResult;
     }
 
+
     return {
         orderState,
         tryCheckout,
@@ -57,6 +65,7 @@ export const useOrder = () => {
         getOrdersApiResult,
         setGetOrdersRequest,
         setDetails,
+        processCancellation,
         processPaymentGateway,
         processShipmentConfirmation
     };
