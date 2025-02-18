@@ -1,5 +1,5 @@
 "use client"
-import React, {Key} from "react";
+import React from "react";
 import {useWarehouse} from "@/src/hooks/useWarehouse";
 import {WarehouseResponse} from "@/src/stores/apis/warehouseApi";
 import {Icon} from "@iconify/react";
@@ -89,7 +89,7 @@ export default function WarehouseManagementPage() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
                 <h1 className="mb-8 text-4xl font-bold">Warehouses</h1>
                 <Table
@@ -170,15 +170,15 @@ export default function WarehouseManagementPage() {
                     >
                         {
                             (item: WarehouseResponse) => (
-                            <TableRow key={item?.id}>
-                                <TableCell>{getWarehousesApiResult.data?.data?.indexOf(item) ? getWarehousesApiResult.data?.data?.indexOf(item) + 1 : 0 + 1}</TableCell>
-                                <TableCell>{item?.id}</TableCell>
-                                <TableCell>{item?.name}</TableCell>
-                                <TableCell>{item?.description}</TableCell>
-                                <TableCell>{rowMapper(item, "location")}</TableCell>
-                                <TableCell>{rowMapper(item, "action")}</TableCell>
-                            </TableRow>
-                        )}
+                                <TableRow key={item?.id}>
+                                    <TableCell>{getWarehousesApiResult.data?.data?.indexOf(item) ? getWarehousesApiResult.data?.data?.indexOf(item) + 1 : 0 + 1}</TableCell>
+                                    <TableCell>{item?.id}</TableCell>
+                                    <TableCell>{item?.name}</TableCell>
+                                    <TableCell>{item?.description}</TableCell>
+                                    <TableCell>{rowMapper(item, "location")}</TableCell>
+                                    <TableCell>{rowMapper(item, "action")}</TableCell>
+                                </TableRow>
+                            )}
                     </TableBody>
                 </Table>
             </div>

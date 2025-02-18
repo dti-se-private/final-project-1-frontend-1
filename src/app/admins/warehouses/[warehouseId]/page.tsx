@@ -7,7 +7,7 @@ import {useModal} from "@/src/hooks/useModal";
 import React, {useEffect} from "react";
 import {useWarehouse} from "@/src/hooks/useWarehouse";
 import {useParams, useRouter} from "next/navigation";
-import {warehouseApi, PatchWarehouseRequest} from "@/src/stores/apis/warehouseApi";
+import {PatchWarehouseRequest, warehouseApi} from "@/src/stores/apis/warehouseApi";
 import LocationPicker from "@/src/components/LocationPicker";
 import L from "leaflet";
 import * as wkx from "wkx";
@@ -77,17 +77,17 @@ export default function Page() {
 
     const getPosition = (location: string): { lat: number, lng: number } => {
         if (!location || location.length % 2 !== 0) {
-            return { lat: 0, lng: 0 };
+            return {lat: 0, lng: 0};
         }
         const buffer = Buffer.from(location, "hex");
         const geometry = wkx.Geometry.parse(buffer);
         const geoJson = geometry.toGeoJSON() as { type: string, coordinates: number[] };
-        return { lat: geoJson.coordinates[1], lng: geoJson.coordinates[0] };
+        return {lat: geoJson.coordinates[1], lng: geoJson.coordinates[0]};
     }
 
     if (detailWarehouseApiResult.isLoading) {
         return (
-            <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+            <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-2/3">
                     <Spinner/>
                 </div>
@@ -96,7 +96,7 @@ export default function Page() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-center items-center">
                 <h1 className="mb-8 text-4xl font-bold">Warehouse Details</h1>
                 <Formik
@@ -106,7 +106,7 @@ export default function Page() {
                     enableReinitialize
                 >
                     {(props) => (
-                        <Form className="w-2/3 md:w-1/3">
+                        <Form className="w-2/3 md:w-2/3">
                             <FormInput name="id" label="ID" type="text" isDisabled/>
                             <FormInput name="name" label="Name" type="text"/>
                             <FormInputArea name="description" label="Description" type="text"/>
@@ -117,7 +117,7 @@ export default function Page() {
                                     props.setFieldValue("location", wkb.toString("hex"));
                                 }}
                             />
-                            <Button type="submit" className="w-full mt-8">
+                            <Button type="submit" className="w-full mt-4">
                                 Update
                             </Button>
                         </Form>

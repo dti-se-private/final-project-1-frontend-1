@@ -42,6 +42,7 @@ export const useWarehouseProduct = () => {
 
     const setGetWarehouseProductsRequest = (request: ManyRequest) => {
         dispatch(warehouseProductSlice.actions.setGetWarehouseProductsRequest(request));
+        getWarehouseProductsApiResult.refetch();
     }
 
     const setDetails = (warehouseProduct: WarehouseProductResponse) => {

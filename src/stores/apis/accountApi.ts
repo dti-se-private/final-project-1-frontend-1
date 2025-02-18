@@ -1,5 +1,5 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {axiosBaseQuery, OneRequest, ResponseBody} from "@/src/stores/apis";
+import {axiosBaseQuery, ManyRequest, OneRequest, ResponseBody} from "@/src/stores/apis";
 
 export interface AccountResponse {
     id: string;
@@ -56,11 +56,16 @@ export const accountApi = createApi({
                 return {data: result.data as ResponseBody<AccountResponse>};
             }
         }),
-        getAdmins: builder.query<ResponseBody<AccountResponse[]>, void>({
+        getAccountAdmins: builder.query<ResponseBody<AccountResponse[]>, ManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
+                const queryParams = [
+                    `page=${args.page}`,
+                    `size=${args.size}`,
+                    `search=${args.search}`
+                ];
                 const result = await baseQuery({
-                    url: `/admins`,
-                    method: "GET",
+                    url: `/admins?${queryParams.join("&")}`,
+                    method: "GET"
                 });
                 if (result.error) {
                     return {error: result.error};

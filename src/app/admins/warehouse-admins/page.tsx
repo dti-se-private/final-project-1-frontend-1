@@ -1,5 +1,5 @@
 "use client"
-import React, {Key} from "react";
+import React from "react";
 import {useWarehouseAdmin} from "@/src/hooks/useWarehouseAdmin";
 import {WarehouseAdminResponse} from "@/src/stores/apis/warehouseAdminApi";
 import {Icon} from "@iconify/react";
@@ -64,6 +64,18 @@ export default function WarehouseAdminsManagementPage() {
                     </Button>
                 </div>
             );
+        } else if (key === "accountId") {
+            return (
+                <>
+                    {item.account.id}
+                </>
+            );
+        } else if (key === "warehouseId") {
+            return (
+                <>
+                    {item.warehouse.id}
+                </>
+            );
         }
 
         return (
@@ -74,7 +86,7 @@ export default function WarehouseAdminsManagementPage() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
                 <h1 className="mb-8 text-4xl font-bold">Warehouse Admins</h1>
                 <Table
@@ -141,7 +153,6 @@ export default function WarehouseAdminsManagementPage() {
                     }
                 >
                     <TableHeader>
-                        <TableColumn key="rowNumber">#</TableColumn>
                         <TableColumn key="id">ID</TableColumn>
                         <TableColumn key="accountId">Account ID</TableColumn>
                         <TableColumn key="warehouseId">Warehouse ID</TableColumn>
@@ -152,17 +163,11 @@ export default function WarehouseAdminsManagementPage() {
                         loadingContent={<Spinner/>}
                         loadingState={getWarehouseAdminsApiResult.isLoading ? "loading" : "idle"}
                     >
-                        {
-                            (item: WarehouseAdminResponse) => (
-                                <TableRow key={item?.id}>
-                                    <TableCell>{getWarehouseAdminsApiResult.data?.data?.indexOf(item) ? getWarehouseAdminsApiResult.data?.data?.indexOf(item) + 1 : 0 + 1}</TableCell>
-                                    <TableCell>{item?.id}</TableCell>
-                                    <TableCell>{item?.accountId}</TableCell>
-                                    <TableCell>{item?.warehouseId}</TableCell>
-                                    <TableCell>{rowMapper(item, "action")}</TableCell>
-                                </TableRow>
-                            )
-                        }
+                        {(item) => (
+                            <TableRow key={item?.id}>
+                                {(columnKey) => <TableCell>{rowMapper(item, String(columnKey))}</TableCell>}
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </div>

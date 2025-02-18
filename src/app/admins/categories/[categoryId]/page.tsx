@@ -89,7 +89,7 @@ export default function Page() {
                     enableReinitialize
                 >
                     {(props) => (
-                        <Form className="w-2/3 md:w-1/3">
+                        <Form className="w-2/3 md:w-2/3">
                             <FormInput name="id" label="ID" type="text" isDisabled/>
                             <FormInput name="name" label="Name" type="text"/>
                             <FormInputArea name="description" label="Description" type="text"/>

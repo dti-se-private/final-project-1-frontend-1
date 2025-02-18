@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
-import { Button, Card } from '@heroui/react';
+import {useRouter} from 'next/navigation';
+import {Button, Card} from '@heroui/react';
 
 export default function Page() {
     const router = useRouter();

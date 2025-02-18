@@ -1,16 +1,16 @@
-import React, { useEffect, createContext, useContext, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/src/stores';
+import React, {createContext, ReactNode, useEffect} from 'react';
+import {useRouter} from 'next/navigation';
+import {useSelector} from 'react-redux';
+import {RootState} from '@/src/stores';
 
 interface PermissionProviderProps {
     children: ReactNode;
     requiredPermissions?: string[];
 }
 
-const PermissionContext = createContext<{ hasPermission: boolean }>({ hasPermission: true });
+const PermissionContext = createContext<{ hasPermission: boolean }>({hasPermission: true});
 
-const PermissionProvider: React.FC<PermissionProviderProps> = ({ children, requiredPermissions = [] }) => {
+const PermissionProvider: React.FC<PermissionProviderProps> = ({children, requiredPermissions = []}) => {
     const router = useRouter();
     const session = useSelector((state: RootState) => state.authenticationSlice.session);
 
@@ -31,10 +31,10 @@ const PermissionProvider: React.FC<PermissionProviderProps> = ({ children, requi
     const hasPermission = session ? requiredPermissions.length === 0 || requiredPermissions.some(permission => session.permissions.includes(permission)) : requiredPermissions.length === 0;
 
     return (
-        <PermissionContext.Provider value={{ hasPermission }}>
+        <PermissionContext.Provider value={{hasPermission}}>
             {hasPermission ? children : <div>Loading...</div>}
         </PermissionContext.Provider>
     );
 };
 
-export { PermissionProvider, PermissionContext };
+export {PermissionProvider, PermissionContext};

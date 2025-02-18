@@ -38,6 +38,7 @@ export const useWarehouseAdmin = () => {
 
     const setGetWarehouseAdminsRequest = (request: ManyRequest) => {
         dispatch(warehouseAdminSlice.actions.setGetWarehouseAdminRequest(request));
+        getWarehouseAdminsApiResult.refetch();
     }
 
     const setDetails = (warehouseAdmin: WarehouseAdminResponse) => {

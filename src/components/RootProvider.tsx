@@ -1,14 +1,14 @@
 "use client"
-import { HeroUIProvider } from '@heroui/react';
-import { Provider as ReduxProvider } from "react-redux";
-import { persistor, store } from "@/src/stores";
-import { PersistGate } from "redux-persist/integration/react";
+import {HeroUIProvider} from '@heroui/react';
+import {Provider as ReduxProvider} from "react-redux";
+import {persistor, store} from "@/src/stores";
+import {PersistGate} from "redux-persist/integration/react";
 import 'swiper/scss';
 import 'swiper/scss/pagination';
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { PermissionProvider } from '@/src/components/PermissionProvider';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {GoogleOAuthProvider} from "@react-oauth/google";
+import {PermissionProvider} from '@/src/components/PermissionProvider';
+import {usePathname} from 'next/navigation';
+import {useEffect, useState} from 'react';
 
 const pathPermissions = {
     SUPER_ADMIN: [
@@ -27,7 +27,7 @@ const pathPermissions = {
     ],
 };
 
-export default function RootProvider({ children }: { children: React.ReactNode }) {
+export default function RootProvider({children}: { children: React.ReactNode }) {
     const path = usePathname();
     const [requiredPermissions, setRequiredPermissions] = useState<string[]>([]);
 

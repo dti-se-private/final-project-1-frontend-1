@@ -27,9 +27,11 @@ import {warehouseAdminSlice} from "@/src/stores/slices/warehouseAdminSlice";
 import {warehouseAdminApi} from "@/src/stores/apis/warehouseAdminApi";
 import {warehouseProductSlice} from "@/src/stores/slices/warehouseProductSlice";
 import {warehouseProductApi} from "@/src/stores/apis/warehouseProductApi";
+import {accountSlice} from "@/src/stores/slices/accountSlice";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
+    [accountSlice.reducerPath]: accountSlice.reducer,
     [categorySlice.reducerPath]: categorySlice.reducer,
     [modalSlice.reducerPath]: modalSlice.reducer,
     [productSlice.reducerPath]: productSlice.reducer,

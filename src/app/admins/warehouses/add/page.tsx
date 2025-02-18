@@ -75,7 +75,7 @@ export default function Page() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-center items-center">
                 <h1 className="mb-8 text-4xl font-bold">Add Warehouse</h1>
                 <Formik
@@ -85,7 +85,7 @@ export default function Page() {
                     enableReinitialize
                 >
                     {(props) => (
-                        <Form className="w-2/3 md:w-1/3">
+                        <Form className="w-2/3 md:w-2/3">
                             <FormInput name="name" label="Name" type="text"/>
                             <FormInputArea name="description" label="Description" type="text"/>
                             <LocationPicker
@@ -95,7 +95,7 @@ export default function Page() {
                                     props.setFieldValue("location", wkb.toString("hex"));
                                 }}
                             />
-                            <Button type="submit" className="w-full mt-8">
+                            <Button type="submit" className="w-full mt-4">
                                 Add
                             </Button>
                         </Form>
