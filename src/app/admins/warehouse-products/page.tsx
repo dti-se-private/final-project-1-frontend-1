@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {useWarehouseProduct} from "@/src/hooks/useWarehouseProduct";
 import {Icon} from "@iconify/react";
 import {
@@ -31,6 +31,15 @@ export default function Page() {
         setDetails,
         deleteWarehouseProduct,
     } = useWarehouseProduct();
+
+
+    useEffect(() => {
+        setGetWarehouseProductsRequest({
+            page: warehouseProductState.getWarehouseProductsRequest.page,
+            size: warehouseProductState.getWarehouseProductsRequest.size,
+            search: "",
+        });
+    }, [])
 
     const rowMapper = (item: WarehouseProductResponse, key: string): React.JSX.Element => {
         if (key === "action") {
@@ -93,11 +102,11 @@ export default function Page() {
                                         size: warehouseProductState.getWarehouseProductsRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetWarehouseProductsRequest({
+                                    onValueChange={(value) => setGetWarehouseProductsRequest({
                                         page: warehouseProductState.getWarehouseProductsRequest.page,
                                         size: warehouseProductState.getWarehouseProductsRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}

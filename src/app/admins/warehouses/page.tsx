@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {useWarehouse} from "@/src/hooks/useWarehouse";
 import {WarehouseResponse} from "@/src/stores/apis/warehouseApi";
 import {Icon} from "@iconify/react";
@@ -31,6 +31,14 @@ export default function WarehouseManagementPage() {
         setGetWarehousesRequest,
         deleteWarehouse,
     } = useWarehouse();
+
+    useEffect(() => {
+        setGetWarehousesRequest({
+            page: warehouseState.getWarehousesRequest.page,
+            size: warehouseState.getWarehousesRequest.size,
+            search: "",
+        });
+    }, [])
 
     const rowMapper = (item: WarehouseResponse, key: string) => {
         if (key === "action") {
@@ -107,11 +115,11 @@ export default function WarehouseManagementPage() {
                                         size: warehouseState.getWarehousesRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetWarehousesRequest({
+                                    onValueChange={(value) => setGetWarehousesRequest({
                                         page: warehouseState.getWarehousesRequest.page,
                                         size: warehouseState.getWarehousesRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}

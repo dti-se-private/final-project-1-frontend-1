@@ -126,7 +126,7 @@ export default function Page() {
                 >
                     {
                         (props) =>
-                            <Form className="w-2/3 md:w-1/3">
+                            <Form className="w-2/3 md:w-2/3">
                                 <FormInput name="email" label="Email" type="email"/>
                                 <div className="flex gap-4 mb-6 w-full">
                                     <FormInput className="" name="otp" label="OTP" type="text"/>

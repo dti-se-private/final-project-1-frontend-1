@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {useCategory} from "@/src/hooks/useCategory";
 import {Icon} from "@iconify/react";
 import {
@@ -31,6 +31,15 @@ export default function Page() {
         setDetails,
         deleteCategory,
     } = useCategory();
+
+
+    useEffect(() => {
+        setGetCategoriesRequest({
+            page: categoryState.getCategoriesRequest.page,
+            size: categoryState.getCategoriesRequest.size,
+            search: "",
+        });
+    }, [])
 
     const rowMapper = (item: CategoryResponse, key: string): React.JSX.Element => {
         if (key === "action") {
@@ -93,11 +102,11 @@ export default function Page() {
                                         size: categoryState.getCategoriesRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetCategoriesRequest({
+                                    onValueChange={(value) => setGetCategoriesRequest({
                                         page: categoryState.getCategoriesRequest.page,
                                         size: categoryState.getCategoriesRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}

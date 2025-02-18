@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import {useProduct} from "@/src/hooks/useProduct";
+import {useEffect} from "react";
 
 export default function Page() {
     const {
@@ -15,6 +16,14 @@ export default function Page() {
         setDetails,
         setCategory
     } = useProduct();
+
+    useEffect(() => {
+        setGetProductsRequest({
+            page: productState.getProductsRequest.page,
+            size: productState.getProductsRequest.size,
+            search: "",
+        });
+    }, [])
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',

@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {useProduct} from "@/src/hooks/useProduct";
 import {Icon} from "@iconify/react";
 import {
@@ -34,6 +34,13 @@ export default function Page() {
         deleteProduct,
     } = useProduct();
 
+    useEffect(() => {
+        setGetProductsRequest({
+            page: productState.getProductsRequest.page,
+            size: productState.getProductsRequest.size,
+            search: "",
+        });
+    }, [])
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -133,11 +140,11 @@ export default function Page() {
                                         size: productState.getProductsRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetProductsRequest({
+                                    onValueChange={(value) => setGetProductsRequest({
                                         page: productState.getProductsRequest.page,
                                         size: productState.getProductsRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}

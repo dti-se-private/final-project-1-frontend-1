@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
 import {Icon} from "@iconify/react";
 import {
@@ -32,6 +32,14 @@ export default function Page() {
         setDetails,
         deleteAccountAddress,
     } = useAccountAddress();
+
+    useEffect(() => {
+        setGetAccountAddressesRequest({
+            page: accountAddressState.getAccountAddressesRequest.page,
+            size: accountAddressState.getAccountAddressesRequest.size,
+            search: "",
+        });
+    }, [])
 
     const rowMapper = (item: AccountAddressResponse, key: string): React.JSX.Element => {
         if (key === "action") {
@@ -108,11 +116,11 @@ export default function Page() {
                                         size: accountAddressState.getAccountAddressesRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetAccountAddressesRequest({
+                                    onValueChange={(value) => setGetAccountAddressesRequest({
                                         page: accountAddressState.getAccountAddressesRequest.page,
                                         size: accountAddressState.getAccountAddressesRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}

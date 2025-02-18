@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {
     Button,
     getKeyValue,
@@ -29,6 +29,14 @@ export default function Page() {
         getOrdersApiResult,
         setGetOrdersRequest
     } = useOrder();
+
+    useEffect(() => {
+        setGetOrdersRequest({
+            page: orderState.getOrdersRequest.page,
+            size: orderState.getOrdersRequest.size,
+            search: "",
+        });
+    }, [])
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -96,11 +104,11 @@ export default function Page() {
                                         size: orderState.getOrdersRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetOrdersRequest({
+                                    onValueChange={(value) => setGetOrdersRequest({
                                         page: orderState.getOrdersRequest.page,
                                         size: orderState.getOrdersRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                             </div>
                             <label className="flex items-center text-default-400 text-small">

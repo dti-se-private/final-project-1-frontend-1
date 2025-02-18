@@ -45,7 +45,6 @@ export default function Page() {
         name: Yup.string().required("Name is required."),
         description: Yup.string().required("Description is required."),
         location: Yup.string().required("Location is required."),
-        isPrimary: Yup.boolean().required("Is Primary is required."),
     });
 
     const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {

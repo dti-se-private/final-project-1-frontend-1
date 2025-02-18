@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {useWarehouseAdmin} from "@/src/hooks/useWarehouseAdmin";
 import {WarehouseAdminResponse} from "@/src/stores/apis/warehouseAdminApi";
 import {Icon} from "@iconify/react";
@@ -30,6 +30,14 @@ export default function WarehouseAdminsManagementPage() {
         setGetWarehouseAdminsRequest,
         deleteWarehouseAdmin,
     } = useWarehouseAdmin();
+
+    useEffect(() => {
+        setGetWarehouseAdminsRequest({
+            page: warehouseAdminState.getWarehouseAdminsRequest.page,
+            size: warehouseAdminState.getWarehouseAdminsRequest.size,
+            search: "",
+        });
+    }, [])
 
     const rowMapper = (item: WarehouseAdminResponse, key: string) => {
         if (key === "action") {
@@ -96,19 +104,19 @@ export default function WarehouseAdminsManagementPage() {
                                 <Input
                                     placeholder="Search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
-                                    value={warehouseAdminState.getWarehouseAdminRequest.search}
+                                    value={warehouseAdminState.getWarehouseAdminsRequest.search}
                                     variant="bordered"
                                     isClearable={true}
                                     onClear={() => setGetWarehouseAdminsRequest({
-                                        page: warehouseAdminState.getWarehouseAdminRequest.page,
-                                        size: warehouseAdminState.getWarehouseAdminRequest.size,
+                                        page: warehouseAdminState.getWarehouseAdminsRequest.page,
+                                        size: warehouseAdminState.getWarehouseAdminsRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetWarehouseAdminsRequest({
-                                        page: warehouseAdminState.getWarehouseAdminRequest.page,
-                                        size: warehouseAdminState.getWarehouseAdminRequest.size,
+                                    onValueChange={(value) => setGetWarehouseAdminsRequest({
+                                        page: warehouseAdminState.getWarehouseAdminsRequest.page,
+                                        size: warehouseAdminState.getWarehouseAdminsRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
@@ -124,9 +132,9 @@ export default function WarehouseAdminsManagementPage() {
                                 <select
                                     className="bg-transparent outline-none text-default-400 text-small"
                                     onChange={(event) => setGetWarehouseAdminsRequest({
-                                        page: warehouseAdminState.getWarehouseAdminRequest.page,
+                                        page: warehouseAdminState.getWarehouseAdminsRequest.page,
                                         size: Number(event.target.value),
-                                        search: warehouseAdminState.getWarehouseAdminRequest.search
+                                        search: warehouseAdminState.getWarehouseAdminsRequest.search
                                     })}
                                 >
                                     <option value="5">5</option>
@@ -141,12 +149,12 @@ export default function WarehouseAdminsManagementPage() {
                             <Pagination
                                 showControls
                                 showShadow
-                                page={warehouseAdminState.getWarehouseAdminRequest.page + 1}
+                                page={warehouseAdminState.getWarehouseAdminsRequest.page + 1}
                                 total={Infinity}
                                 onChange={(page) => setGetWarehouseAdminsRequest({
                                     page: page - 1,
-                                    size: warehouseAdminState.getWarehouseAdminRequest.size,
-                                    search: warehouseAdminState.getWarehouseAdminRequest.search,
+                                    size: warehouseAdminState.getWarehouseAdminsRequest.size,
+                                    search: warehouseAdminState.getWarehouseAdminsRequest.search,
                                 })}
                             />
                         </div>
