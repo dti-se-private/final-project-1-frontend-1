@@ -1,5 +1,5 @@
-import React, {createContext, ReactNode, useEffect} from 'react';
-import {useRouter} from 'next/navigation';
+import {FC, ReactNode, useEffect} from 'react';
+import {redirect, usePathname} from 'next/navigation';
 import {useSelector} from 'react-redux';
 import {RootState} from '@/src/stores';
 
@@ -8,33 +8,64 @@ interface PermissionProviderProps {
     requiredPermissions?: string[];
 }
 
-const PermissionContext = createContext<{ hasPermission: boolean }>({hasPermission: true});
-
-const PermissionProvider: React.FC<PermissionProviderProps> = ({children, requiredPermissions = []}) => {
-    const router = useRouter();
-    const session = useSelector((state: RootState) => state.authenticationSlice.session);
-
-    useEffect(() => {
-        if (!session) {
-            if (requiredPermissions.length > 0) {
-                router.push('/login');
-            }
-        } else {
-            const userPermissions = session.permissions || [];
-            const hasPermission = requiredPermissions.length === 0 || requiredPermissions.some(permission => userPermissions.includes(permission));
-            if (!hasPermission) {
-                router.push('/forbidden');
-            }
-        }
-    }, [session, requiredPermissions, router]);
-
-    const hasPermission = session ? requiredPermissions.length === 0 || requiredPermissions.some(permission => session.permissions.includes(permission)) : requiredPermissions.length === 0;
-
-    return (
-        <PermissionContext.Provider value={{hasPermission}}>
-            {hasPermission ? children : <div>Loading...</div>}
-        </PermissionContext.Provider>
-    );
+const pathPatternPermissions = {
+    SUPER_ADMIN: [
+        '^/$',
+        '^/admins/.*',
+        '^/customers/.*',
+        '^/products/.*',
+        '^/browse',
+        '^/profile',
+        '^/forbidden',
+    ],
+    WAREHOUSE_ADMIN: [
+        '^/$',
+        '^/admins/dashboard',
+        '^/admins/warehouse-products/.*',
+        '^/admins/orders/.*',
+        '^/admins/payment-confirmations/.*',
+        '^/admins/statistics/.*',
+        '^/customers/.*',
+        '^/products/.*',
+        '^/browse',
+        '^/profile',
+        '^/forbidden',
+    ],
+    CUSTOMER: [
+        '^/$',
+        '^/customers/.*',
+        '^/products/.*',
+        '^/browse',
+        '^/profile',
+        '^/forbidden',
+    ],
 };
 
-export {PermissionProvider, PermissionContext};
+export const PermissionProvider: FC<PermissionProviderProps> = ({children}) => {
+    const session = useSelector((state: RootState) => state.authenticationSlice.session);
+    const path = usePathname();
+
+    useEffect(() => {
+        const requiredPermissions: string[] = [];
+        for (const [permission, pathPatterns] of Object.entries(pathPatternPermissions)) {
+            for (const pathPattern of pathPatterns) {
+                if (new RegExp(pathPattern).test(path)) {
+                    requiredPermissions.push(permission);
+                    break;
+                }
+            }
+        }
+
+        if (session) {
+            if (!requiredPermissions.some(permission => session.permissions.includes(permission))) {
+                redirect("/forbidden")
+            }
+        } else {
+            if (requiredPermissions.length > 0) {
+                redirect("/login")
+            }
+        }
+    }, [path]);
+
+    return (children);
+};

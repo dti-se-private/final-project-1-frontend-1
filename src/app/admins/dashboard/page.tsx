@@ -31,9 +31,12 @@ export default function Dashboard() {
             {text: "Product Management", link: "/admins/products"},
             {text: "Category Management", link: "/admins/categories"},
             {text: "Warehouse Product Management", link: "/admins/warehouse-products"},
+            {text: "Order Management", link: "/admins/orders"},
         ],
         WAREHOUSE_ADMIN: [
             {text: "Warehouse Management", link: "/admins/warehouses"},
+            {text: "Warehouse Product Management", link: "/admins/warehouse-products"},
+            {text: "Order Management", link: "/admins/orders"},
         ],
     };
 

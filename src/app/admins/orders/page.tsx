@@ -44,7 +44,7 @@ export default function Page() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/customers/orders/${item.id}`)}
+                        onPress={() => router.push(`/admins/orders/${item.id}`)}
                     >
                         Details
                     </Button>

@@ -1,10 +1,6 @@
 "use client"
 import {
     Button,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownTrigger,
     getKeyValue,
     Input,
     Spinner,
@@ -19,13 +15,7 @@ import {useModal} from "@/src/hooks/useModal";
 import React, {useEffect} from "react";
 import {useOrder} from "@/src/hooks/useOrder";
 import {useParams, useRouter} from "next/navigation";
-import {
-    orderApi,
-    OrderItemResponse,
-    OrderProcessRequest,
-    OrderStatusResponse,
-    PaymentGatewayRequest
-} from "@/src/stores/apis/orderApi";
+import {orderApi, OrderItemResponse, OrderProcessRequest, OrderStatusResponse} from "@/src/stores/apis/orderApi";
 import moment from "moment";
 
 export default function Page() {
@@ -107,46 +97,6 @@ export default function Page() {
             if (item.status === "WAITING_FOR_PAYMENT" && lastStatus === "WAITING_FOR_PAYMENT") {
                 return (
                     <div className="flex flex-row gap-2">
-                        <Dropdown placement="bottom-end">
-                            <DropdownTrigger>
-                                <Button color="primary">Pay</Button>
-                            </DropdownTrigger>
-                            <DropdownMenu>
-                                <DropdownItem
-                                    key="automatic"
-                                    onPress={() => {
-                                        const request: PaymentGatewayRequest = {
-                                            orderId: orderId,
-                                        };
-                                        processPaymentGateway(request)
-                                            .then((data) => {
-                                                modal.setContent({
-                                                    header: "Process Payment Gateway Succeed",
-                                                    body: `${data.message}`,
-                                                })
-                                                window.open(data.data?.url, "_blank");
-                                            })
-                                            .catch((error) => {
-                                                modal.setContent({
-                                                    header: "Process Payment Gateway Failed",
-                                                    body: `${error.data.message}`,
-                                                })
-                                            })
-                                            .finally(() => {
-                                                modal.onOpenChange(true);
-                                            });
-                                    }}
-                                >
-                                    Automatic
-                                </DropdownItem>
-                                <DropdownItem
-                                    key="manual"
-                                    onPress={() => router.push(`/customers/orders/${orderId}/payment-proofs`)}
-                                >
-                                    Manual
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
                         <Button
                             color="danger"
                             onPress={() => {
@@ -182,7 +132,7 @@ export default function Page() {
                     <div className="flex flex-row gap-2">
                         <Button
                             color="primary"
-                            onPress={() => router.push(`/customers/orders/${orderId}/payment-proofs`)}
+                            onPress={() => router.push(`/admins/orders/${orderId}/payment-proofs`)}
                         >
                             Details
                         </Button>
