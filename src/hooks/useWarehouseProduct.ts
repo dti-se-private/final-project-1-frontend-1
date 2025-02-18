@@ -12,7 +12,11 @@ import {ManyRequest, OneRequest} from "@/src/stores/apis";
 export const useWarehouseProduct = () => {
     const dispatch = useDispatch();
     const warehouseProductState = useSelector((state: RootState) => state.warehouseProductSlice);
-    const getWarehouseProductsApiResult = warehouseProductApi.useGetWarehouseProductsQuery(warehouseProductState.getWarehouseProductsRequest);
+    const getWarehouseProductsApiResult = warehouseProductApi.useGetWarehouseProductsQuery({
+        page: warehouseProductState.getWarehouseProductsRequest.page,
+        size: warehouseProductState.getWarehouseProductsRequest.size,
+        search: warehouseProductState.getWarehouseProductsRequest.search
+    });
     const [addWarehouseProductApiTrigger] = warehouseProductApi.useAddWarehouseProductMutation();
     const [patchWarehouseProductApiTrigger] = warehouseProductApi.usePatchWarehouseProductMutation();
     const [deleteWarehouseProductApiTrigger] = warehouseProductApi.useDeleteWarehouseProductMutation();

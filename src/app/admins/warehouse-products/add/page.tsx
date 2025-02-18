@@ -1,29 +1,13 @@
 "use client"
 import * as Yup from "yup";
-import {useFormik} from "formik";
-import {
-    Autocomplete,
-    AutocompleteItem,
-    Button,
-    Input,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalHeader,
-    Spinner,
-    Table,
-    TableBody,
-    TableCell,
-    TableColumn,
-    TableHeader,
-    TableRow
-} from "@heroui/react";
-import React, {useEffect, useState} from "react";
-import {useWarehouseProduct} from "@/src/hooks/useWarehouseProduct";
-import {useRouter} from "next/navigation";
-import {WarehouseProductRequest, WarehouseProductResponse} from "@/src/stores/apis/warehouseProductApi";
-import {useProduct} from "@/src/hooks/useProduct";
-import {useWarehouse} from "@/src/hooks/useWarehouse";
+import { useFormik } from "formik";
+import { Autocomplete, AutocompleteItem, Button, Input, Spinner, Modal, ModalBody, ModalContent, ModalHeader, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
+import React, { useEffect, useState } from "react";
+import { useWarehouseProduct } from "@/src/hooks/useWarehouseProduct";
+import { useRouter } from "next/navigation";
+import { WarehouseProductRequest, WarehouseProductResponse } from "@/src/stores/apis/warehouseProductApi";
+import { useProduct } from "@/src/hooks/useProduct";
+import { useWarehouse } from "@/src/hooks/useWarehouse";
 
 interface ExistingPair {
     id: string;
@@ -71,6 +55,9 @@ export default function Page() {
         const existing = warehouseProducts.find(
             (item) => item.product.id === values.productId && item.warehouse.id === values.warehouseId
         );
+
+        console.log("WarehouseProduct Data: ", warehouseProducts)
+        console.log("Existing pair: ", existing)
 
         if (existing) {
             setExistingPair(existing);
@@ -142,7 +129,7 @@ export default function Page() {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
-                    <Spinner/>
+                    <Spinner />
                 </div>
             </div>
         )
@@ -258,8 +245,7 @@ export default function Page() {
                                         <TableCell>{existingPair.warehouse.id}</TableCell>
                                         <TableCell>{existingPair.quantity}</TableCell>
                                         <TableCell>
-                                            <Button color="primary"
-                                                    onClick={() => router.push(`/admins/warehouse-products/${existingPair.id}`)}>
+                                            <Button color="primary" onClick={() => router.push(`/admins/warehouse-products/${existingPair.id}`)}>
                                                 Details
                                             </Button>
                                         </TableCell>
@@ -267,10 +253,8 @@ export default function Page() {
                                 </TableBody>
                             </Table>
                             <div className="flex justify-end mt-4">
-                                <Button color="success" onClick={confirmAddProduct}
-                                        className="text-white">Confirm</Button>
-                                <Button color="danger" onClick={() => setIsModalOpen(false)}
-                                        className="ml-2">Cancel</Button>
+                                <Button color="success" onClick={confirmAddProduct} className="text-white">Confirm</Button>
+                                <Button color="danger" onClick={() => setIsModalOpen(false)} className="ml-2">Cancel</Button>
                             </div>
                         </ModalBody>
                     </ModalContent>

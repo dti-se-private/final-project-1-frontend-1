@@ -127,6 +127,11 @@ export default function Component() {
                                         <p className="font-semibold">{authentication.state.account?.email}</p>
                                     </DropdownItem>
                                     <DropdownSection showDivider title="Menu">
+                                        {hasPermission(['SUPER_ADMIN', 'WAREHOUSE_ADMIN']) ? (
+                                            <DropdownItem key="dashboard" href="/admins/dashboard">
+                                                Dashboard
+                                            </DropdownItem>
+                                        ) : null}
                                         <DropdownItem key="addresses" href="/customers/addresses">
                                             Addresses
                                         </DropdownItem>

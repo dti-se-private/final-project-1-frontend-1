@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import React, {useEffect, useState} from "react";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
+import RootProvider from "@/src/components/RootProvider";
 
 const permissions = {
     SUPER_ADMIN: 'SUPER_ADMIN',
@@ -58,5 +59,6 @@ export default function Dashboard() {
                 </div>
             </div>
         </div>
+
     );
 }

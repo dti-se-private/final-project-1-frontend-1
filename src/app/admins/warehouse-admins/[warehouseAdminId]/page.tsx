@@ -1,16 +1,18 @@
 "use client"
 import * as Yup from "yup";
-import {Form, Formik} from "formik";
-import FormInput from "@/src/components/FormInput";
-import {Button, Spinner} from "@heroui/react";
-import {useModal} from "@/src/hooks/useModal";
-import React, {useEffect} from "react";
-import {useWarehouseAdmin} from "@/src/hooks/useWarehouseAdmin";
-import {useParams, useRouter} from "next/navigation";
-import {PatchWarehouseAdminRequest, warehouseAdminApi} from "@/src/stores/apis/warehouseAdminApi";
+import { Form, Formik } from "formik";
+import { Autocomplete, AutocompleteItem, Button, Spinner } from "@heroui/react";
+import { useModal } from "@/src/hooks/useModal";
+import React, { useEffect, useState } from "react";
+import { useWarehouseAdmin } from "@/src/hooks/useWarehouseAdmin";
+import { useParams, useRouter } from "next/navigation";
+import { warehouseAdminApi, PatchWarehouseAdminRequest } from "@/src/stores/apis/warehouseAdminApi";
+import { useWarehouse } from "@/src/hooks/useWarehouse";
+import {accountApi, AccountResponse} from "@/src/stores/apis/accountApi";
+import {WarehouseResponse} from "@/src/stores/apis/warehouseApi";
 
 export default function Page() {
-    const {warehouseAdminId}: { warehouseAdminId: string } = useParams();
+    const { warehouseAdminId }: { warehouseAdminId: string } = useParams();
     const router = useRouter();
     const {
         warehouseAdminState,
@@ -18,16 +20,33 @@ export default function Page() {
         setDetails
     } = useWarehouseAdmin();
     const modal = useModal();
+    const [warehouses, setWarehouses] = useState<WarehouseResponse[]>([]);
+    const [admins, setAdmins] = useState<AccountResponse[]>([]);
 
     const detailWarehouseAdminApiResult = warehouseAdminApi.useGetWarehouseAdminQuery({
         id: warehouseAdminId,
     });
+
+    const { data: warehouseData } = useWarehouse().getWarehousesApiResult;
+    const { data: adminData } = accountApi.useGetAdminsQuery();
 
     useEffect(() => {
         if (detailWarehouseAdminApiResult.data?.data) {
             setDetails(detailWarehouseAdminApiResult.data.data);
         }
     }, [detailWarehouseAdminApiResult.data?.data]);
+
+    useEffect(() => {
+        if (warehouseData?.data) {
+            setWarehouses(warehouseData.data);
+        }
+    }, [warehouseData]);
+
+    useEffect(() => {
+        if (adminData?.data) {
+            setAdmins(adminData.data);
+        }
+    }, [adminData]);
 
     const initialValues = {
         id: warehouseAdminState.details?.id ?? "",
@@ -71,7 +90,7 @@ export default function Page() {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-2/3">
-                    <Spinner/>
+                    <Spinner />
                 </div>
             </div>
         )
@@ -89,9 +108,40 @@ export default function Page() {
                 >
                     {(props) => (
                         <Form className="w-2/3 md:w-1/3">
-                            <FormInput name="id" label="ID" type="text" isDisabled/>
-                            <FormInput name="warehouseId" label="Warehouse ID" type="text"/>
-                            <FormInput name="accountId" label="Account ID" type="text"/>
+                            <Autocomplete
+                                className="mb-6 w-full"
+                                label="Warehouse"
+                                name="warehouseId"
+                                placeholder="Type to search..."
+                                selectedKey={props.values.warehouseId}
+                                errorMessage={props.errors.warehouseId}
+                                isInvalid={Boolean(props.errors.warehouseId)}
+                                items={warehouses}
+                                onSelectionChange={(key) => props.setFieldValue("warehouseId", key)}
+                            >
+                                {(item) => (
+                                    <AutocompleteItem key={item.id}>
+                                        {`${item.id} - ${item.name}`}
+                                    </AutocompleteItem>
+                                )}
+                            </Autocomplete>
+                            <Autocomplete
+                                className="mb-6 w-full"
+                                label="Admin"
+                                name="accountId"
+                                placeholder="Type to search..."
+                                selectedKey={props.values.accountId}
+                                errorMessage={props.errors.accountId}
+                                isInvalid={Boolean(props.errors.accountId)}
+                                items={admins}
+                                onSelectionChange={(key) => props.setFieldValue("accountId", key)}
+                            >
+                                {(item) => (
+                                    <AutocompleteItem key={item.id}>
+                                        {`${item.id} - ${item.name}`}
+                                    </AutocompleteItem>
+                                )}
+                            </Autocomplete>
                             <Button type="submit" className="w-full mt-8">
                                 Update
                             </Button>

@@ -7,7 +7,7 @@ import {useModal} from "@/src/hooks/useModal";
 import React, {useEffect} from "react";
 import {useWarehouse} from "@/src/hooks/useWarehouse";
 import {useParams, useRouter} from "next/navigation";
-import {PatchWarehouseRequest, warehouseApi} from "@/src/stores/apis/warehouseApi";
+import {warehouseApi, PatchWarehouseRequest} from "@/src/stores/apis/warehouseApi";
 import LocationPicker from "@/src/components/LocationPicker";
 import L from "leaflet";
 import * as wkx from "wkx";
@@ -77,12 +77,12 @@ export default function Page() {
 
     const getPosition = (location: string): { lat: number, lng: number } => {
         if (!location || location.length % 2 !== 0) {
-            return {lat: 0, lng: 0}; // Return a default position or handle the error as needed
+            return { lat: 0, lng: 0 };
         }
         const buffer = Buffer.from(location, "hex");
         const geometry = wkx.Geometry.parse(buffer);
         const geoJson = geometry.toGeoJSON() as { type: string, coordinates: number[] };
-        return {lat: geoJson.coordinates[1], lng: geoJson.coordinates[0]};
+        return { lat: geoJson.coordinates[1], lng: geoJson.coordinates[0] };
     }
 
     if (detailWarehouseApiResult.isLoading) {

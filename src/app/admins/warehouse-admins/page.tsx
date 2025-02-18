@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {Key} from "react";
 import {useWarehouseAdmin} from "@/src/hooks/useWarehouseAdmin";
 import {WarehouseAdminResponse} from "@/src/stores/apis/warehouseAdminApi";
 import {Icon} from "@iconify/react";
@@ -100,6 +100,8 @@ export default function WarehouseAdminsManagementPage() {
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
+                                    color="success"
+                                    className={"text-white"}
                                     onPress={() => router.push(`/admins/warehouse-admins/add`)}
                                 >
                                     Add
