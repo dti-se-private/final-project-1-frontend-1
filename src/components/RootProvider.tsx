@@ -44,6 +44,10 @@ export default function RootProvider({ children }: { children: React.ReactNode }
             }
         }
 
+        if (permissions.length === 0) {
+            permissions.push('DEFAULT');
+        }
+
         setRequiredPermissions(permissions);
     }, [path]);
 
