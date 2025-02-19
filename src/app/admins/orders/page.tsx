@@ -69,7 +69,7 @@ export default function Page() {
                     {moment(item.statuses[item.statuses.length - 1].time).local().toString()}
                 </>
             );
-        } else if (key === "itemPrice" || key === "shipmentPrice" || key === "totalPrice") {
+        } else if (key === "totalPrice") {
             return (
                 <>
                     {currencyFormatter.format(getKeyValue(item, key))}
@@ -145,8 +145,6 @@ export default function Page() {
                 >
                     <TableHeader>
                         <TableColumn key="id">ID</TableColumn>
-                        <TableColumn key="itemPrice">Item Price</TableColumn>
-                        <TableColumn key="shipmentPrice">Shipment Price</TableColumn>
                         <TableColumn key="totalPrice">Total Price</TableColumn>
                         <TableColumn key="lastStatus">Last Status</TableColumn>
                         <TableColumn key="lastStatusTime">Last Status Time</TableColumn>

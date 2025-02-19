@@ -46,7 +46,7 @@ export default function Page() {
 
     const [orderResponse, setOrderResponse] = useState<OrderResponse | undefined>(undefined);
     const [accountAddressId, setAccountAddressId] = useState<string | undefined>(undefined);
-    const [isTryCheckoutFetching, setIsTryCheckoutFetching] = useState<boolean>(true);
+    const [isTryCheckoutFetching, setIsTryCheckoutFetching] = useState<boolean>(false);
 
     const handleTryCheckout = _.debounce((request) => {
         setIsTryCheckoutFetching(true);
@@ -176,7 +176,7 @@ export default function Page() {
                             <div>
                                 {
                                     isTryCheckoutFetching ? (<Spinner size="sm"/>)
-                                        : (isValidToTryCheckout && orderResponse?.itemPrice ? currencyFormatter.format(orderResponse?.itemPrice) : "-")
+                                        : orderResponse?.itemPrice ? currencyFormatter.format(orderResponse?.itemPrice) : "-"
                                 }
                             </div>
                         </div>
@@ -185,7 +185,7 @@ export default function Page() {
                             <div>
                                 {
                                     isTryCheckoutFetching ? (<Spinner size="sm"/>)
-                                        : (isValidToTryCheckout && orderResponse?.shipmentPrice ? currencyFormatter.format(orderResponse?.shipmentPrice) : "-")
+                                        : orderResponse?.shipmentPrice ? currencyFormatter.format(orderResponse?.shipmentPrice) : "-"
                                 }
                             </div>
                         </div>
@@ -196,7 +196,7 @@ export default function Page() {
                             <div>
                                 {
                                     isTryCheckoutFetching ? (<Spinner size="sm"/>)
-                                        : (isValidToTryCheckout && orderResponse?.totalPrice ? currencyFormatter.format(orderResponse?.totalPrice) : "-")
+                                        : orderResponse?.totalPrice ? currencyFormatter.format(orderResponse?.totalPrice) : "-"
                                 }
                             </div>
                         </div>

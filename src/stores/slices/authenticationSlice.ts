@@ -38,6 +38,7 @@ export const authenticationSlice = createSlice({
                 .catch(() => {
                     console.log('Failed to remove persisted state.');
                 });
+
         },
         refreshSession: (state, action) => {
             const {session} = action.payload;

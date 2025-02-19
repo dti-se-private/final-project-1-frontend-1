@@ -93,101 +93,64 @@ export default function Page() {
                     {item.product.name}
                 </>
             );
+        } else {
+            return (
+                <>
+                    {String(getKeyValue(item, key))}
+                </>
+            );
         }
-
-        return (
-            <>
-                {String(getKeyValue(item, key))}
-            </>
-        );
     }
     const rowMapperStatuses = (item: OrderStatusResponse, key: string): React.JSX.Element => {
         const lastItem = orderState.details?.statuses[orderState.details?.statuses.length - 1];
         const isLast = lastItem?.id === item.id;
+        const statusGroups = orderState.details?.statuses.filter((status) => status.status === item.status);
+        const isLastInStatusGroups = statusGroups ? statusGroups[statusGroups.length - 1].id === item.id : false;
         if (key === "action") {
-            if (item.status === "WAITING_FOR_PAYMENT" && isLast) {
-                return (
-                    <div className="flex flex-row gap-2">
-                        <Dropdown placement="bottom-end">
-                            <DropdownTrigger>
-                                <Button color="primary">Pay</Button>
-                            </DropdownTrigger>
-                            <DropdownMenu>
-                                <DropdownItem
-                                    key="automatic"
-                                    onPress={() => {
-                                        const request: PaymentGatewayRequest = {
-                                            orderId: orderId,
-                                        };
-                                        processPaymentGateway(request)
-                                            .then((data) => {
-                                                modal.setContent({
-                                                    header: "Process Payment Gateway Succeed",
-                                                    body: `${data.message}`,
+            if (isLastInStatusGroups) {
+                if (item.status === "WAITING_FOR_PAYMENT" && isLast) {
+                    return (
+                        <div className="flex flex-row gap-2">
+                            <Dropdown placement="bottom-end">
+                                <DropdownTrigger>
+                                    <Button color="primary">Pay</Button>
+                                </DropdownTrigger>
+                                <DropdownMenu>
+                                    <DropdownItem
+                                        key="automatic"
+                                        onPress={() => {
+                                            const request: PaymentGatewayRequest = {
+                                                orderId: orderId,
+                                            };
+                                            processPaymentGateway(request)
+                                                .then((data) => {
+                                                    modal.setContent({
+                                                        header: "Process Payment Gateway Succeed",
+                                                        body: `${data.message}`,
+                                                    })
+                                                    window.open(data.data?.url, "_blank");
                                                 })
-                                                window.open(data.data?.url, "_blank");
-                                            })
-                                            .catch((error) => {
-                                                modal.setContent({
-                                                    header: "Process Payment Gateway Failed",
-                                                    body: `${error.data.message}`,
+                                                .catch((error) => {
+                                                    modal.setContent({
+                                                        header: "Process Payment Gateway Failed",
+                                                        body: `${error.data.message}`,
+                                                    })
                                                 })
-                                            })
-                                            .finally(() => {
-                                                modal.onOpenChange(true);
-                                            });
-                                    }}
-                                >
-                                    Automatic
-                                </DropdownItem>
-                                <DropdownItem
-                                    key="manual"
-                                    onPress={() => router.push(`/customers/orders/${orderId}/payment-proofs`)}
-                                >
-                                    Manual
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                        <Button
-                            color="danger"
-                            onPress={() => {
-                                const request: OrderProcessRequest = {
-                                    orderId: orderId,
-                                    action: "CANCEL"
-                                }
-                                processCancellation(request)
-                                    .then((data) => {
-                                        modal.setContent({
-                                            header: "Process Cancellation Succeed",
-                                            body: `${data.message}`,
-                                        })
-                                    })
-                                    .catch((error) => {
-                                        modal.setContent({
-                                            header: "Process Cancellation Failed",
-                                            body: `${error.data.message}`,
-                                        })
-                                    })
-                                    .finally(() => {
-                                        modal.onOpenChange(true);
-                                        detailOrderApiResult.refetch();
-                                    });
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                );
-            } else if (item.status === "WAITING_FOR_PAYMENT_CONFIRMATION") {
-                return (
-                    <div className="flex flex-row gap-2">
-                        <Button
-                            color="primary"
-                            onPress={() => router.push(`/customers/orders/${orderId}/payment-proofs`)}
-                        >
-                            Details
-                        </Button>
-                        {isLast &&
+                                                .finally(() => {
+                                                    modal.onOpenChange(true);
+                                                });
+                                        }}
+                                    >
+                                        Automatic
+                                    </DropdownItem>
+                                    <DropdownItem
+                                        key="manual"
+                                        onPress={() => router.push(`/customers/orders/${orderId}/payment-proofs`)}
+                                    >
+                                        Manual
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
                             <Button
                                 color="danger"
                                 onPress={() => {
@@ -216,42 +179,84 @@ export default function Page() {
                             >
                                 Cancel
                             </Button>
-                        }
-                    </div>
-                )
-            } else if (item.status === "SHIPPING" && isLast) {
-                return (
-                    <Button
-                        color="primary"
-                        onPress={() => {
-                            const request: OrderProcessRequest = {
-                                orderId: orderId,
-                                action: "APPROVE"
+                        </div>
+                    );
+                } else if (item.status === "WAITING_FOR_PAYMENT_CONFIRMATION") {
+                    return (
+                        <div className="flex flex-row gap-2">
+                            <Button
+                                color="primary"
+                                onPress={() => router.push(`/customers/orders/${orderId}/payment-proofs`)}
+                            >
+                                Details
+                            </Button>
+                            {isLast &&
+                                <Button
+                                    color="danger"
+                                    onPress={() => {
+                                        const request: OrderProcessRequest = {
+                                            orderId: orderId,
+                                            action: "CANCEL"
+                                        }
+                                        processCancellation(request)
+                                            .then((data) => {
+                                                modal.setContent({
+                                                    header: "Process Cancellation Succeed",
+                                                    body: `${data.message}`,
+                                                })
+                                            })
+                                            .catch((error) => {
+                                                modal.setContent({
+                                                    header: "Process Cancellation Failed",
+                                                    body: `${error.data.message}`,
+                                                })
+                                            })
+                                            .finally(() => {
+                                                modal.onOpenChange(true);
+                                                detailOrderApiResult.refetch();
+                                            });
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
                             }
-                            processShipmentConfirmation(request)
-                                .then((data) => {
-                                    modal.setContent({
-                                        header: "Process Shipment Confirmation Succeed",
-                                        body: `${data.message}`,
+                        </div>
+                    )
+                } else if (item.status === "SHIPPING" && isLast) {
+                    return (
+                        <Button
+                            color="primary"
+                            onPress={() => {
+                                const request: OrderProcessRequest = {
+                                    orderId: orderId,
+                                    action: "APPROVE"
+                                }
+                                processShipmentConfirmation(request)
+                                    .then((data) => {
+                                        modal.setContent({
+                                            header: "Process Shipment Confirmation Succeed",
+                                            body: `${data.message}`,
+                                        })
                                     })
-                                })
-                                .catch((error) => {
-                                    modal.setContent({
-                                        header: "Process Shipment Confirmation Failed",
-                                        body: `${error.data.message}`,
+                                    .catch((error) => {
+                                        modal.setContent({
+                                            header: "Process Shipment Confirmation Failed",
+                                            body: `${error.data.message}`,
+                                        })
                                     })
-                                })
-                                .finally(() => {
-                                    modal.onOpenChange(true);
-                                    detailOrderApiResult.refetch();
-                                });
-                        }}
-                    >
-                        Approve
-                    </Button>
-                );
-            }
-            {
+                                    .finally(() => {
+                                        modal.onOpenChange(true);
+                                        detailOrderApiResult.refetch();
+                                    });
+                            }}
+                        >
+                            Approve
+                        </Button>
+                    );
+                } else {
+                    return (<></>);
+                }
+            } else {
                 return (<></>);
             }
         } else if (key === "time") {
@@ -260,13 +265,13 @@ export default function Page() {
                     {moment(item.time).local().toString()}
                 </>
             );
+        } else {
+            return (
+                <>
+                    {String(getKeyValue(item, key))}
+                </>
+            );
         }
-
-        return (
-            <>
-                {String(getKeyValue(item, key))}
-            </>
-        );
     }
 
     return (
