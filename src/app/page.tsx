@@ -34,6 +34,13 @@ export default function Page() {
         ...categoryApiResult.data?.data?.slice(0, 10) ?? []
     ]
 
+    const heroImages = [
+        "/hero1.png",
+        "/hero2.png",
+        "/hero3.png",
+        "/hero4.png"
+    ];
+
     return (
         <div className="pb-8 flex flex-col justify-center items-center">
             {/* Hero */}
@@ -48,14 +55,14 @@ export default function Page() {
                     pagination={{clickable: true}}
                 >
                     {
-                        [1, 2, 3, 4].map((item, index) => (
+                        heroImages.map((src, index) => (
                             <SwiperSlide key={index}>
                                 <div className="w-full h-[88vh] relative mb-12">
                                     <Image
                                         className="rounded-md"
-                                        src={`https://placehold.co/1366x768?text=hero${index}`}
+                                        src={src}
                                         layout="fill"
-                                        objectFit="cover"
+                                        objectFit="contain"
                                         alt="hero"
                                     />
                                 </div>
