@@ -17,7 +17,7 @@ export default function Page() {
     const {
         accountState,
         getAccountAdminsApiResult,
-        setGetAccountAdminRequest,
+        setGetAccountAdminsRequest,
     } = useAccount();
     const {
         warehouseState,
@@ -143,7 +143,7 @@ export default function Page() {
                                 isInvalid={Boolean(props.errors.accountId)}
                                 items={getAccountAdminsApiResult.data?.data ?? []}
                                 onInputChange={(input) => {
-                                    setGetAccountAdminRequest({
+                                    setGetAccountAdminsRequest({
                                         size: accountState.getAccountAdminsRequest.size,
                                         page: accountState.getAccountAdminsRequest.page,
                                         search: input,
@@ -152,7 +152,7 @@ export default function Page() {
                                 onSelectionChange={(key) => {
                                     props.setFieldValue("accountId", key)
                                     const item = getAccountAdminsApiResult.data?.data?.find((item) => item.id === key);
-                                    setGetAccountAdminRequest({
+                                    setGetAccountAdminsRequest({
                                         size: accountState.getAccountAdminsRequest.size,
                                         page: accountState.getAccountAdminsRequest.page,
                                         search: `${item?.id} - ${item?.name} - ${item?.email}`,

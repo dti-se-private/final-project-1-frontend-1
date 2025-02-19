@@ -46,7 +46,7 @@ export default function Page() {
 
     const [orderResponse, setOrderResponse] = useState<OrderResponse | undefined>(undefined);
     const [accountAddressId, setAccountAddressId] = useState<string | undefined>(undefined);
-    const [isTryCheckoutFetching, setIsTryCheckoutFetching] = useState<boolean>(false);
+    const [isTryCheckoutFetching, setIsTryCheckoutFetching] = useState<boolean>(true);
 
     const handleTryCheckout = _.debounce((request) => {
         setIsTryCheckoutFetching(true);
@@ -236,6 +236,7 @@ export default function Page() {
                             <Button
                                 className="w-full"
                                 color="primary"
+                                isLoading={isTryCheckoutFetching}
                                 onPress={() => {
                                     const request: OrderRequest = {
                                         addressId: accountAddressId!,

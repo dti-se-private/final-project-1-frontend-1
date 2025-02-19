@@ -9,7 +9,7 @@ export const useAccount = () => {
     const accountState = useSelector((state: RootState) => state.accountSlice);
     const getAccountAdminsApiResult = accountApi.useGetAccountAdminsQuery(accountState.getAccountAdminsRequest);
 
-    const setGetAccountAdminRequest = (request: ManyRequest) => {
+    const setGetAccountAdminsRequest = (request: ManyRequest) => {
         dispatch(accountSlice.actions.setGetAccountAdminsRequest(request));
         getAccountAdminsApiResult.refetch();
     }
@@ -21,7 +21,7 @@ export const useAccount = () => {
     return {
         accountState,
         getAccountAdminsApiResult,
-        setGetAccountAdminRequest,
+        setGetAccountAdminsRequest,
         setDetails,
     };
 }
