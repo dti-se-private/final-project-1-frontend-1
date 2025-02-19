@@ -88,11 +88,14 @@ export default function Page() {
                             <Select
                                 label="Aggregation"
                                 className="max-w-xs"
-                                selectedKeys={[productSalesStatisticsState.getProductSalesStatisticsRequest.aggregation]}
-                                onSelectionChange={(keys) => setGetProductSalesStatisticsRequest({
+                                selectedKeys={new Set([productSalesStatisticsState.getProductSalesStatisticsRequest.aggregation])}
+                                onSelectionChange={(keys) => {
+                                  const key = Array.from(keys).at(0) as "sum" | "average" | "count" | undefined;
+                                  setGetProductSalesStatisticsRequest({
                                     ...productSalesStatisticsState.getProductSalesStatisticsRequest,
-                                    aggregation: Array.from(keys)[0] as string
-                                })}
+                                    aggregation: key || "sum"
+                                  });
+                                }}
                             >
                                 <SelectItem key="sum" value="sum">Sum</SelectItem>
                                 <SelectItem key="average" value="average">Average</SelectItem>
@@ -102,11 +105,14 @@ export default function Page() {
                             <Select
                                 label="Period"
                                 className="max-w-xs"
-                                selectedKeys={[productSalesStatisticsState.getProductSalesStatisticsRequest.period]}
-                                onSelectionChange={(keys) => setGetProductSalesStatisticsRequest({
+                                selectedKeys={new Set([productSalesStatisticsState.getProductSalesStatisticsRequest.period])}
+                                onSelectionChange={(keys) => {
+                                    const key = Array.from(keys).at(0) as "day" | "week" | "month" | undefined;
+                                    setGetProductSalesStatisticsRequest({
                                     ...productSalesStatisticsState.getProductSalesStatisticsRequest,
-                                    period: Array.from(keys)[0] as string
-                                })}
+                                    period: key || "day"
+                                    });
+                                }}
                             >
                                 <SelectItem key="day" value="day">Daily</SelectItem>
                                 <SelectItem key="week" value="week">Weekly</SelectItem>

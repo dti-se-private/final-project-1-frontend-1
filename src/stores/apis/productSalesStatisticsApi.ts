@@ -13,8 +13,8 @@ export interface ProductSalesStatisticsRequest {
     warehouseIds?: string[];
     categoryIds?: string[];
     productIds?: string[];
-    aggregation?: string;
-    period?: string;
+    aggregation: "sum" | "average" | "count";
+  period: "day" | "week" | "month";
 }
 
 // Create the API service
