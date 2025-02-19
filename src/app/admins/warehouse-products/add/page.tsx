@@ -1,21 +1,26 @@
 "use client"
 import * as Yup from "yup";
-import { useFormik } from "formik";
-import { Autocomplete, AutocompleteItem, Button, Spinner, Input } from "@heroui/react";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useWarehouseProduct } from "@/src/hooks/useWarehouseProduct";
-import { useProduct } from "@/src/hooks/useProduct";
-import { useWarehouse } from "@/src/hooks/useWarehouse";
-import { WarehouseProductRequest } from "@/src/stores/apis/warehouseProductApi";
-import { useModal } from "@/src/hooks/useModal";
+import {useFormik} from "formik";
+import {Autocomplete, AutocompleteItem, Button, Input, Spinner} from "@heroui/react";
+import React, {useEffect} from "react";
+import {useRouter} from "next/navigation";
+import {useWarehouseProduct} from "@/src/hooks/useWarehouseProduct";
+import {useProduct} from "@/src/hooks/useProduct";
+import {useWarehouse} from "@/src/hooks/useWarehouse";
+import {WarehouseProductRequest} from "@/src/stores/apis/warehouseProductApi";
+import {useModal} from "@/src/hooks/useModal";
 
 export default function Page() {
     const router = useRouter();
     const modal = useModal();
-    const { warehouseProductState, addWarehouseProduct, getWarehouseProductsApiResult, setGetWarehouseProductsRequest } = useWarehouseProduct();
-    const { productState, setGetProductsRequest, getProductsApiResult } = useProduct();
-    const { warehouseState, setGetWarehousesRequest, getWarehousesApiResult } = useWarehouse();
+    const {
+        warehouseProductState,
+        addWarehouseProduct,
+        getWarehouseProductsApiResult,
+        setGetWarehouseProductsRequest
+    } = useWarehouseProduct();
+    const {productState, setGetProductsRequest, getProductsApiResult} = useProduct();
+    const {warehouseState, setGetWarehousesRequest, getWarehousesApiResult} = useWarehouse();
 
     const initialValues = {
         productId: "",
@@ -71,12 +76,17 @@ export default function Page() {
             page: warehouseState.getWarehousesRequest.page,
             search: "",
         });
-        setGetWarehouseProductsRequest({
-            size: warehouseProductState.getWarehouseProductsRequest.size,
-            page: warehouseProductState.getWarehouseProductsRequest.page,
-            search: "",
-        });
     }, []);
+
+    if (getProductsApiResult.isLoading || getWarehousesApiResult.isLoading) {
+        return (
+            <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+                <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
+                    <Spinner/>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">

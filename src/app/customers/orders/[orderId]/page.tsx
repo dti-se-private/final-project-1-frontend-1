@@ -102,9 +102,10 @@ export default function Page() {
         );
     }
     const rowMapperStatuses = (item: OrderStatusResponse, key: string): React.JSX.Element => {
-        const lastStatus = orderState.details?.statuses[orderState.details?.statuses.length - 1].status;
+        const lastItem = orderState.details?.statuses[orderState.details?.statuses.length - 1];
+        const isLast = lastItem?.id === item.id;
         if (key === "action") {
-            if (item.status === "WAITING_FOR_PAYMENT" && lastStatus === "WAITING_FOR_PAYMENT") {
+            if (item.status === "WAITING_FOR_PAYMENT" && isLast) {
                 return (
                     <div className="flex flex-row gap-2">
                         <Dropdown placement="bottom-end">
@@ -177,7 +178,7 @@ export default function Page() {
                         </Button>
                     </div>
                 );
-            } else if (item.status === "WAITING_FOR_PAYMENT_CONFIRMATION" && lastStatus === "WAITING_FOR_PAYMENT_CONFIRMATION") {
+            } else if (item.status === "WAITING_FOR_PAYMENT_CONFIRMATION") {
                 return (
                     <div className="flex flex-row gap-2">
                         <Button
@@ -186,37 +187,39 @@ export default function Page() {
                         >
                             Details
                         </Button>
-                        <Button
-                            color="danger"
-                            onPress={() => {
-                                const request: OrderProcessRequest = {
-                                    orderId: orderId,
-                                    action: "CANCEL"
-                                }
-                                processCancellation(request)
-                                    .then((data) => {
-                                        modal.setContent({
-                                            header: "Process Cancellation Succeed",
-                                            body: `${data.message}`,
+                        {isLast &&
+                            <Button
+                                color="danger"
+                                onPress={() => {
+                                    const request: OrderProcessRequest = {
+                                        orderId: orderId,
+                                        action: "CANCEL"
+                                    }
+                                    processCancellation(request)
+                                        .then((data) => {
+                                            modal.setContent({
+                                                header: "Process Cancellation Succeed",
+                                                body: `${data.message}`,
+                                            })
                                         })
-                                    })
-                                    .catch((error) => {
-                                        modal.setContent({
-                                            header: "Process Cancellation Failed",
-                                            body: `${error.data.message}`,
+                                        .catch((error) => {
+                                            modal.setContent({
+                                                header: "Process Cancellation Failed",
+                                                body: `${error.data.message}`,
+                                            })
                                         })
-                                    })
-                                    .finally(() => {
-                                        modal.onOpenChange(true);
-                                        detailOrderApiResult.refetch();
-                                    });
-                            }}
-                        >
-                            Cancel
-                        </Button>
+                                        .finally(() => {
+                                            modal.onOpenChange(true);
+                                            detailOrderApiResult.refetch();
+                                        });
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        }
                     </div>
                 )
-            } else if (item.status === "SHIPPING" && lastStatus === "SHIPPING") {
+            } else if (item.status === "SHIPPING" && isLast) {
                 return (
                     <Button
                         color="primary"

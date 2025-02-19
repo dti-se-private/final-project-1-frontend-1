@@ -236,6 +236,7 @@ export default function Page() {
                             <Button
                                 className="w-full"
                                 color="primary"
+                                isLoading={isTryCheckoutFetching}
                                 onPress={() => {
                                     const request: OrderRequest = {
                                         addressId: accountAddressId!,

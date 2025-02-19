@@ -2,12 +2,13 @@
 import * as Yup from "yup";
 import {useFormik} from "formik";
 import {Autocomplete, AutocompleteItem, Button, Spinner} from "@heroui/react";
-import React from "react";
+import React, {useEffect} from "react";
 import {useWarehouseAdmin} from "@/src/hooks/useWarehouseAdmin";
 import {useRouter} from "next/navigation";
 import {WarehouseAdminRequest} from "@/src/stores/apis/warehouseAdminApi";
 import {useWarehouse} from "@/src/hooks/useWarehouse";
 import {useModal} from "@/src/hooks/useModal";
+import {useAccount} from "@/src/hooks/useAccount";
 
 interface ExistingPair {
     id: string;
@@ -21,14 +22,26 @@ export default function Page() {
     const {
         warehouseAdminState,
         addWarehouseAdmin,
-        getWarehouseAdminsApiResult,
-        setGetWarehouseAdminsRequest,
     } = useWarehouseAdmin();
+    const {
+        accountState,
+        setGetAccountAdminsRequest,
+        getAccountAdminsApiResult,
+    } = useAccount();
     const {
         warehouseState,
         setGetWarehousesRequest,
         getWarehousesApiResult,
     } = useWarehouse();
+
+
+    useEffect(() => {
+        setGetWarehousesRequest({
+            size: warehouseState.getWarehousesRequest.size,
+            page: warehouseState.getWarehousesRequest.page,
+            search: "",
+        });
+    }, []);
 
     const initialValues = {
         warehouseId: "",
@@ -70,7 +83,7 @@ export default function Page() {
         enableReinitialize: true
     }))
 
-    if (getWarehousesApiResult.isLoading || getWarehouseAdminsApiResult.isLoading) {
+    if (getWarehousesApiResult.isLoading || getAccountAdminsApiResult.isLoading) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
@@ -127,27 +140,27 @@ export default function Page() {
                         selectedKey={formik.values.accountId}
                         errorMessage={formik.errors.accountId}
                         isInvalid={Boolean(formik.errors.accountId)}
-                        items={getWarehouseAdminsApiResult.data?.data ?? []}
+                        items={getAccountAdminsApiResult.data?.data ?? []}
                         onInputChange={(input) => {
-                            setGetWarehouseAdminsRequest({
-                                size: warehouseAdminState.getWarehouseAdminsRequest.size,
-                                page: warehouseAdminState.getWarehouseAdminsRequest.page,
+                            setGetAccountAdminsRequest({
+                                size: accountState.getAccountAdminsRequest.size,
+                                page: accountState.getAccountAdminsRequest.page,
                                 search: input,
                             });
                         }}
                         onSelectionChange={(key) => {
                             formik.setFieldValue("accountId", key)
-                            const item = getWarehouseAdminsApiResult.data?.data?.find((item) => item.id === key);
-                            setGetWarehouseAdminsRequest({
-                                size: warehouseAdminState.getWarehouseAdminsRequest.size,
-                                page: warehouseAdminState.getWarehouseAdminsRequest.page,
-                                search: `${item?.id} - ${item?.account.name} - ${item?.account.email}`
+                            const item = getAccountAdminsApiResult.data?.data?.find((item) => item.id === key);
+                            setGetAccountAdminsRequest({
+                                size: accountState.getAccountAdminsRequest.size,
+                                page: accountState.getAccountAdminsRequest.page,
+                                search: `${item?.id} - ${item?.name} - ${item?.email}`
                             });
                         }}
                     >
                         {(item) => (
                             <AutocompleteItem key={item.id}>
-                                {`${item.id} - ${item.account.name} - ${item.account.email}`}
+                                {`${item.id} - ${item.name} - ${item.email}`}
                             </AutocompleteItem>
                         )}
                     </Autocomplete>

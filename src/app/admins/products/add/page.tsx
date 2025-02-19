@@ -9,7 +9,7 @@ import {ProductRequest} from "@/src/stores/apis/productApi";
 import {convertFileToHexString, convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import Image from "next/image";
 import {useCategory} from "@/src/hooks/useCategory";
-import React from "react";
+import React, {useEffect} from "react";
 
 export default function Page() {
     const router = useRouter();
@@ -23,6 +23,15 @@ export default function Page() {
         getCategoriesApiResult,
     } = useCategory();
     const modal = useModal();
+
+
+    useEffect(() => {
+        setGetCategoriesRequest({
+            size: categoryState.getCategoriesRequest.size,
+            page: categoryState.getCategoriesRequest.page,
+            search: "",
+        });
+    }, []);
 
     const initialValues = {
         categoryId: "",
