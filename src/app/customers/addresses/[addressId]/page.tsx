@@ -95,7 +95,7 @@ export default function Page() {
     };
 
 
-    if (detailAccountAddressApiResult.isFetching) {
+    if (detailAccountAddressApiResult.isLoading) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">

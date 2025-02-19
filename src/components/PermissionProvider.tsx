@@ -23,7 +23,6 @@ const pathPatternPermissions = {
         '^/admins/dashboard',
         '^/admins/warehouse-products/.*',
         '^/admins/orders/.*',
-        '^/admins/payment-confirmations/.*',
         '^/admins/statistics/.*',
         '^/customers/.*',
         '^/products/.*',

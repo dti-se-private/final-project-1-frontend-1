@@ -70,7 +70,7 @@ export default function Page() {
         enableReinitialize: true
     }))
 
-    if (getWarehousesApiResult.isFetching || getWarehouseAdminsApiResult.isFetching) {
+    if (getWarehousesApiResult.isLoading || getWarehouseAdminsApiResult.isLoading) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
@@ -130,8 +130,8 @@ export default function Page() {
                         items={getWarehouseAdminsApiResult.data?.data ?? []}
                         onInputChange={(input) => {
                             setGetWarehouseAdminsRequest({
-                                size: warehouseAdminState.getWarehouseAdminRequest.size,
-                                page: warehouseAdminState.getWarehouseAdminRequest.page,
+                                size: warehouseAdminState.getWarehouseAdminsRequest.size,
+                                page: warehouseAdminState.getWarehouseAdminsRequest.page,
                                 search: input,
                             });
                         }}
@@ -139,8 +139,8 @@ export default function Page() {
                             formik.setFieldValue("accountId", key)
                             const item = getWarehouseAdminsApiResult.data?.data?.find((item) => item.id === key);
                             setGetWarehouseAdminsRequest({
-                                size: warehouseAdminState.getWarehouseAdminRequest.size,
-                                page: warehouseAdminState.getWarehouseAdminRequest.page,
+                                size: warehouseAdminState.getWarehouseAdminsRequest.size,
+                                page: warehouseAdminState.getWarehouseAdminsRequest.page,
                                 search: `${item?.id} - ${item?.account.name} - ${item?.account.email}`
                             });
                         }}

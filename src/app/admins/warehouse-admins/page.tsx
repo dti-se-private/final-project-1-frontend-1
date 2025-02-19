@@ -18,7 +18,6 @@ import {
 } from "@heroui/react";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
-import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
 
 export default function WarehouseAdminsManagementPage() {
@@ -102,7 +101,7 @@ export default function WarehouseAdminsManagementPage() {
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-row w-full gap-4">
                                 <Input
-                                    placeholder="Search..."
+                                    placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
                                     value={warehouseAdminState.getWarehouseAdminsRequest.search}
                                     variant="bordered"
@@ -169,7 +168,7 @@ export default function WarehouseAdminsManagementPage() {
                     <TableBody
                         items={getWarehouseAdminsApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={getWarehouseAdminsApiResult.isLoading ? "loading" : "idle"}
+                        loadingState={getWarehouseAdminsApiResult.isFetching ? "loading" : "idle"}
                     >
                         {(item) => (
                             <TableRow key={item?.id}>

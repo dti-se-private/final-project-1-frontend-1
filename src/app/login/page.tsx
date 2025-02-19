@@ -93,7 +93,7 @@ export default function Page() {
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
-                    <Form className="w-2/3 md:w-2/3">
+                    <Form className="w-2/3 md:w-1/3">
                         <FormInput name="email" label="Email" type="email"/>
                         <FormInput name="password" label="Password" type="password"/>
                         <Button type="submit" className="w-full">

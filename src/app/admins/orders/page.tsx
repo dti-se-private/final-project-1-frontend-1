@@ -16,7 +16,6 @@ import {
 import {OrderResponse} from "@/src/stores/apis/orderApi";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
-import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
 import {useOrder} from "@/src/hooks/useOrder";
 import moment from "moment";
@@ -94,7 +93,7 @@ export default function Page() {
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-row w-full gap-4">
                                 <Input
-                                    placeholder="Search..."
+                                    placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
                                     value={orderState.getOrdersRequest.search}
                                     variant="bordered"

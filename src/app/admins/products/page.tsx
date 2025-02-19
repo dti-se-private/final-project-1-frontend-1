@@ -18,7 +18,6 @@ import {
 import {ProductResponse} from "@/src/stores/apis/productApi";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
-import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
 import Image from "next/image";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
@@ -130,7 +129,7 @@ export default function Page() {
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-row w-full gap-4">
                                 <Input
-                                    placeholder="Search..."
+                                    placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
                                     value={productState.getProductsRequest.search}
                                     variant="bordered"

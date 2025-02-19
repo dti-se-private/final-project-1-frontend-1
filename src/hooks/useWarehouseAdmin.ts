@@ -12,7 +12,7 @@ import {ManyRequest, OneRequest} from "@/src/stores/apis";
 export const useWarehouseAdmin = () => {
     const dispatch = useDispatch();
     const warehouseAdminState = useSelector((state: RootState) => state.warehouseAdminSlice);
-    const getWarehouseAdminsApiResult = warehouseAdminApi.useGetWarehouseAdminsQuery(warehouseAdminState.getWarehouseAdminRequest);
+    const getWarehouseAdminsApiResult = warehouseAdminApi.useGetWarehouseAdminsQuery(warehouseAdminState.getWarehouseAdminsRequest);
     const [addWarehouseAdminApiTrigger] = warehouseAdminApi.useAddWarehouseAdminMutation();
     const [patchWarehouseAdminApiTrigger] = warehouseAdminApi.usePatchWarehouseAdminMutation();
     const [deleteWarehouseAdminApiTrigger] = warehouseAdminApi.useDeleteWarehouseAdminMutation();

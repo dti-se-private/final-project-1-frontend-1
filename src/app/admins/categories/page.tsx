@@ -18,7 +18,6 @@ import {
 import {CategoryResponse} from "@/src/stores/apis/categoryApi";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
-import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
 
 export default function Page() {
@@ -92,7 +91,7 @@ export default function Page() {
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-row w-full gap-4">
                                 <Input
-                                    placeholder="Search..."
+                                    placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
                                     value={categoryState.getCategoriesRequest.search}
                                     variant="bordered"

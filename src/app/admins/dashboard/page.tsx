@@ -32,11 +32,13 @@ export default function Dashboard() {
             {text: "Category Management", link: "/admins/categories"},
             {text: "Warehouse Product Management", link: "/admins/warehouse-products"},
             {text: "Order Management", link: "/admins/orders"},
+            {text: "Payment Confirmation Order Management", link: "/admins/orders/payment-confirmations"},
         ],
         WAREHOUSE_ADMIN: [
             {text: "Warehouse Management", link: "/admins/warehouses"},
             {text: "Warehouse Product Management", link: "/admins/warehouse-products"},
             {text: "Order Management", link: "/admins/orders"},
+            {text: "Payment Confirmation Order Management", link: "/admins/orders/payment-confirmations"},
         ],
     };
 
@@ -57,7 +59,7 @@ export default function Dashboard() {
                 <div className="flex justify-center items-center flex-wrap gap-8 p-4">
                     {buttonsToShow.map((item, index) => (
                         <Link
-                            className="md:w-1/4 w-full h-[20vh] p-4 flex flex-col text-center text-white text-xl font-bold justify-center items-center rounded-lg shadow-md bg-blue-500 hover:bg-blue-700"
+                            className="md:w-1/4 w-full h-[20vh] p-4 flex flex-col text-center text-white text-lg font-bold justify-center items-center rounded-lg shadow-md bg-blue-500 hover:bg-blue-700"
                             key={index}
                             href={item.link}
                         >

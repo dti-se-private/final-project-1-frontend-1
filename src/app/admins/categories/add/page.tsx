@@ -45,7 +45,8 @@ export default function Page() {
                     header: "Add Failed",
                     body: `${error.data.message}`,
                 })
-            }).finally(() => {
+            })
+            .finally(() => {
                 modal.onOpenChange(true);
                 actions.setSubmitting(false);
             });

@@ -13,7 +13,7 @@ import {
     TableHeader,
     TableRow
 } from "@heroui/react";
-import {OrderResponse} from "@/src/stores/apis/orderApi";
+import {OrderProcessRequest, OrderResponse} from "@/src/stores/apis/orderApi";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
 import {useModal} from "@/src/hooks/useModal";
@@ -25,14 +25,15 @@ export default function Page() {
     const modal = useModal();
     const {
         orderState,
-        getOrdersApiResult,
-        setGetOrdersRequest
+        getPaymentConfirmationOrdersApiResult,
+        setGetPaymentConfirmationOrdersRequest,
+        processPaymentConfirmation
     } = useOrder();
 
     useEffect(() => {
-        setGetOrdersRequest({
-            page: orderState.getOrdersRequest.page,
-            size: orderState.getOrdersRequest.size,
+        setGetPaymentConfirmationOrdersRequest({
+            page: orderState.getPaymentConfirmationOrdersRequest.page,
+            size: orderState.getPaymentConfirmationOrdersRequest.size,
             search: "",
         });
     }, [])
@@ -51,17 +52,66 @@ export default function Page() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/customers/orders/${item.id}`)}
+                        onPress={() => router.push(`/admins/orders/${item.id}`)}
                     >
                         Details
                     </Button>
+                    <Button
+                        color="success"
+                        className="text-white"
+                        onPress={() => {
+                            const request: OrderProcessRequest = {
+                                orderId: item.id,
+                                action: "APPROVE"
+                            }
+                            processPaymentConfirmation(request)
+                                .then((data) => {
+                                    modal.setContent({
+                                        header: "Process Payment Confirmation Succeed",
+                                        body: `${data.message}`,
+                                    })
+                                })
+                                .catch((error) => {
+                                    modal.setContent({
+                                        header: "Process Payment Confirmation Failed",
+                                        body: `${error.data.message}`,
+                                    })
+                                })
+                                .finally(() => {
+                                    modal.onOpenChange(true);
+                                });
+                        }}
+                    >
+                        Approve
+                    </Button>
+                    <Button
+                        color="danger"
+                        onPress={() => {
+                            const request: OrderProcessRequest = {
+                                orderId: item.id,
+                                action: "REJECT"
+                            }
+                            processPaymentConfirmation(request)
+                                .then((data) => {
+                                    modal.setContent({
+                                        header: "Process Payment Confirmation Succeed",
+                                        body: `${data.message}`,
+                                    })
+                                })
+                                .catch((error) => {
+                                    modal.setContent({
+                                        header: "Process Payment Confirmation Failed",
+                                        body: `${error.data.message}`,
+                                    })
+                                })
+                                .finally(() => {
+                                    modal.onOpenChange(true);
+                                });
+                        }}
+                    >
+                        Reject
+                    </Button>
                 </div>
-            );
-        } else if (key === "lastStatus") {
-            return (
-                <>
-                    {item.statuses[item.statuses.length - 1].status}
-                </>
             );
         } else if (key === "lastStatusTime") {
             return (
@@ -87,7 +137,7 @@ export default function Page() {
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
-                <div className="mb-8 text-4xl font-bold">Orders</div>
+                <div className="mb-8 text-4xl font-bold">Payment Confirmation Orders</div>
                 <Table
                     topContent={
                         <div className="flex flex-col gap-4">
@@ -95,17 +145,17 @@ export default function Page() {
                                 <Input
                                     placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
-                                    value={orderState.getOrdersRequest.search}
+                                    value={orderState.getPaymentConfirmationOrdersRequest.search}
                                     variant="bordered"
                                     isClearable={true}
-                                    onClear={() => setGetOrdersRequest({
-                                        page: orderState.getOrdersRequest.page,
-                                        size: orderState.getOrdersRequest.size,
+                                    onClear={() => setGetPaymentConfirmationOrdersRequest({
+                                        page: orderState.getPaymentConfirmationOrdersRequest.page,
+                                        size: orderState.getPaymentConfirmationOrdersRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={(value) => setGetOrdersRequest({
-                                        page: orderState.getOrdersRequest.page,
-                                        size: orderState.getOrdersRequest.size,
+                                    onValueChange={(value) => setGetPaymentConfirmationOrdersRequest({
+                                        page: orderState.getPaymentConfirmationOrdersRequest.page,
+                                        size: orderState.getPaymentConfirmationOrdersRequest.size,
                                         search: value
                                     })}
                                 />
@@ -114,10 +164,10 @@ export default function Page() {
                                 Rows per page:
                                 <select
                                     className="bg-transparent outline-none text-default-400 text-small"
-                                    onChange={(event) => setGetOrdersRequest({
-                                        page: orderState.getOrdersRequest.page,
+                                    onChange={(event) => setGetPaymentConfirmationOrdersRequest({
+                                        page: orderState.getPaymentConfirmationOrdersRequest.page,
                                         size: Number(event.target.value),
-                                        search: orderState.getOrdersRequest.search
+                                        search: orderState.getPaymentConfirmationOrdersRequest.search
                                     })}
                                 >
                                     <option selected value="5">5</option>
@@ -132,12 +182,12 @@ export default function Page() {
                             <Pagination
                                 showControls
                                 showShadow
-                                page={orderState.getOrdersRequest.page + 1}
+                                page={orderState.getPaymentConfirmationOrdersRequest.page + 1}
                                 total={Infinity}
-                                onChange={(page) => setGetOrdersRequest({
+                                onChange={(page) => setGetPaymentConfirmationOrdersRequest({
                                     page: page - 1,
-                                    size: orderState.getOrdersRequest.size,
-                                    search: orderState.getOrdersRequest.search,
+                                    size: orderState.getPaymentConfirmationOrdersRequest.size,
+                                    search: orderState.getPaymentConfirmationOrdersRequest.search,
                                 })}
                             />
                         </div>
@@ -148,14 +198,13 @@ export default function Page() {
                         <TableColumn key="itemPrice">Item Price</TableColumn>
                         <TableColumn key="shipmentPrice">Shipment Price</TableColumn>
                         <TableColumn key="totalPrice">Total Price</TableColumn>
-                        <TableColumn key="lastStatus">Last Status</TableColumn>
                         <TableColumn key="lastStatusTime">Last Status Time</TableColumn>
                         <TableColumn key="action">Action</TableColumn>
                     </TableHeader>
                     <TableBody
-                        items={getOrdersApiResult.data?.data ?? []}
+                        items={getPaymentConfirmationOrdersApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={getOrdersApiResult.isFetching ? "loading" : "idle"}
+                        loadingState={getPaymentConfirmationOrdersApiResult.isFetching ? "loading" : "idle"}
                         emptyContent={"Empty!"}
                     >
                         {(item) => (
