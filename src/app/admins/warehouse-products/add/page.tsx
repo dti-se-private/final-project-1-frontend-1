@@ -78,16 +78,6 @@ export default function Page() {
         });
     }, []);
 
-    if (getProductsApiResult.isFetching || getWarehousesApiResult.isFetching) {
-        return (
-            <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
-                <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
-                    <Spinner />
-                </div>
-            </div>
-        )
-    }
-
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-center items-center">
