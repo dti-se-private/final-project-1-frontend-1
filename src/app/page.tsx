@@ -44,7 +44,7 @@ export default function Page() {
     return (
         <div className="pb-8 flex flex-col justify-center items-center">
             {/* Hero */}
-            <section className="w-full mb-8">
+            <section className="w-full mb-4">
                 <Swiper
                     loop={true}
                     autoplay={true}
@@ -55,14 +55,14 @@ export default function Page() {
                     pagination={{clickable: true}}
                 >
                     {
-                        heroImages.map((src, index) => (
+                        heroImages.map((image, index) => (
                             <SwiperSlide key={index}>
-                                <div className="w-full h-[88vh] relative mb-12">
+                                <div className="w-full h-[24vh] md:h-[79vh] relative mb-12">
                                     <Image
                                         className="rounded-md"
-                                        src={src}
+                                        src={image}
                                         layout="fill"
-                                        objectFit="contain"
+                                        objectFit="cover"
                                         alt="hero"
                                     />
                                 </div>
