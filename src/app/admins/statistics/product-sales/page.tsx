@@ -8,6 +8,9 @@ import _ from "lodash";
 import { useModal } from "@/src/hooks/useModal";
 import { useProductSalesStatistics } from "@/src/hooks/useProductSalesStatistics";
 import { Chart } from "@/src/components/Chart";
+import { useWarehouse } from "@/src/hooks/useWarehouse";
+import { useCategory } from "@/src/hooks/useCategory";
+import { useProduct } from "@/src/hooks/useProduct";
 
 export default function Page() {
     const router = useRouter();
@@ -18,10 +21,15 @@ export default function Page() {
         setGetProductSalesStatisticsRequest,
     } = useProductSalesStatistics();
 
-    // Mock data - replace with real data from your APIs
-    const warehouseOptions = [{ id: "1", name: "Warehouse A" }, { id: "2", name: "Warehouse B" }];
-    const categoryOptions = [{ id: "1", name: "Category X" }, { id: "2", name: "Category Y" }];
-    const productOptions = [{ id: "1", name: "Product 1" }, { id: "2", name: "Product 2" }];
+    // Get filter options from APIs
+    const { getWarehousesApiResult } = useWarehouse();
+    const { getCategoriesApiResult } = useCategory();
+    const { getProductsApiResult } = useProduct();
+
+    // Get actual data from APIs
+    const warehouseOptions = getWarehousesApiResult.data?.data || [];
+    const categoryOptions = getCategoriesApiResult.data?.data || [];
+    const productOptions = getProductsApiResult.data?.data || [];
 
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
