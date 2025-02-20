@@ -31,6 +31,8 @@ import {warehouseLedgerSlice} from "@/src/stores/slices/warehouseLedgerSlice";
 import {warehouseLedgerApi} from "@/src/stores/apis/warehouseLedgerApi";
 import {productSalesStatisticsSlice} from "@/src/stores/slices/productSalesStatisticsSlice";
 import {productSalesStatisticsApi} from "@/src/stores/apis/productSalesStatisticsApi";
+import {productStockStatisticsSlice} from "@/src/stores/slices/productStockStatisticsSlice";
+import {productStockStatisticsApi} from "@/src/stores/apis/productStockStatisticsApi";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
@@ -45,6 +47,7 @@ const rootReducer = combineReducers({
     [warehouseProductSlice.reducerPath]: warehouseProductSlice.reducer,
     [warehouseLedgerSlice.reducerPath]: warehouseLedgerSlice.reducer,
     [productSalesStatisticsSlice.reducerPath]: productSalesStatisticsSlice.reducer,
+    [productStockStatisticsSlice.reducerPath]: productStockStatisticsSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [accountAddressApi.reducerPath]: accountAddressApi.reducer,
     [warehouseApi.reducerPath]: warehouseApi.reducer,
@@ -58,6 +61,7 @@ const rootReducer = combineReducers({
     [cartApi.reducerPath]: cartApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
     [productSalesStatisticsApi.reducerPath]: productSalesStatisticsApi.reducer,
+    [productStockStatisticsApi.reducerPath]: productStockStatisticsApi.reducer,
 })
 
 const createNoopStorage = () => {
@@ -105,6 +109,7 @@ export const store = configureStore({
         warehouseProductApi.middleware,
         warehouseLedgerApi.middleware,
         productSalesStatisticsApi.middleware,
+        productStockStatisticsApi.middleware
     ),
 })
 
