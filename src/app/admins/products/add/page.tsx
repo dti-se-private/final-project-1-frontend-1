@@ -98,6 +98,7 @@ export default function Page() {
                         inputValue={categoryState.getCategoriesRequest.search}
                         isLoading={getCategoriesApiResult.isFetching}
                         items={getCategoriesApiResult.data?.data ?? []}
+                        isClearable={false}
                         onInputChange={(input) => {
                             setGetCategoriesRequest({
                                 size: categoryState.getCategoriesRequest.size,

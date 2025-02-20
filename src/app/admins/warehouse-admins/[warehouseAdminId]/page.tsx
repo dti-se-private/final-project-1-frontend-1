@@ -110,6 +110,7 @@ export default function Page() {
                                 errorMessage={props.errors.warehouseId}
                                 isInvalid={Boolean(props.errors.warehouseId)}
                                 items={getWarehousesApiResult.data?.data ?? []}
+                                isClearable={false}
                                 onInputChange={(input) => {
                                     setGetWarehousesRequest({
                                         size: warehouseState.getWarehousesRequest.size,
@@ -142,6 +143,7 @@ export default function Page() {
                                 errorMessage={props.errors.accountId}
                                 isInvalid={Boolean(props.errors.accountId)}
                                 items={getAccountAdminsApiResult.data?.data ?? []}
+                                isClearable={false}
                                 onInputChange={(input) => {
                                     setGetAccountAdminsRequest({
                                         size: accountState.getAccountAdminsRequest.size,

@@ -210,6 +210,7 @@ export default function Page() {
                                 inputValue={accountAddressState.getAccountAddressesRequest.search}
                                 isLoading={getAccountAddressesApiResult.isFetching}
                                 items={getAccountAddressesApiResult.data?.data ?? []}
+                                isClearable={false}
                                 onInputChange={(input) => {
                                     setGetAccountAddressesRequest({
                                         size: accountAddressState.getAccountAddressesRequest.size,

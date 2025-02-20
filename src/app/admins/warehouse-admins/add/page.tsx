@@ -109,6 +109,7 @@ export default function Page() {
                         inputValue={warehouseState.getWarehousesRequest.search}
                         isLoading={getWarehousesApiResult.isFetching}
                         items={getWarehousesApiResult.data?.data ?? []}
+                        isClearable={false}
                         onInputChange={(input) => {
                             setGetWarehousesRequest({
                                 size: warehouseState.getWarehousesRequest.size,
@@ -141,6 +142,7 @@ export default function Page() {
                         errorMessage={formik.errors.accountId}
                         isInvalid={Boolean(formik.errors.accountId)}
                         items={getAccountAdminsApiResult.data?.data ?? []}
+                        isClearable={false}
                         onInputChange={(input) => {
                             setGetAccountAdminsRequest({
                                 size: accountState.getAccountAdminsRequest.size,

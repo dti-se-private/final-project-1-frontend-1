@@ -130,6 +130,7 @@ export default function Page() {
                         inputValue={productState.getProductsRequest.search}
                         isLoading={getProductsApiResult.isFetching}
                         items={getProductsApiResult.data?.data ?? []}
+                        isClearable={false}
                         onInputChange={(input) => {
                             setGetProductsRequest({
                                 size: productState.getProductsRequest.size,
@@ -164,6 +165,7 @@ export default function Page() {
                         inputValue={warehouseState.getWarehousesRequest.search}
                         isLoading={getWarehousesApiResult.isFetching}
                         items={getWarehousesApiResult.data?.data ?? []}
+                        isClearable={false}
                         onInputChange={(input) => {
                             setGetWarehousesRequest({
                                 size: warehouseState.getWarehousesRequest.size,
