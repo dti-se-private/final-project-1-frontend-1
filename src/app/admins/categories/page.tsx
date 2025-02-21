@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useCategory} from "@/src/hooks/useCategory";
 import {Icon} from "@iconify/react";
 import {
@@ -18,11 +18,13 @@ import {
 import {CategoryResponse} from "@/src/stores/apis/categoryApi";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
-import {useModal} from "@/src/hooks/useModal";
+import ConfirmationModal from "@/src/components/ConfirmationModal";
+import {useDeleteConfirmation} from "@/src/hooks/useDeleteConfirmation";
+import {ProductResponse} from "@/src/stores/apis/productApi";
 
 export default function Page() {
     const router = useRouter();
-    const modal = useModal();
+    const [categoryToDelete, setCategoryToDelete] = useState<CategoryResponse | null>(null);
     const {
         categoryState,
         getCategoriesApiResult,
@@ -31,6 +33,38 @@ export default function Page() {
         deleteCategory,
     } = useCategory();
 
+    const {
+        isModalOpen,
+        modalContent,
+        showModal,
+        handleConfirm,
+        handleCancel,
+        setModalContent,
+    } = useDeleteConfirmation(() => {
+        if (categoryToDelete) {
+            deleteCategory({ id: categoryToDelete.id })
+                .then((data) => {
+                    setModalContent({
+                        header: "Delete Succeed",
+                        body: `${data.message}`,
+                    });
+                })
+                .catch((error) => {
+                    setModalContent({
+                        header: "Delete Failed",
+                        body: `${error.data.message}`,
+                    });
+                })
+                .finally(() => {
+                    setCategoryToDelete(null);
+                });
+        }
+    });
+
+    const handleDelete = (category: CategoryResponse) => {
+        setCategoryToDelete(category);
+        showModal("Confirm Delete", `Are you sure you want to delete the admin "${category.name}"?`);
+    }
 
     useEffect(() => {
         setGetCategoriesRequest({
@@ -52,22 +86,7 @@ export default function Page() {
                     </Button>
                     <Button
                         color="danger"
-                        onPress={() => deleteCategory({id: item.id})
-                            .then((data) => {
-                                modal.setContent({
-                                    header: "Delete Succeed",
-                                    body: `${data.message}`,
-                                })
-                            })
-                            .catch((error) => {
-                                modal.setContent({
-                                    header: "Delete Failed",
-                                    body: `${error.data.message}`,
-                                })
-                            }).finally(() => {
-                                modal.onOpenChange(true);
-                            })
-                        }
+                        onPress={() => handleDelete(item)}
                     >
                         Delete
                     </Button>
@@ -169,6 +188,14 @@ export default function Page() {
                     </TableBody>
                 </Table>
             </div>
+
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                header={modalContent.header}
+                body={modalContent.body}
+                onCancel={handleCancel}
+                onConfirm={handleConfirm}
+            />
         </div>
     )
 }
