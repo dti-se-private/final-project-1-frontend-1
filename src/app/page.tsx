@@ -8,6 +8,8 @@ import {Pagination} from "swiper/modules";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
+import {CategoryResponse} from "@/src/stores/apis/categoryApi";
+import {useEffect} from "react";
 
 export default function Page() {
     const router = useRouter();
@@ -21,6 +23,19 @@ export default function Page() {
         setCategory
     } = useProduct();
 
+    useEffect(() => {
+        setGetProductsRequest({
+            size: productState.getProductsRequest.size,
+            page: productState.getProductsRequest.page,
+            search: "",
+        });
+        setGetCategoriesRequest({
+            size: productState.getCategoriesRequest.size,
+            page: productState.getCategoriesRequest.page,
+            search: "",
+        });
+    }, []);
+
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
@@ -30,7 +45,7 @@ export default function Page() {
     });
 
     const categories = [
-        {id: "", name: "all", description: "all"},
+        {id: "", name: "all", description: "all"} as CategoryResponse,
         ...categoryApiResult.data?.data?.slice(0, 10) ?? []
     ]
 

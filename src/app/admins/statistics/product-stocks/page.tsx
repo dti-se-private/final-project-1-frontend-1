@@ -113,11 +113,11 @@ export default function Page() {
                                 </AutocompleteItem>
                             )}
                         </Autocomplete>
-                        <Dropdown>
+                        <Dropdown placement="bottom-end">
                             <DropdownTrigger>
                                 <Button
-                                    className="w-[12%] capitalize"
-                                    startContent={<ChevronDownIcon/>}
+                                    className="w-[12%] capitalize flex justify-between"
+                                    endContent={<ChevronDownIcon/>}
                                 >
                                     {
                                         Array
@@ -140,11 +140,11 @@ export default function Page() {
                                 }
                             </DropdownMenu>
                         </Dropdown>
-                        <Dropdown>
+                        <Dropdown placement="bottom-end">
                             <DropdownTrigger>
                                 <Button
-                                    className="w-[12%] capitalize"
-                                    startContent={<ChevronDownIcon/>}
+                                    className="w-[12%] capitalize flex justify-between"
+                                    endContent={<ChevronDownIcon/>}
                                 >
                                     {
                                         Array
@@ -167,11 +167,11 @@ export default function Page() {
                                 }
                             </DropdownMenu>
                         </Dropdown>
-                        <Dropdown>
+                        <Dropdown placement="bottom-end">
                             <DropdownTrigger>
                                 <Button
-                                    className="w-[12%] capitalize"
-                                    startContent={<ChevronDownIcon/>}
+                                    className="w-[12%] capitalize flex justify-between"
+                                    endContent={<ChevronDownIcon/>}
                                 >
                                     {
                                         Array
