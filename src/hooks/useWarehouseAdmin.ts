@@ -2,17 +2,17 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {warehouseAdminSlice} from "@/src/stores/slices/warehouseAdminSlice";
 import {
+    PatchWarehouseAdminRequest,
     warehouseAdminApi,
     WarehouseAdminRequest,
-    WarehouseAdminResponse,
-    PatchWarehouseAdminRequest
+    WarehouseAdminResponse
 } from "@/src/stores/apis/warehouseAdminApi";
 import {ManyRequest, OneRequest} from "@/src/stores/apis";
 
 export const useWarehouseAdmin = () => {
     const dispatch = useDispatch();
     const warehouseAdminState = useSelector((state: RootState) => state.warehouseAdminSlice);
-    const getWarehouseAdminsApiResult = warehouseAdminApi.useGetWarehouseAdminsQuery(warehouseAdminState.getWarehouseAdminRequest);
+    const getWarehouseAdminsApiResult = warehouseAdminApi.useGetWarehouseAdminsQuery(warehouseAdminState.getWarehouseAdminsRequest);
     const [addWarehouseAdminApiTrigger] = warehouseAdminApi.useAddWarehouseAdminMutation();
     const [patchWarehouseAdminApiTrigger] = warehouseAdminApi.usePatchWarehouseAdminMutation();
     const [deleteWarehouseAdminApiTrigger] = warehouseAdminApi.useDeleteWarehouseAdminMutation();
@@ -37,7 +37,8 @@ export const useWarehouseAdmin = () => {
     }
 
     const setGetWarehouseAdminsRequest = (request: ManyRequest) => {
-        dispatch(warehouseAdminSlice.actions.setGetWarehouseAdminRequest(request));
+        dispatch(warehouseAdminSlice.actions.setGetWarehouseAdminsRequest(request));
+        getWarehouseAdminsApiResult.refetch();
     }
 
     const setDetails = (warehouseAdmin: WarehouseAdminResponse) => {

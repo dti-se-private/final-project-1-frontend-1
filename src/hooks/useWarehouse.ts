@@ -1,12 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {warehouseSlice} from "@/src/stores/slices/warehouseSlice";
-import {
-    warehouseApi,
-    WarehouseRequest,
-    WarehouseResponse,
-    PatchWarehouseRequest
-} from "@/src/stores/apis/warehouseApi";
+import {PatchWarehouseRequest, warehouseApi, WarehouseRequest, WarehouseResponse} from "@/src/stores/apis/warehouseApi";
 import {ManyRequest, OneRequest} from "@/src/stores/apis";
 
 export const useWarehouse = () => {
@@ -38,6 +33,7 @@ export const useWarehouse = () => {
 
     const setGetWarehousesRequest = (request: ManyRequest) => {
         dispatch(warehouseSlice.actions.setGetWarehousesRequest(request));
+        getWarehousesApiResult.refetch();
     }
 
     const setDetails = (warehouse: WarehouseResponse) => {

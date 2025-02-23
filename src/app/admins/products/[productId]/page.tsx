@@ -102,7 +102,7 @@ export default function Page() {
         }
     }, [getCategoriesApiResult.isLoading]);
 
-    if (detailProductApiResult.isFetching) {
+    if (detailProductApiResult.isLoading) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
@@ -116,7 +116,7 @@ export default function Page() {
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-center items-center">
                 <div className="mb-8 text-4xl font-bold">Product Details</div>
-                <form className="w-2/3 md:w-1/3" onSubmit={formik.handleSubmit}>
+                <form className="w-2/3 md:w-2/3" onSubmit={formik.handleSubmit}>
                     <Autocomplete
                         className="mb-6 w-full"
                         label="Category"
@@ -128,6 +128,7 @@ export default function Page() {
                         inputValue={categoryState.getCategoriesRequest.search}
                         isLoading={getCategoriesApiResult.isFetching}
                         items={getCategoriesApiResult.data?.data ?? []}
+                        isClearable={false}
                         onInputChange={(input) => {
                             setGetCategoriesRequest({
                                 size: categoryState.getCategoriesRequest.size,

@@ -45,7 +45,8 @@ export default function Page() {
                     header: "Add Failed",
                     body: `${error.data.message}`,
                 })
-            }).finally(() => {
+            })
+            .finally(() => {
                 modal.onOpenChange(true);
                 actions.setSubmitting(false);
             });
@@ -62,7 +63,7 @@ export default function Page() {
                     enableReinitialize
                 >
                     {(props) => (
-                        <Form className="w-2/3 md:w-1/3">
+                        <Form className="w-2/3 md:w-2/3">
                             <FormInput name="name" label="Name" type="text"/>
                             <FormInputArea name="description" label="Description" type="text"/>
                             <Button type="submit" className="w-full mt-4">

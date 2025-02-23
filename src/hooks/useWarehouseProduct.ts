@@ -2,17 +2,21 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {warehouseProductSlice} from "@/src/stores/slices/warehouseProductSlice";
 import {
+    PatchWarehouseProductRequest,
     warehouseProductApi,
     WarehouseProductRequest,
-    WarehouseProductResponse,
-    PatchWarehouseProductRequest
+    WarehouseProductResponse
 } from "@/src/stores/apis/warehouseProductApi";
 import {ManyRequest, OneRequest} from "@/src/stores/apis";
 
 export const useWarehouseProduct = () => {
     const dispatch = useDispatch();
     const warehouseProductState = useSelector((state: RootState) => state.warehouseProductSlice);
-    const getWarehouseProductsApiResult = warehouseProductApi.useGetWarehouseProductsQuery(warehouseProductState.getWarehouseProductsRequest);
+    const getWarehouseProductsApiResult = warehouseProductApi.useGetWarehouseProductsQuery({
+        page: warehouseProductState.getWarehouseProductsRequest.page,
+        size: warehouseProductState.getWarehouseProductsRequest.size,
+        search: warehouseProductState.getWarehouseProductsRequest.search
+    });
     const [addWarehouseProductApiTrigger] = warehouseProductApi.useAddWarehouseProductMutation();
     const [patchWarehouseProductApiTrigger] = warehouseProductApi.usePatchWarehouseProductMutation();
     const [deleteWarehouseProductApiTrigger] = warehouseProductApi.useDeleteWarehouseProductMutation();
@@ -38,6 +42,7 @@ export const useWarehouseProduct = () => {
 
     const setGetWarehouseProductsRequest = (request: ManyRequest) => {
         dispatch(warehouseProductSlice.actions.setGetWarehouseProductsRequest(request));
+        getWarehouseProductsApiResult.refetch();
     }
 
     const setDetails = (warehouseProduct: WarehouseProductResponse) => {

@@ -9,6 +9,7 @@ import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import {productApi} from "@/src/stores/apis/productApi";
 import {Button, Spinner} from "@heroui/react";
 import {Icon} from "@iconify/react";
+import {upperFirst} from "tiny-case";
 
 export default function Page() {
     const {productId}: { productId: string } = useParams();
@@ -52,7 +53,7 @@ export default function Page() {
         maximumFractionDigits: 0
     });
 
-    if (detailProductApiResult.isFetching) {
+    if (detailProductApiResult.isLoading) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
@@ -66,7 +67,7 @@ export default function Page() {
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div
                 className="container flex md:flex-row md:justify-center md:items-start flex-col justify-center item-center gap-8 w-3/4">
-                <div className="relative md:h-[65vh] md:w-[55vw] h-[40vh] w-[100%]">
+                <div className="relative md:h-[65vh] md:w-[55vw] h-[45vh] w-[100%]">
                     <Image
                         className="rounded-md"
                         src={
@@ -79,12 +80,13 @@ export default function Page() {
                         alt='product'
                     />
                 </div>
-                <div className="w-full min-h-[60vh] flex flex-col justify-start items-start gap-4 text-justify">
+                <div className="w-full min-h-[60vh] flex flex-col justify-start items-start gap-2 text-justify">
                     <p className="text-6xl font-bold">{productState.details?.name}</p>
                     <p className="text-3xl">{currencyFormatter.format(productState.details?.price ?? 0)}</p>
                     <p className="text-lg">Stock: {productState.details?.quantity ? productState.details?.quantity - quantity : 0}</p>
+                    <p className="text-lg">Category: {upperFirst(productState.details?.category?.name ?? "-")}</p>
                     <p className="text-md">{productState.details?.description}</p>
-                    <div className="flex md:flex-row flex-col md:justify-start gap-2 w-full">
+                    <div className="flex md:flex-row flex-col md:justify-start gap-2 mt-2 w-full">
                         <div className="flex flex-row gap-2 w-full">
                             <Button
                                 isIconOnly
@@ -99,7 +101,7 @@ export default function Page() {
                                 <Icon icon="heroicons:minus"/>
                             </Button>
                             <Button
-                                className="w-full"
+                                variant="bordered"
                             >
                                 {quantity}
                             </Button>

@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {
     Button,
     getKeyValue,
@@ -16,9 +16,9 @@ import {
 import {OrderResponse} from "@/src/stores/apis/orderApi";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
-import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
 import {useOrder} from "@/src/hooks/useOrder";
+import moment from "moment";
 
 export default function Page() {
     const router = useRouter();
@@ -28,6 +28,14 @@ export default function Page() {
         getOrdersApiResult,
         setGetOrdersRequest
     } = useOrder();
+
+    useEffect(() => {
+        setGetOrdersRequest({
+            page: orderState.getOrdersRequest.page,
+            size: orderState.getOrdersRequest.size,
+            search: "",
+        });
+    }, [])
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -58,10 +66,10 @@ export default function Page() {
         } else if (key === "lastStatusTime") {
             return (
                 <>
-                    {new Date(item.statuses[item.statuses.length - 1].time * 1000).toLocaleString()}
+                    {moment(item.statuses[item.statuses.length - 1].time).local().toString()}
                 </>
             );
-        } else if (key === "itemPrice" || key === "shipmentPrice" || key === "totalPrice") {
+        } else if (key === "totalPrice") {
             return (
                 <>
                     {currencyFormatter.format(getKeyValue(item, key))}
@@ -85,7 +93,7 @@ export default function Page() {
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-row w-full gap-4">
                                 <Input
-                                    placeholder="Search..."
+                                    placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
                                     value={orderState.getOrdersRequest.search}
                                     variant="bordered"
@@ -95,11 +103,11 @@ export default function Page() {
                                         size: orderState.getOrdersRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetOrdersRequest({
+                                    onValueChange={(value) => setGetOrdersRequest({
                                         page: orderState.getOrdersRequest.page,
                                         size: orderState.getOrdersRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                             </div>
                             <label className="flex items-center text-default-400 text-small">
@@ -137,8 +145,6 @@ export default function Page() {
                 >
                     <TableHeader>
                         <TableColumn key="id">ID</TableColumn>
-                        <TableColumn key="itemPrice">Item Price</TableColumn>
-                        <TableColumn key="shipmentPrice">Shipment Price</TableColumn>
                         <TableColumn key="totalPrice">Total Price</TableColumn>
                         <TableColumn key="lastStatus">Last Status</TableColumn>
                         <TableColumn key="lastStatusTime">Last Status Time</TableColumn>

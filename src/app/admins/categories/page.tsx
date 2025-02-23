@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {useCategory} from "@/src/hooks/useCategory";
 import {Icon} from "@iconify/react";
 import {
@@ -18,7 +18,6 @@ import {
 import {CategoryResponse} from "@/src/stores/apis/categoryApi";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
-import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
 
 export default function Page() {
@@ -32,13 +31,22 @@ export default function Page() {
         deleteCategory,
     } = useCategory();
 
+
+    useEffect(() => {
+        setGetCategoriesRequest({
+            page: categoryState.getCategoriesRequest.page,
+            size: categoryState.getCategoriesRequest.size,
+            search: "",
+        });
+    }, [])
+
     const rowMapper = (item: CategoryResponse, key: string): React.JSX.Element => {
         if (key === "action") {
             return (
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admin/categories/${item.id}`)}
+                        onPress={() => router.push(`/admins/categories/${item.id}`)}
                     >
                         Details
                     </Button>
@@ -83,7 +91,7 @@ export default function Page() {
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-row w-full gap-4">
                                 <Input
-                                    placeholder="Search..."
+                                    placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
                                     value={categoryState.getCategoriesRequest.search}
                                     variant="bordered"
@@ -93,15 +101,15 @@ export default function Page() {
                                         size: categoryState.getCategoriesRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetCategoriesRequest({
+                                    onValueChange={(value) => setGetCategoriesRequest({
                                         page: categoryState.getCategoriesRequest.page,
                                         size: categoryState.getCategoriesRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/admin/categories/add`)}
+                                    onPress={() => router.push(`/admins/categories/add`)}
                                     color="success"
                                     className="text-white"
                                 >

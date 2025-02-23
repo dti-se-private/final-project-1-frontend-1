@@ -1,17 +1,17 @@
 "use client"
 import * as Yup from "yup";
-import { useFormik } from "formik";
-import { Autocomplete, AutocompleteItem, Button, Input, Spinner } from "@heroui/react";
-import { useModal } from "@/src/hooks/useModal";
-import React, { useEffect, useState } from "react";
-import { useWarehouseProduct } from "@/src/hooks/useWarehouseProduct";
-import { useParams, useRouter } from "next/navigation";
-import { PatchWarehouseProductRequest, warehouseProductApi } from "@/src/stores/apis/warehouseProductApi";
-import { useProduct } from "@/src/hooks/useProduct";
-import { useWarehouse } from "@/src/hooks/useWarehouse";
+import {useFormik} from "formik";
+import {Autocomplete, AutocompleteItem, Button, Input, Spinner} from "@heroui/react";
+import {useModal} from "@/src/hooks/useModal";
+import React, {useEffect, useState} from "react";
+import {useWarehouseProduct} from "@/src/hooks/useWarehouseProduct";
+import {useParams, useRouter} from "next/navigation";
+import {PatchWarehouseProductRequest, warehouseProductApi} from "@/src/stores/apis/warehouseProductApi";
+import {useProduct} from "@/src/hooks/useProduct";
+import {useWarehouse} from "@/src/hooks/useWarehouse";
 
 export default function Page() {
-    const { warehouseProductId }: { warehouseProductId: string } = useParams();
+    const {warehouseProductId}: { warehouseProductId: string } = useParams();
     const router = useRouter();
     const modal = useModal();
     const [isLoading, setIsLoading] = useState(true);
@@ -104,11 +104,11 @@ export default function Page() {
         }
     }, [warehouseProductState.details]);
 
-    if (isLoading || detailWarehouseProductApiResult.isFetching) {
+    if (isLoading || detailWarehouseProductApiResult.isLoading) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
-                    <Spinner />
+                    <Spinner/>
                 </div>
             </div>
         )
@@ -118,7 +118,7 @@ export default function Page() {
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-center items-center">
                 <h1 className="mb-8 text-4xl font-bold">Warehouse Product Details</h1>
-                <form className="w-2/3 md:w-1/3" onSubmit={formik.handleSubmit}>
+                <form className="w-2/3 md:w-2/3" onSubmit={formik.handleSubmit}>
                     <Autocomplete
                         className="mb-6 w-full"
                         label="Product"
@@ -130,6 +130,7 @@ export default function Page() {
                         inputValue={productState.getProductsRequest.search}
                         isLoading={getProductsApiResult.isFetching}
                         items={getProductsApiResult.data?.data ?? []}
+                        isClearable={false}
                         onInputChange={(input) => {
                             setGetProductsRequest({
                                 size: productState.getProductsRequest.size,
@@ -164,6 +165,7 @@ export default function Page() {
                         inputValue={warehouseState.getWarehousesRequest.search}
                         isLoading={getWarehousesApiResult.isFetching}
                         items={getWarehousesApiResult.data?.data ?? []}
+                        isClearable={false}
                         onInputChange={(input) => {
                             setGetWarehousesRequest({
                                 size: warehouseState.getWarehousesRequest.size,

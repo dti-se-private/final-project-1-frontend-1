@@ -9,7 +9,7 @@ import {ProductRequest} from "@/src/stores/apis/productApi";
 import {convertFileToHexString, convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import Image from "next/image";
 import {useCategory} from "@/src/hooks/useCategory";
-import React from "react";
+import React, {useEffect} from "react";
 
 export default function Page() {
     const router = useRouter();
@@ -23,6 +23,15 @@ export default function Page() {
         getCategoriesApiResult,
     } = useCategory();
     const modal = useModal();
+
+
+    useEffect(() => {
+        setGetCategoriesRequest({
+            size: categoryState.getCategoriesRequest.size,
+            page: categoryState.getCategoriesRequest.page,
+            search: "",
+        });
+    }, []);
 
     const initialValues = {
         categoryId: "",
@@ -77,7 +86,7 @@ export default function Page() {
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-center items-center">
                 <div className="mb-8 text-4xl font-bold">Add Product</div>
-                <form className="w-2/3 md:w-1/3" onSubmit={formik.handleSubmit}>
+                <form className="w-2/3 md:w-2/3" onSubmit={formik.handleSubmit}>
                     <Autocomplete
                         className="mb-6 w-full"
                         label="Category"
@@ -89,6 +98,7 @@ export default function Page() {
                         inputValue={categoryState.getCategoriesRequest.search}
                         isLoading={getCategoriesApiResult.isFetching}
                         items={getCategoriesApiResult.data?.data ?? []}
+                        isClearable={false}
                         onInputChange={(input) => {
                             setGetCategoriesRequest({
                                 size: categoryState.getCategoriesRequest.size,
@@ -173,7 +183,7 @@ export default function Page() {
                         />
                     </div>
                     <Button type="submit" className="w-full mt-4">
-                        Update
+                        Add
                     </Button>
                 </form>
             </div>
