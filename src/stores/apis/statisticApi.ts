@@ -8,6 +8,14 @@ export interface ProductStockStatisticRequest {
     period: string
 }
 
+export interface SalesStatisticRequest {
+    warehouseIds?: string[]
+    categoryIds?: string[]
+    productIds?: string[]
+    aggregation: string
+    period: string
+}
+
 export interface StatisticSeriesResponse {
     x: string
     y: number
@@ -37,5 +45,43 @@ export const statisticApi = createApi({
                 return {data: result.data as ResponseBody<StatisticSeriesResponse[]>};
             }
         }),
-    })
+        getProductSales: builder.query<ResponseBody<StatisticSeriesResponse[]>, SalesStatisticRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const queryParams = [
+                    args.warehouseIds?.length ? `warehouse_ids=${args.warehouseIds.join(',')}` : '',
+                    args.categoryIds?.length ? `category_ids=${args.categoryIds.join(',')}` : '',
+                    args.productIds?.length ? `product_ids=${args.productIds.join(',')}` : '',
+                    `aggregation=${args.aggregation}`,
+                    `period=${args.period}`
+                ].filter(p => p); // Remove empty params
+
+                try {
+                    const result = await baseQuery({
+                        url: `/product-sales?${queryParams.join('&')}`,
+                        method: "GET"
+                    });
+
+                    if (result.error) {
+                        return { error: result.error };
+                    }
+
+                    return { 
+                        data: result.data as ResponseBody<StatisticSeriesResponse[]> 
+                    };
+                } catch (error) {
+                    return {
+                        error: {
+                            status: 'CUSTOM_ERROR',
+                            error: 'Failed to fetch product sales statistics'
+                        }
+                    };
+                }
+            }
+        }),
+    }),
+    
 });
+export const { 
+    useGetProductStockQuery,
+    useGetProductSalesQuery 
+} = statisticApi;
