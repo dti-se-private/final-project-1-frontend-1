@@ -1,4 +1,4 @@
-import type {BaseQueryFn, FetchBaseQueryMeta} from '@reduxjs/toolkit/query'
+import type {BaseQueryFn} from '@reduxjs/toolkit/query'
 import type {AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios'
 import axios from 'axios'
 import {authenticationSlice, AuthenticationState} from "@/src/stores/slices/authenticationSlice";

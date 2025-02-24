@@ -20,10 +20,12 @@ import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
 import ConfirmationModal from "@/src/components/ConfirmationModal";
 import {useDeleteConfirmation} from "@/src/hooks/useDeleteConfirmation";
+import {useModal} from "@/src/hooks/useModal";
 
 
 export default function WarehouseAdminsManagementPage() {
     const router = useRouter();
+    const modal = useModal();
     const [adminToDelete, setAdminToDelete] = useState<WarehouseAdminResponse | null>(null);
     const {
         warehouseAdminState,
@@ -41,20 +43,21 @@ export default function WarehouseAdminsManagementPage() {
         setModalContent,
     } = useDeleteConfirmation(() => {
         if (adminToDelete) {
-            deleteWarehouseAdmin({ id: adminToDelete.id })
+            deleteWarehouseAdmin({id: adminToDelete.id})
                 .then((data) => {
-                    setModalContent({
+                    modal.setContent({
                         header: "Delete Succeed",
                         body: `${data.message}`,
-                    });
+                    })
                 })
                 .catch((error) => {
-                    setModalContent({
+                    modal.setContent({
                         header: "Delete Failed",
                         body: `${error.data.message}`,
-                    });
+                    })
                 })
                 .finally(() => {
+                    modal.onOpenChange(true);
                     setAdminToDelete(null);
                 });
         }
@@ -152,7 +155,7 @@ export default function WarehouseAdminsManagementPage() {
                                     className="bg-transparent outline-none text-default-400 text-small"
                                     onChange={(event) => setGetWarehouseAdminsRequest({
                                         page: warehouseAdminState.getWarehouseAdminsRequest.page,
-                                        size: event.target.value,
+                                        size: Number(event.target.value),
                                         search: warehouseAdminState.getWarehouseAdminsRequest.search
                                     })}
                                     defaultValue={5}

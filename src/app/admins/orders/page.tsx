@@ -116,7 +116,7 @@ export default function Page() {
                                     className="bg-transparent outline-none text-default-400 text-small"
                                     onChange={(event) => setGetOrdersRequest({
                                         page: orderState.getOrdersRequest.page,
-                                        size: event.target.value,
+                                        size: Number(event.target.value),
                                         search: orderState.getOrdersRequest.search
                                     })}
                                     defaultValue={5}

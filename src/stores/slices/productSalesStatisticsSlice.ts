@@ -1,6 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { ProductSalesStatisticsRequest } from "@/src/stores/apis/productSalesStatisticsApi";
-import { StatisticSeriesResponse } from "@/src/stores/apis/productSalesStatisticsApi";
+import {createSlice} from "@reduxjs/toolkit";
+import {ProductSalesStatisticsRequest} from "@/src/stores/apis/productSalesStatisticsApi";
 
 export interface ProductSalesStatisticsState {
     getProductSalesStatisticsRequest: ProductSalesStatisticsRequest;
@@ -28,5 +27,5 @@ export const productSalesStatisticsSlice = createSlice({
     },
 });
 
-export const { setGetProductSalesStatisticsRequest } = productSalesStatisticsSlice.actions;
+export const {setGetProductSalesStatisticsRequest} = productSalesStatisticsSlice.actions;
 export default productSalesStatisticsSlice.reducer;

@@ -166,7 +166,7 @@ export default function Page() {
                                     className="bg-transparent outline-none text-default-400 text-small"
                                     onChange={(event) => setGetPaymentConfirmationOrdersRequest({
                                         page: orderState.getPaymentConfirmationOrdersRequest.page,
-                                        size: event.target.value,
+                                        size: Number(event.target.value),
                                         search: orderState.getPaymentConfirmationOrdersRequest.search
                                     })}
                                     defaultValue={5}

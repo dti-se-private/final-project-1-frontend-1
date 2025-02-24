@@ -22,9 +22,11 @@ import ConfirmationModal from "@/src/components/ConfirmationModal";
 import {useDeleteConfirmation} from "@/src/hooks/useDeleteConfirmation";
 import Image from "next/image";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
+import {useModal} from "@/src/hooks/useModal";
 
 export default function Page() {
     const router = useRouter();
+    const modal = useModal();
     const [productToDelete, setProductToDelete] = useState<ProductResponse | null>(null);
     const {
         productState,
@@ -43,20 +45,21 @@ export default function Page() {
         setModalContent,
     } = useDeleteConfirmation(() => {
         if (productToDelete) {
-            deleteProduct({ id: productToDelete.id })
+            deleteProduct({id: productToDelete.id})
                 .then((data) => {
-                    setModalContent({
+                    modal.setContent({
                         header: "Delete Succeed",
                         body: `${data.message}`,
-                    });
+                    })
                 })
                 .catch((error) => {
-                    setModalContent({
+                    modal.setContent({
                         header: "Delete Failed",
                         body: `${error.data.message}`,
-                    });
+                    })
                 })
                 .finally(() => {
+                    modal.onOpenChange(true);
                     setProductToDelete(null);
                 });
         }
@@ -179,7 +182,7 @@ export default function Page() {
                                     className="bg-transparent outline-none text-default-400 text-small"
                                     onChange={(event) => setGetProductsRequest({
                                         page: productState.getProductsRequest.page,
-                                        size: event.target.value,
+                                        size: Number(event.target.value),
                                         search: productState.getProductsRequest.search
                                     })}
                                     defaultValue={5}

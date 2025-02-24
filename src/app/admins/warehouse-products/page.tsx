@@ -20,9 +20,11 @@ import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
 import ConfirmationModal from "@/src/components/ConfirmationModal";
 import {useDeleteConfirmation} from "@/src/hooks/useDeleteConfirmation";
+import {useModal} from "@/src/hooks/useModal";
 
 export default function Page() {
     const router = useRouter();
+    const modal = useModal();
     const [warehouseProductToDelete, setWarehouseProductToDelete] = useState<WarehouseProductResponse | null>(null);
     const {
         warehouseProductState,
@@ -41,20 +43,21 @@ export default function Page() {
         setModalContent,
     } = useDeleteConfirmation(() => {
         if (warehouseProductToDelete) {
-            deleteWarehouseProduct({ id: warehouseProductToDelete.id })
+            deleteWarehouseProduct({id: warehouseProductToDelete.id})
                 .then((data) => {
-                    setModalContent({
+                    modal.setContent({
                         header: "Delete Succeed",
                         body: `${data.message}`,
-                    });
+                    })
                 })
                 .catch((error) => {
-                    setModalContent({
+                    modal.setContent({
                         header: "Delete Failed",
                         body: `${error.data.message}`,
-                    });
+                    })
                 })
                 .finally(() => {
+                    modal.onOpenChange(true);
                     setWarehouseProductToDelete(null);
                 });
         }
@@ -140,7 +143,7 @@ export default function Page() {
                                     className="bg-transparent outline-none text-default-400 text-small"
                                     onChange={(event) => setGetWarehouseProductsRequest({
                                         page: warehouseProductState.getWarehouseProductsRequest.page,
-                                        size: event.target.value,
+                                        size: Number(event.target.value),
                                         search: warehouseProductState.getWarehouseProductsRequest.search
                                     })}
                                     defaultValue={5}

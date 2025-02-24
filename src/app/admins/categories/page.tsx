@@ -20,10 +20,11 @@ import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
 import ConfirmationModal from "@/src/components/ConfirmationModal";
 import {useDeleteConfirmation} from "@/src/hooks/useDeleteConfirmation";
-import {ProductResponse} from "@/src/stores/apis/productApi";
+import {useModal} from "@/src/hooks/useModal";
 
 export default function Page() {
     const router = useRouter();
+    const modal = useModal();
     const [categoryToDelete, setCategoryToDelete] = useState<CategoryResponse | null>(null);
     const {
         categoryState,
@@ -42,20 +43,21 @@ export default function Page() {
         setModalContent,
     } = useDeleteConfirmation(() => {
         if (categoryToDelete) {
-            deleteCategory({ id: categoryToDelete.id })
+            deleteCategory({id: categoryToDelete.id})
                 .then((data) => {
-                    setModalContent({
+                    modal.setContent({
                         header: "Delete Succeed",
                         body: `${data.message}`,
-                    });
+                    })
                 })
                 .catch((error) => {
-                    setModalContent({
+                    modal.setContent({
                         header: "Delete Failed",
                         body: `${error.data.message}`,
-                    });
+                    })
                 })
                 .finally(() => {
+                    modal.onOpenChange(true);
                     setCategoryToDelete(null);
                 });
         }
@@ -141,7 +143,7 @@ export default function Page() {
                                     className="bg-transparent outline-none text-default-400 text-small"
                                     onChange={(event) => setGetCategoriesRequest({
                                         page: categoryState.getCategoriesRequest.page,
-                                        size: event.target.value,
+                                        size: Number(event.target.value),
                                         search: categoryState.getCategoriesRequest.search
                                     })}
                                     defaultValue={5}

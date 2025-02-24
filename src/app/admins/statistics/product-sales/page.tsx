@@ -1,13 +1,10 @@
 "use client"
 import React from "react";
-import { Icon } from "@iconify/react";
-import { Button, Input, Spinner, Select, SelectItem } from "@heroui/react";
-import { useRouter } from "next/navigation";
-import { SearchIcon } from "@heroui/shared-icons";
-import _ from "lodash";
-import { useModal } from "@/src/hooks/useModal";
-import { useProductSalesStatistics } from "@/src/hooks/useProductSalesStatistics";
-import { Chart } from "@/src/components/Chart";
+import {Select, SelectItem, Spinner} from "@heroui/react";
+import {useRouter} from "next/navigation";
+import {useModal} from "@/src/hooks/useModal";
+import {useProductSalesStatistics} from "@/src/hooks/useProductSalesStatistics";
+import {Chart} from "@/src/components/Chart";
 
 export default function Page() {
     const router = useRouter();
@@ -19,15 +16,15 @@ export default function Page() {
     } = useProductSalesStatistics();
 
     // Mock data - replace with real data from your APIs
-    const warehouseOptions = [{ id: "1", name: "Warehouse A" }, { id: "2", name: "Warehouse B" }];
-    const categoryOptions = [{ id: "1", name: "Category X" }, { id: "2", name: "Category Y" }];
-    const productOptions = [{ id: "1", name: "Product 1" }, { id: "2", name: "Product 2" }];
+    const warehouseOptions = [{id: "1", name: "Warehouse A"}, {id: "2", name: "Warehouse B"}];
+    const categoryOptions = [{id: "1", name: "Category X"}, {id: "2", name: "Category Y"}];
+    const productOptions = [{id: "1", name: "Product 1"}, {id: "2", name: "Product 2"}];
 
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
                 <div className="mb-8 text-4xl font-bold">Sales Statistics</div>
-                
+
                 <div className="w-full mb-8">
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-row w-full gap-4 flex-wrap">
@@ -90,11 +87,11 @@ export default function Page() {
                                 className="max-w-xs"
                                 selectedKeys={new Set([productSalesStatisticsState.getProductSalesStatisticsRequest.aggregation])}
                                 onSelectionChange={(keys) => {
-                                  const key = Array.from(keys).at(0) as "sum" | "average" | "count" | undefined;
-                                  setGetProductSalesStatisticsRequest({
-                                    ...productSalesStatisticsState.getProductSalesStatisticsRequest,
-                                    aggregation: key || "sum"
-                                  });
+                                    const key = Array.from(keys).at(0) as "sum" | "average" | "count" | undefined;
+                                    setGetProductSalesStatisticsRequest({
+                                        ...productSalesStatisticsState.getProductSalesStatisticsRequest,
+                                        aggregation: key || "sum"
+                                    });
                                 }}
                             >
                                 <SelectItem key="sum" value="sum">Sum</SelectItem>
@@ -109,8 +106,8 @@ export default function Page() {
                                 onSelectionChange={(keys) => {
                                     const key = Array.from(keys).at(0) as "day" | "week" | "month" | undefined;
                                     setGetProductSalesStatisticsRequest({
-                                    ...productSalesStatisticsState.getProductSalesStatisticsRequest,
-                                    period: key || "day"
+                                        ...productSalesStatisticsState.getProductSalesStatisticsRequest,
+                                        period: key || "day"
                                     });
                                 }}
                             >
@@ -125,14 +122,14 @@ export default function Page() {
                 <div className="w-full h-[500px]">
                     {getProductSalesStatisticsApiResult.isLoading ? (
                         <div className="flex justify-center items-center h-full">
-                            <Spinner size="lg" />
+                            <Spinner size="lg"/>
                         </div>
                     ) : getProductSalesStatisticsApiResult.error ? (
                         <div className="flex justify-center items-center h-full text-danger">
                             Error loading statistics
                         </div>
                     ) : (
-                        <Chart 
+                        <Chart
                             data={getProductSalesStatisticsApiResult.data?.data || []}
                             aggregation={productSalesStatisticsState.getProductSalesStatisticsRequest.aggregation}
                             period={productSalesStatisticsState.getProductSalesStatisticsRequest.period}

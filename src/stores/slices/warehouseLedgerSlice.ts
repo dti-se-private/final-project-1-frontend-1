@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { ManyRequest } from "@/src/stores/apis";
-import { WarehouseLedgerResponse } from "@/src/stores/apis/warehouseLedgerApi";
+import {createSlice} from "@reduxjs/toolkit";
+import {ManyRequest} from "@/src/stores/apis";
+import {WarehouseLedgerResponse} from "@/src/stores/apis/warehouseLedgerApi";
 
 export interface WarehouseLedgerState {
     getWarehouseLedgersRequest: ManyRequest;
@@ -30,5 +30,5 @@ export const warehouseLedgerSlice = createSlice({
     },
 });
 
-export const { setGetWarehouseLedgersRequest, setDetails } = warehouseLedgerSlice.actions;
+export const {setGetWarehouseLedgersRequest, setDetails} = warehouseLedgerSlice.actions;
 export default warehouseLedgerSlice.reducer;

@@ -1,5 +1,5 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { axiosBaseQuery, ManyRequest, OneRequest, ResponseBody } from "@/src/stores/apis";
+import {createApi} from "@reduxjs/toolkit/query/react";
+import {axiosBaseQuery, ManyRequest, ResponseBody} from "@/src/stores/apis";
 
 // Define the response and request interfaces
 export interface WarehouseLedgerResponse {
@@ -47,9 +47,9 @@ export const warehouseLedgerApi = createApi({
                     method: "GET",
                 });
                 if (result.error) {
-                    return { error: result.error };
+                    return {error: result.error};
                 }
-                return { data: result.data as ResponseBody<WarehouseLedgerResponse[]> };
+                return {data: result.data as ResponseBody<WarehouseLedgerResponse[]>};
             },
         }),
 
@@ -62,9 +62,9 @@ export const warehouseLedgerApi = createApi({
                     data: args,
                 });
                 if (result.error) {
-                    return { error: result.error };
+                    return {error: result.error};
                 }
-                return { data: result.data as ResponseBody<WarehouseLedgerResponse> };
+                return {data: result.data as ResponseBody<WarehouseLedgerResponse>};
             },
         }),
 
@@ -77,9 +77,9 @@ export const warehouseLedgerApi = createApi({
                     data: args,
                 });
                 if (result.error) {
-                    return { error: result.error };
+                    return {error: result.error};
                 }
-                return { data: result.data as ResponseBody<WarehouseLedgerResponse> };
+                return {data: result.data as ResponseBody<WarehouseLedgerResponse>};
             },
         }),
 
@@ -92,9 +92,9 @@ export const warehouseLedgerApi = createApi({
                     data: args,
                 });
                 if (result.error) {
-                    return { error: result.error };
+                    return {error: result.error};
                 }
-                return { data: result.data as ResponseBody<WarehouseLedgerResponse> };
+                return {data: result.data as ResponseBody<WarehouseLedgerResponse>};
             },
         }),
     }),

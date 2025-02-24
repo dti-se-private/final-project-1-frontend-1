@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState} from "react";
 
 interface ModalContent {
     header: string;
@@ -7,10 +7,10 @@ interface ModalContent {
 
 export const useDeleteConfirmation = (onConfirm: () => void) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalContent, setModalContent] = useState<ModalContent>({ header: "", body: "" });
+    const [modalContent, setModalContent] = useState<ModalContent>({header: "", body: ""});
 
     const showModal = (header: string, body: string) => {
-        setModalContent({ header, body });
+        setModalContent({header, body});
         setIsModalOpen(true);
     };
 

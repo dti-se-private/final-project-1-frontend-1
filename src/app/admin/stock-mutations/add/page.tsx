@@ -1,18 +1,17 @@
 "use client";
 import * as Yup from "yup";
-import { Form, Formik } from "formik";
+import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
-import { Button } from "@heroui/react";
-import { useModal } from "@/src/hooks/useModal";
+import {Button} from "@heroui/react";
+import {useModal} from "@/src/hooks/useModal";
 import React from "react";
-import { useWarehouseLedger } from "@/src/hooks/useWarehouseLedger";
-import { useRouter } from "next/navigation";
-import { AddMutationRequest } from "@/src/stores/apis/warehouseLedgerApi";
-import FormInputArea from "@/src/components/FormInputArea";
+import {useWarehouseLedger} from "@/src/hooks/useWarehouseLedger";
+import {useRouter} from "next/navigation";
+import {AddMutationRequest} from "@/src/stores/apis/warehouseLedgerApi";
 
 export default function AddWarehouseLedgerPage() {
     const router = useRouter();
-    const { addMutation } = useWarehouseLedger();
+    const {addMutation} = useWarehouseLedger();
     const modal = useModal();
 
     // Initial form values
@@ -77,10 +76,10 @@ export default function AddWarehouseLedgerPage() {
                 >
                     {(props) => (
                         <Form className="w-2/3 md:w-1/3">
-                            <FormInput name="productId" label="Product ID" type="text" />
-                            <FormInput name="originWarehouseId" label="Origin Warehouse ID" type="text" />
-                            <FormInput name="destinationWarehouseId" label="Destination Warehouse ID" type="text" />
-                            <FormInput name="quantity" label="Quantity" type="number" />
+                            <FormInput name="productId" label="Product ID" type="text"/>
+                            <FormInput name="originWarehouseId" label="Origin Warehouse ID" type="text"/>
+                            <FormInput name="destinationWarehouseId" label="Destination Warehouse ID" type="text"/>
+                            <FormInput name="quantity" label="Quantity" type="number"/>
                             <Button type="submit" className="w-full mt-4">
                                 Add Mutation
                             </Button>

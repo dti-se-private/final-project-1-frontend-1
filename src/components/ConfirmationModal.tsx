@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { Modal, ModalBody, ModalContent, ModalHeader, Button } from "@heroui/react";
+import {FC} from "react";
+import {Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@heroui/react";
 
 interface ConfirmationModalProps {
     isOpen: boolean;
@@ -9,7 +9,7 @@ interface ConfirmationModalProps {
     onConfirm: () => void;
 }
 
-const ConfirmationModal: FC<ConfirmationModalProps> = ({ isOpen, header, body, onCancel, onConfirm }) => {
+const ConfirmationModal: FC<ConfirmationModalProps> = ({isOpen, header, body, onCancel, onConfirm}) => {
     return (
         <Modal size="3xl" isOpen={isOpen} onOpenChange={onCancel}>
             <ModalContent>
@@ -20,11 +20,11 @@ const ConfirmationModal: FC<ConfirmationModalProps> = ({ isOpen, header, body, o
                         </ModalHeader>
                         <ModalBody>
                             {body}
-                            <div className="flex justify-end gap-4 mt-4">
-                                <Button onPress={onCancel}>Cancel</Button>
-                                <Button color="danger" onPress={onConfirm}>Confirm</Button>
-                            </div>
                         </ModalBody>
+                        <ModalFooter>
+                            <Button onPress={onCancel}>Cancel</Button>
+                            <Button color="danger" onPress={onConfirm}>Confirm</Button>
+                        </ModalFooter>
                     </>
                 )}
             </ModalContent>

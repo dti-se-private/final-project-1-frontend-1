@@ -17,7 +17,6 @@ import {orderApi} from "@/src/stores/apis/orderApi";
 import {cartSlice} from "@/src/stores/slices/cartSlice";
 import {orderSlice} from "@/src/stores/slices/orderSlice";
 import storeRegistry from "@/src/registries/storeRegistry";
-import {statisticApi} from "@/src/stores/apis/statisticApi";
 import {verificationApi} from "@/src/stores/apis/verificationApi";
 import {accountAddressApi} from "@/src/stores/apis/accountAddressApi";
 import {accountAddressSlice} from "@/src/stores/slices/accountAddressSlice";

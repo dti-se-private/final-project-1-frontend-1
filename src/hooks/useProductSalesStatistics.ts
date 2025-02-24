@@ -1,11 +1,7 @@
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/src/stores";
-import { productSalesStatisticsSlice } from "@/src/stores/slices/productSalesStatisticsSlice";
-import {
-    productSalesStatisticsApi,
-    ProductSalesStatisticsRequest,
-    StatisticSeriesResponse
-} from "@/src/stores/apis/productSalesStatisticsApi";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "@/src/stores";
+import {productSalesStatisticsSlice} from "@/src/stores/slices/productSalesStatisticsSlice";
+import {productSalesStatisticsApi, ProductSalesStatisticsRequest} from "@/src/stores/apis/productSalesStatisticsApi";
 
 export const useProductSalesStatistics = () => {
     const dispatch = useDispatch();

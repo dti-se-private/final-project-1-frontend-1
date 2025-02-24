@@ -21,9 +21,11 @@ import {SearchIcon} from "@heroui/shared-icons";
 import ConfirmationModal from "@/src/components/ConfirmationModal";
 import {useDeleteConfirmation} from "@/src/hooks/useDeleteConfirmation";
 import wkx from "wkx";
+import {useModal} from "@/src/hooks/useModal";
 
 export default function WarehouseManagementPage() {
     const router = useRouter()
+    const modal = useModal();
     const [warehouseToDelete, setWarehouseToDelete] = useState<WarehouseResponse | null>(null);
     const {
         warehouseState,
@@ -41,20 +43,21 @@ export default function WarehouseManagementPage() {
         setModalContent,
     } = useDeleteConfirmation(() => {
         if (warehouseToDelete) {
-            deleteWarehouse({ id: warehouseToDelete.id })
+            deleteWarehouse({id: warehouseToDelete.id})
                 .then((data) => {
-                    setModalContent({
+                    modal.setContent({
                         header: "Delete Succeed",
                         body: `${data.message}`,
-                    });
+                    })
                 })
                 .catch((error) => {
-                    setModalContent({
+                    modal.setContent({
                         header: "Delete Failed",
                         body: `${error.data.message}`,
-                    });
+                    })
                 })
                 .finally(() => {
+                    modal.onOpenChange(true);
                     setWarehouseToDelete(null);
                 });
         }
@@ -154,7 +157,7 @@ export default function WarehouseManagementPage() {
                                     className="bg-transparent outline-none text-default-400 text-small"
                                     onChange={(event) => setGetWarehousesRequest({
                                         page: warehouseState.getWarehousesRequest.page,
-                                        size: event.target.value,
+                                        size: Number(event.target.value),
                                         search: warehouseState.getWarehousesRequest.search
                                     })}
                                     defaultValue={5}
