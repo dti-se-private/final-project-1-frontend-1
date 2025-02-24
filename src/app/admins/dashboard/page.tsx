@@ -6,7 +6,7 @@ import {useAuthentication} from "@/src/hooks/useAuthentication";
 import {useRouter} from "next/navigation";
 
 
-export default function Dashboard() {
+export default function Page() {
     const router = useRouter();
     const authentication = useAuthentication();
     const [accountPermissions, setAccountPermissions] = useState<string[]>([]);
@@ -33,12 +33,16 @@ export default function Dashboard() {
             {text: "Warehouse Product Management", link: "/admins/warehouse-products"},
             {text: "Order Management", link: "/admins/orders"},
             {text: "Payment Confirmation Order Management", link: "/admins/orders/payment-confirmations"},
+            {text: "Product Sales Statistics", link: "/admins/statistics/product-sales"},
+            {text: "Product Stocks Statistics", link: "/admins/statistics/product-stocks"},
         ],
         WAREHOUSE_ADMIN: [
             {text: "Warehouse Management", link: "/admins/warehouses"},
             {text: "Warehouse Product Management", link: "/admins/warehouse-products"},
             {text: "Order Management", link: "/admins/orders"},
             {text: "Payment Confirmation Order Management", link: "/admins/orders/payment-confirmations"},
+            {text: "Product Sales Statistics", link: "/admins/statistics/product-sales"},
+            {text: "Product Stocks Statistics", link: "/admins/statistics/product-stocks"},
         ],
     };
 

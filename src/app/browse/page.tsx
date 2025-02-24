@@ -19,11 +19,16 @@ export default function Page() {
 
     useEffect(() => {
         setGetProductsRequest({
-            page: productState.getProductsRequest.page,
             size: productState.getProductsRequest.size,
+            page: productState.getProductsRequest.page,
             search: "",
         });
-    }, [])
+        setGetCategoriesRequest({
+            size: productState.getCategoriesRequest.size,
+            page: productState.getCategoriesRequest.page,
+            search: "",
+        });
+    }, []);
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
