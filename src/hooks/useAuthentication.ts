@@ -5,7 +5,7 @@ import {
     LoginByExternalRequest,
     LoginByInternalRequest,
     RegisterByExternalRequest,
-    RegisterByInternalRequest,
+    RegisterByInternalRequest, ResetPasswordRequest,
     Session
 } from "@/src/stores/apis/authenticationApi";
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
@@ -24,6 +24,7 @@ export const useAuthentication = () => {
     const [refreshSessionApiTrigger] = authenticationApi.useRefreshSessionMutation();
     const [getAccountApiTrigger] = accountApi.useLazyGetAccountQuery();
     const [patchAccountApiTrigger] = accountApi.usePatchAccountMutation();
+    const [resetPasswordApiTrigger] = authenticationApi.useResetPasswordMutation();
 
     const getAccount = async (request: OneRequest) => {
         const getAccountApiResult = await getAccountApiTrigger(request).unwrap();
@@ -89,6 +90,11 @@ export const useAuthentication = () => {
         return refreshSessionApiResult
     }
 
+    const resetPassword = async (request: ResetPasswordRequest) => {
+        const resetPasswordApiResult = await resetPasswordApiTrigger(request).unwrap();
+        return resetPasswordApiResult;
+    }
+
     useEffect(() => {
         if (state.session) {
             getAccount({
@@ -106,5 +112,6 @@ export const useAuthentication = () => {
         logout,
         refreshSession,
         patchAccount,
+        resetPassword,
     };
 }

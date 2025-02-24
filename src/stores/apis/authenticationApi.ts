@@ -23,6 +23,12 @@ export interface LoginByExternalRequest {
     credential: string
 }
 
+export interface ResetPasswordRequest {
+    email: string;
+    otp: string;
+    newPassword: string;
+}
+
 export interface Session {
     account: AccountResponse
     accessToken: string;
@@ -118,6 +124,19 @@ export const authenticationApi = createApi({
                     return {error: result.error};
                 }
                 return {data: result.data as ResponseBody<Session>};
+            }
+        }),
+        resetPassword: builder.mutation<ResponseBody<null>, ResetPasswordRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: "/reset-password",
+                    method: "POST",
+                    data: args,
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<null>};
             }
         }),
     })
