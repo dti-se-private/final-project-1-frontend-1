@@ -103,18 +103,18 @@ export default function Page() {
                         (props) =>
                             <Form className="w-2/3 md:w-1/3">
                                 <FormInput name="id" label="ID" type="text" isDisabled/>
-                                <FormInput name="email" label="Email" type="email" isDisabled={!props.values.password}/>
-                                {props.values.password && (
-                                    <div className="flex gap-4 mb-6 w-full">
-                                        <FormInput className="" name="otp" label="OTP" type="text"/>
-                                        <Button type="button" onPress={() => handlePressOtp(props.values)}
-                                                className="w-1/3 h-14">
-                                            Send OTP
-                                        </Button>
+                                <FormInput name="email" label="Email" type="email" isDisabled={!authentication.state.account?.password}/>
+                                {authentication.state.account?.password && (
+                                    <div>
+                                        <div className="flex gap-4 mb-6 w-full">
+                                            <FormInput className="" name="otp" label="OTP" type="text"/>
+                                            <Button type="button" onPress={() => handlePressOtp(props.values)}
+                                                    className="w-1/3 h-14">
+                                                Send OTP
+                                            </Button>
+                                        </div>
+                                        <FormInput name="password" label="Password" type="password"/>
                                     </div>
-                                )}
-                                {props.values.password && (
-                                    <FormInput name="password" label="Password" type="password"/>
                                 )}
                                 <FormInput name="name" label="Name" type="text"/>
                                 <FormInput name="phone" label="Phone" type="text"/>
