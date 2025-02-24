@@ -36,6 +36,7 @@ export interface Session {
     accessTokenExpiredAt: Date;
     refreshTokenExpiredAt: Date;
     permissions: string[];
+    providers: string[];
 }
 
 
