@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useWarehouse} from "@/src/hooks/useWarehouse";
 import {WarehouseResponse} from "@/src/stores/apis/warehouseApi";
 import {Icon} from "@iconify/react";
@@ -18,18 +18,52 @@ import {
 } from "@heroui/react";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
-import {useModal} from "@/src/hooks/useModal";
+import ConfirmationModal from "@/src/components/ConfirmationModal";
+import {useDeleteConfirmation} from "@/src/hooks/useDeleteConfirmation";
 import wkx from "wkx";
 
 export default function WarehouseManagementPage() {
-    const router = useRouter();
-    const modal = useModal();
+    const router = useRouter()
+    const [warehouseToDelete, setWarehouseToDelete] = useState<WarehouseResponse | null>(null);
     const {
         warehouseState,
         getWarehousesApiResult,
         setGetWarehousesRequest,
         deleteWarehouse,
     } = useWarehouse();
+
+    const {
+        isModalOpen,
+        modalContent,
+        showModal,
+        handleConfirm,
+        handleCancel,
+        setModalContent,
+    } = useDeleteConfirmation(() => {
+        if (warehouseToDelete) {
+            deleteWarehouse({ id: warehouseToDelete.id })
+                .then((data) => {
+                    setModalContent({
+                        header: "Delete Succeed",
+                        body: `${data.message}`,
+                    });
+                })
+                .catch((error) => {
+                    setModalContent({
+                        header: "Delete Failed",
+                        body: `${error.data.message}`,
+                    });
+                })
+                .finally(() => {
+                    setWarehouseToDelete(null);
+                });
+        }
+    });
+
+    const handleDelete = (warehouse: WarehouseResponse) => {
+        setWarehouseToDelete(warehouse);
+        showModal("Confirm Delete", `Are you sure you want to delete the warehouse "${warehouse.name}"?`);
+    };
 
     useEffect(() => {
         setGetWarehousesRequest({
@@ -51,22 +85,7 @@ export default function WarehouseManagementPage() {
                     </Button>
                     <Button
                         color="danger"
-                        onPress={() => deleteWarehouse({id: item.id})
-                            .then((data) => {
-                                modal.setContent({
-                                    header: "Delete Succeed",
-                                    body: `${data.message}`,
-                                })
-                            })
-                            .catch((error) => {
-                                modal.setContent({
-                                    header: "Delete Failed",
-                                    body: `${error.data.message}`,
-                                })
-                            }).finally(() => {
-                                modal.onOpenChange(true);
-                            })
-                        }
+                        onPress={() => handleDelete(item)}
                     >
                         Delete
                     </Button>
@@ -189,6 +208,14 @@ export default function WarehouseManagementPage() {
                     </TableBody>
                 </Table>
             </div>
+
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                header={modalContent.header}
+                body={modalContent.body}
+                onCancel={handleCancel}
+                onConfirm={handleConfirm}
+            />
         </div>
     )
 }

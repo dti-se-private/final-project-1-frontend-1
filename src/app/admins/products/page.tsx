@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useProduct} from "@/src/hooks/useProduct";
 import {Icon} from "@iconify/react";
 import {
@@ -18,13 +18,14 @@ import {
 import {ProductResponse} from "@/src/stores/apis/productApi";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
-import {useModal} from "@/src/hooks/useModal";
+import ConfirmationModal from "@/src/components/ConfirmationModal";
+import {useDeleteConfirmation} from "@/src/hooks/useDeleteConfirmation";
 import Image from "next/image";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 
 export default function Page() {
     const router = useRouter();
-    const modal = useModal();
+    const [productToDelete, setProductToDelete] = useState<ProductResponse | null>(null);
     const {
         productState,
         getProductsApiResult,
@@ -32,6 +33,39 @@ export default function Page() {
         setDetails,
         deleteProduct,
     } = useProduct();
+
+    const {
+        isModalOpen,
+        modalContent,
+        showModal,
+        handleConfirm,
+        handleCancel,
+        setModalContent,
+    } = useDeleteConfirmation(() => {
+        if (productToDelete) {
+            deleteProduct({ id: productToDelete.id })
+                .then((data) => {
+                    setModalContent({
+                        header: "Delete Succeed",
+                        body: `${data.message}`,
+                    });
+                })
+                .catch((error) => {
+                    setModalContent({
+                        header: "Delete Failed",
+                        body: `${error.data.message}`,
+                    });
+                })
+                .finally(() => {
+                    setProductToDelete(null);
+                });
+        }
+    });
+
+    const handleDelete = (product: ProductResponse) => {
+        setProductToDelete(product);
+        showModal("Confirm Delete", `Are you sure you want to delete the admin "${product.name}"?`);
+    }
 
     useEffect(() => {
         setGetProductsRequest({
@@ -61,22 +95,7 @@ export default function Page() {
                     </Button>
                     <Button
                         color="danger"
-                        onPress={() => deleteProduct({id: item.id})
-                            .then((data) => {
-                                modal.setContent({
-                                    header: "Delete Succeed",
-                                    body: `${data.message}`,
-                                })
-                            })
-                            .catch((error) => {
-                                modal.setContent({
-                                    header: "Delete Failed",
-                                    body: `${error.data.message}`,
-                                })
-                            }).finally(() => {
-                                modal.onOpenChange(true);
-                            })
-                        }
+                        onPress={() => handleDelete(item)}
                     >
                         Delete
                     </Button>
@@ -210,6 +229,14 @@ export default function Page() {
                     </TableBody>
                 </Table>
             </div>
+
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                header={modalContent.header}
+                body={modalContent.body}
+                onCancel={handleCancel}
+                onConfirm={handleConfirm}
+            />
         </div>
     )
 }
