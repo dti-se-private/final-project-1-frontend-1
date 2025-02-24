@@ -23,6 +23,9 @@ export const productSalesStatisticsApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/statistics`,
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         getProductSalesStatistics: builder.query<ResponseBody<StatisticSeriesResponse[]>, ProductSalesStatisticsRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {

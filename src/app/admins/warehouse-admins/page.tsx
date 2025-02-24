@@ -152,13 +152,14 @@ export default function WarehouseAdminsManagementPage() {
                                     className="bg-transparent outline-none text-default-400 text-small"
                                     onChange={(event) => setGetWarehouseAdminsRequest({
                                         page: warehouseAdminState.getWarehouseAdminsRequest.page,
-                                        size: Number(event.target.value),
+                                        size: event.target.value,
                                         search: warehouseAdminState.getWarehouseAdminsRequest.search
                                     })}
+                                    defaultValue={5}
                                 >
-                                    <option value="5">5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={15}>15</option>
                                 </select>
                             </label>
                         </div>

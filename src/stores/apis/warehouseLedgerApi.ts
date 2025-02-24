@@ -30,6 +30,9 @@ export const warehouseLedgerApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/warehouse-ledgers`,
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         // Fetch all warehouse ledger entries with pagination and filtering
         getWarehouseLedgers: builder.query<ResponseBody<WarehouseLedgerResponse[]>, ManyRequest>({

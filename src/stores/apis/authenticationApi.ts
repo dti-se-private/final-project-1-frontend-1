@@ -38,6 +38,9 @@ export const authenticationApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/authentications`
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         registerByInternal: builder.mutation<ResponseBody<AccountResponse>, RegisterByInternalRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {

@@ -26,6 +26,9 @@ export const accountAddressApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/account-addresses`
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         getAccountAddresses: builder.query<ResponseBody<AccountAddressResponse[]>, ManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {

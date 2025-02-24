@@ -1,4 +1,4 @@
-import type {BaseQueryFn} from '@reduxjs/toolkit/query'
+import type {BaseQueryFn, FetchBaseQueryMeta} from '@reduxjs/toolkit/query'
 import type {AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios'
 import axios from 'axios'
 import {authenticationSlice, AuthenticationState} from "@/src/stores/slices/authenticationSlice";
@@ -35,7 +35,7 @@ export const axiosBaseQuery =
         unknown,
         unknown
     > =>
-        async ({url, method, data, params, headers}) => {
+        async ({url, method, data, params, headers}, api, extraOptions) => {
             const instance = applyCaseMiddleware(axios.create())
             const rawInstance = applyCaseMiddleware(axios.create())
             const store = storeRegistry.getStore()!

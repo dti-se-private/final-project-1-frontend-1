@@ -30,6 +30,9 @@ export const productApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/products`
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         getProducts: builder.query<ResponseBody<ProductResponse[]>, ManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {

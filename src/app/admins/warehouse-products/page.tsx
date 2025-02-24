@@ -140,13 +140,14 @@ export default function Page() {
                                     className="bg-transparent outline-none text-default-400 text-small"
                                     onChange={(event) => setGetWarehouseProductsRequest({
                                         page: warehouseProductState.getWarehouseProductsRequest.page,
-                                        size: Number(event.target.value),
+                                        size: event.target.value,
                                         search: warehouseProductState.getWarehouseProductsRequest.search
                                     })}
+                                    defaultValue={5}
                                 >
-                                    <option selected value="5">5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={15}>15</option>
                                 </select>
                             </label>
                         </div>

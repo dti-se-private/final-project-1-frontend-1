@@ -74,6 +74,9 @@ export const orderApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/orders`
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         getOrders: builder.query<ResponseBody<OrderResponse[]>, ManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {

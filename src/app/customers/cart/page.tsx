@@ -82,7 +82,7 @@ export default function Page() {
     }, [accountAddressId, getCartApiResult.data?.data]);
 
     useEffect(() => {
-        if (getAccountAddressesApiResult.data?.data) {
+        if (getAccountAddressesApiResult.data?.data && getAccountAddressesApiResult.data.data[0]) {
             const item = getAccountAddressesApiResult.data.data[0];
             setAccountAddressId(item.id);
             setGetAccountAddressesRequest({
@@ -239,8 +239,16 @@ export default function Page() {
                                 color="primary"
                                 isLoading={isTryCheckoutFetching}
                                 onPress={() => {
+                                    if (!accountAddressId) {
+                                        modal.setContent({
+                                            header: "Checkout Failed",
+                                            body: `Please select an address first.`
+                                        });
+                                        modal.onOpenChange(true);
+                                        return
+                                    }
                                     const request: OrderRequest = {
-                                        addressId: accountAddressId!,
+                                        addressId: accountAddressId,
                                         items: (getCartApiResult.data?.data ?? []).map((cartItem) => ({
                                             productId: cartItem.product.id,
                                             quantity: cartItem.quantity
