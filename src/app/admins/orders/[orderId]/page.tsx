@@ -92,10 +92,11 @@ export default function Page() {
         }
     }
     const rowMapperStatuses = (item: OrderStatusResponse, key: string): React.JSX.Element => {
-        const lastItem = orderState.details?.statuses[orderState.details?.statuses.length - 1];
-        const isLast = lastItem?.id === item.id;
-        const statusGroups = orderState.details?.statuses.filter((status) => status.status === item.status);
-        const isLastInStatusGroups = statusGroups ? statusGroups[statusGroups.length - 1].id === item.id : false;
+        const statuses = orderState.details?.statuses ?? [];
+        const lastStatus = statuses.length > 0 ? statuses[statuses.length - 1] : undefined;
+        const isLast = lastStatus?.id === item.id;
+        const statusGroups = orderState.details?.statuses.filter((status) => status.status === item.status) ?? [];
+        const isLastInStatusGroups = statusGroups.length > 0 ? statusGroups[statusGroups.length - 1].id === item.id : false;
         if (key === "action") {
             if (isLastInStatusGroups) {
                 if (item.status === "WAITING_FOR_PAYMENT" && isLast) {

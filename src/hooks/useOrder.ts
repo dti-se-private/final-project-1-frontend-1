@@ -17,7 +17,7 @@ export const useOrder = () => {
     const [tryCheckoutApiTrigger] = orderApi.useTryCheckoutMutation();
     const [checkoutApiTrigger] = orderApi.useCheckoutMutation();
     const getOrdersApiResult = orderApi.useGetOrdersQuery(orderState.getOrdersRequest);
-    const getPaymentConfirmationOrdersApiResult = orderApi.useGetPaymentConfirmationOrdersQuery(orderState.getOrdersRequest);
+    const getPaymentConfirmationOrdersApiResult = orderApi.useGetPaymentConfirmationOrdersQuery(orderState.getPaymentConfirmationOrdersRequest);
     const [processCancellationApiTrigger] = orderApi.useProcessCancellationMutation();
     const [processPaymentGatewayApiTrigger] = orderApi.useProcessPaymentGatewayMutation();
     const [processManualPaymentApiTrigger] = orderApi.useProcessManualPaymentMutation();
