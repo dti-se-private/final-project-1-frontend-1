@@ -21,11 +21,6 @@ export default function Page() {
     const modal = useModal();
     const {productState, setGetProductsRequest, getProductsApiResult} = useProduct();
 
-    const dropdownOperation: Record<string, string> = {
-        current: "Current",
-        increment: "Increment",
-        decrement: "Decrement",
-    }
     const dropdownAggregations: Record<string, string> = {
         sum: "Sum",
         avg: "Average"
@@ -37,7 +32,6 @@ export default function Page() {
         year: "Year",
     }
     const [selectedProductId, setSelectedProductId] = useState("all");
-    const [selectedOperation, setSelectedOperation] = useState(new Set<string>(["current"]));
     const [selectedAggregation, setSelectedAggregation] = useState(new Set<string>(["sum"]));
     const [selectedPeriod, setSelectedPeriod] = useState(new Set<string>(["day"]));
 
@@ -66,7 +60,7 @@ export default function Page() {
 
     useEffect(() => {
         getProductSalesStatisticApiResult.refetch();
-    }, [selectedProductId, selectedOperation, selectedAggregation, selectedPeriod]);
+    }, [selectedProductId, selectedAggregation, selectedPeriod]);
 
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
@@ -122,33 +116,6 @@ export default function Page() {
                                 >
                                     {
                                         Array
-                                            .from(selectedOperation)
-                                            .map((key) => dropdownOperation[key])
-                                            [0]
-                                    }
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                selectedKeys={selectedOperation}
-                                selectionMode="single"
-                                onSelectionChange={(keys: SharedSelection) => setSelectedOperation(keys as Set<string>)}
-                            >
-                                {
-                                    Object.entries(dropdownOperation).map(([key, value]) => (
-                                        <DropdownItem key={key}>{value}</DropdownItem>
-                                    ))
-                                }
-                            </DropdownMenu>
-                        </Dropdown>
-                        <Dropdown placement="bottom-end">
-                            <DropdownTrigger>
-                                <Button
-                                    className="w-[12%] capitalize flex justify-between"
-                                    endContent={<ChevronDownIcon/>}
-                                >
-                                    {
-                                        Array
                                             .from(selectedAggregation)
                                             .map((key) => dropdownAggregations[key])
                                             [0]
@@ -168,6 +135,7 @@ export default function Page() {
                                 }
                             </DropdownMenu>
                         </Dropdown>
+                        
                         <Dropdown placement="bottom-end">
                             <DropdownTrigger>
                                 <Button

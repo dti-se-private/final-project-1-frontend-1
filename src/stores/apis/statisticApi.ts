@@ -53,29 +53,21 @@ export const statisticApi = createApi({
                     args.productIds?.length ? `product_ids=${args.productIds.join(',')}` : '',
                     `aggregation=${args.aggregation}`,
                     `period=${args.period}`
-                ].filter(p => p); // Remove empty params
+                ]; // Remove empty params
 
-                try {
-                    const result = await baseQuery({
-                        url: `/product-sales?${queryParams.join('&')}`,
-                        method: "GET"
-                    });
+                const result = await baseQuery({
+                    url: `/product-sales?${queryParams.join('&')}`,
+                    method: "GET"
+                });
 
-                    if (result.error) {
-                        return { error: result.error };
-                    }
-
-                    return { 
-                        data: result.data as ResponseBody<StatisticSeriesResponse[]> 
-                    };
-                } catch (error) {
-                    return {
-                        error: {
-                            status: 'CUSTOM_ERROR',
-                            error: 'Failed to fetch product sales statistics'
-                        }
-                    };
+                if (result.error) {
+                    return { error: result.error };
                 }
+
+                return { 
+                    data: result.data as ResponseBody<StatisticSeriesResponse[]> 
+                };
+                
             }
         }),
     }),
