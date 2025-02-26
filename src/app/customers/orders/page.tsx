@@ -46,6 +46,8 @@ export default function Page() {
     });
 
     const rowMapper = (item: OrderResponse, key: string): React.JSX.Element => {
+        const statuses = item.statuses ?? [];
+        const lastStatus = statuses.length > 0 ? statuses[statuses.length - 1] : undefined;
         if (key === "action") {
             return (
                 <div className="flex flex-row gap-2">
@@ -60,13 +62,13 @@ export default function Page() {
         } else if (key === "lastStatus") {
             return (
                 <>
-                    {item.statuses[item.statuses.length - 1].status}
+                    {lastStatus?.status}
                 </>
             );
         } else if (key === "lastStatusTime") {
             return (
                 <>
-                    {moment(item.statuses[item.statuses.length - 1].time).local().toString()}
+                    {moment(lastStatus?.time).local().toString()}
                 </>
             );
         } else if (key === "totalPrice") {

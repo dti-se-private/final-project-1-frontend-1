@@ -1,11 +1,11 @@
 "use client"
 import * as Yup from "yup";
-import { Form, Formik } from "formik";
+import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
-import { Button } from "@heroui/react";
-import { useModal } from "@/src/hooks/useModal";
-import { useAuthentication } from "@/src/hooks/useAuthentication";
-import { ResetPasswordRequest } from "@/src/stores/apis/authenticationApi";
+import {Button} from "@heroui/react";
+import {useModal} from "@/src/hooks/useModal";
+import {useAuthentication} from "@/src/hooks/useAuthentication";
+import {ResetPasswordRequest} from "@/src/stores/apis/authenticationApi";
 import React from "react";
 import {VerificationSendRequest} from "@/src/stores/apis/verificationApi";
 import {useVerification} from "@/src/hooks/useVerification";
@@ -87,7 +87,7 @@ export default function ResetPasswordForm() {
                     {
                         (props) =>
                             <Form className="w-2/3 md:w-1/3">
-                                <FormInput name="email" label="Email" type="email" />
+                                <FormInput name="email" label="Email" type="email"/>
                                 <div className="flex gap-4 mb-6 w-full">
                                     <FormInput className="" name="otp" label="OTP" type="text"/>
                                     <Button type="button" onPress={() => handlePressOtp(props.values)}

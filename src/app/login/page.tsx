@@ -100,7 +100,8 @@ export default function Page() {
                         <FormInput name="email" label="Email" type="email"/>
                         <FormInput name="password" label="Password" type="password"/>
                         <div className="text-left mb-4">
-                            Forgot password? <span className="text-blue-500 cursor-pointer" onClick={handleForgotPassword}> click here to reset</span>
+                            Forgot password? <span className="text-blue-500 cursor-pointer"
+                                                   onClick={handleForgotPassword}> click here to reset</span>
                         </div>
                         <Button type="submit" className="w-full">
                             Login

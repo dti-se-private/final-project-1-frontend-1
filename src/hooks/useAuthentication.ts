@@ -5,7 +5,8 @@ import {
     LoginByExternalRequest,
     LoginByInternalRequest,
     RegisterByExternalRequest,
-    RegisterByInternalRequest, ResetPasswordRequest,
+    RegisterByInternalRequest,
+    ResetPasswordRequest,
     Session
 } from "@/src/stores/apis/authenticationApi";
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";

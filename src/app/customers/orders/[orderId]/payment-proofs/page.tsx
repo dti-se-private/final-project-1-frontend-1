@@ -95,6 +95,9 @@ export default function Page() {
         );
     }
 
+    const statuses = orderState.details?.statuses ?? [];
+    const lastStatus = statuses.length > 0 ? statuses[statuses.length - 1] : undefined;
+
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
@@ -112,7 +115,7 @@ export default function Page() {
                                        }}
                                 />
                                 <Button
-                                    isDisabled={orderState.details?.statuses[orderState.details?.statuses.length - 1].status !== "WAITING_FOR_PAYMENT"}
+                                    isDisabled={lastStatus?.status !== "WAITING_FOR_PAYMENT"}
                                     startContent={<Icon icon="heroicons:plus"/>}
                                     onPress={async () => {
                                         const request: ManualPaymentProcessRequest = {
