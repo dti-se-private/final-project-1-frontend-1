@@ -6,12 +6,13 @@ import {
     LoginByInternalRequest,
     RegisterByExternalRequest,
     RegisterByInternalRequest,
+    ResetPasswordRequest,
     Session
 } from "@/src/stores/apis/authenticationApi";
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
 import {accountApi, PatchAccountRequest} from "@/src/stores/apis/accountApi";
 import {useEffect} from "react";
-import {OneRequest} from "@/src/stores/apis";
+import {OneRequest, ResponseBody} from "@/src/stores/apis";
 
 export const useAuthentication = () => {
     const dispatch = useDispatch();
@@ -24,6 +25,7 @@ export const useAuthentication = () => {
     const [refreshSessionApiTrigger] = authenticationApi.useRefreshSessionMutation();
     const [getAccountApiTrigger] = accountApi.useLazyGetAccountQuery();
     const [patchAccountApiTrigger] = accountApi.usePatchAccountMutation();
+    const [resetPasswordApiTrigger] = authenticationApi.useResetPasswordMutation();
 
     const getAccount = async (request: OneRequest) => {
         const getAccountApiResult = await getAccountApiTrigger(request).unwrap();
@@ -67,11 +69,15 @@ export const useAuthentication = () => {
     }
 
     const logout = async () => {
-        let logoutApiResult = undefined;
+        let logoutApiResult: ResponseBody<null>;
         try {
             logoutApiResult = await logoutApiTrigger(state.session!).unwrap();
-        } catch (e) {
-            console.log(e)
+        } catch (error) {
+            const result = error as { status: string, message: string, data: never };
+            logoutApiResult = {
+                message: result.message,
+                data: null,
+            }
         }
         dispatch(authenticationSlice.actions.logout({}));
         return logoutApiResult
@@ -83,6 +89,11 @@ export const useAuthentication = () => {
             session: refreshSessionApiResult.data,
         }));
         return refreshSessionApiResult
+    }
+
+    const resetPassword = async (request: ResetPasswordRequest) => {
+        const resetPasswordApiResult = await resetPasswordApiTrigger(request).unwrap();
+        return resetPasswordApiResult;
     }
 
     useEffect(() => {
@@ -102,5 +113,6 @@ export const useAuthentication = () => {
         logout,
         refreshSession,
         patchAccount,
+        resetPassword,
     };
 }

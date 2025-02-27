@@ -24,6 +24,9 @@ export const warehouseAdminApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/warehouse-admins`
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         getWarehouseAdmins: builder.query<ResponseBody<WarehouseAdminResponse[]>, ManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {

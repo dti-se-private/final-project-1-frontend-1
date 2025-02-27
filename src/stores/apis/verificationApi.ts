@@ -11,6 +11,9 @@ export const verificationApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/verifications`
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         send: builder.mutation<ResponseBody<void>, VerificationSendRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {

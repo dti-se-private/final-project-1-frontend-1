@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useWarehouseProduct} from "@/src/hooks/useWarehouseProduct";
 import {Icon} from "@iconify/react";
 import {
@@ -18,11 +18,14 @@ import {
 import {WarehouseProductResponse} from "@/src/stores/apis/warehouseProductApi";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
+import ConfirmationModal from "@/src/components/ConfirmationModal";
+import {useDeleteConfirmation} from "@/src/hooks/useDeleteConfirmation";
 import {useModal} from "@/src/hooks/useModal";
 
 export default function Page() {
     const router = useRouter();
     const modal = useModal();
+    const [warehouseProductToDelete, setWarehouseProductToDelete] = useState<WarehouseProductResponse | null>(null);
     const {
         warehouseProductState,
         getWarehouseProductsApiResult,
@@ -31,6 +34,39 @@ export default function Page() {
         deleteWarehouseProduct,
     } = useWarehouseProduct();
 
+    const {
+        isModalOpen,
+        modalContent,
+        showModal,
+        handleConfirm,
+        handleCancel,
+        setModalContent,
+    } = useDeleteConfirmation(() => {
+        if (warehouseProductToDelete) {
+            deleteWarehouseProduct({id: warehouseProductToDelete.id})
+                .then((data) => {
+                    modal.setContent({
+                        header: "Delete Succeed",
+                        body: `${data.message}`,
+                    })
+                })
+                .catch((error) => {
+                    modal.setContent({
+                        header: "Delete Failed",
+                        body: `${error.data.message}`,
+                    })
+                })
+                .finally(() => {
+                    modal.onOpenChange(true);
+                    setWarehouseProductToDelete(null);
+                });
+        }
+    });
+
+    const handleDelete = (warehouseProduct: WarehouseProductResponse) => {
+        setWarehouseProductToDelete(warehouseProduct);
+        showModal("Confirm Delete", `Are you sure you want to delete the warehouse product "${warehouseProduct.product.name}"?`);
+    };
 
     useEffect(() => {
         setGetWarehouseProductsRequest({
@@ -52,22 +88,7 @@ export default function Page() {
                     </Button>
                     <Button
                         color="danger"
-                        onPress={() => deleteWarehouseProduct({id: item.id})
-                            .then((data) => {
-                                modal.setContent({
-                                    header: "Delete Succeed",
-                                    body: `${data.message}`,
-                                })
-                            })
-                            .catch((error) => {
-                                modal.setContent({
-                                    header: "Delete Failed",
-                                    body: `${error.data.message}`,
-                                })
-                            }).finally(() => {
-                                modal.onOpenChange(true);
-                            })
-                        }
+                        onPress={() => handleDelete(item)}
                     >
                         Delete
                     </Button>
@@ -125,10 +146,11 @@ export default function Page() {
                                         size: Number(event.target.value),
                                         search: warehouseProductState.getWarehouseProductsRequest.search
                                     })}
+                                    defaultValue={5}
                                 >
-                                    <option selected value="5">5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={15}>15</option>
                                 </select>
                             </label>
                         </div>
@@ -178,6 +200,14 @@ export default function Page() {
                     </TableBody>
                 </Table>
             </div>
+
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                header={modalContent.header}
+                body={modalContent.body}
+                onCancel={handleCancel}
+                onConfirm={handleConfirm}
+            />
         </div>
     )
 }

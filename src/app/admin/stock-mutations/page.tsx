@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import { useWarehouseLedger } from "@/src/hooks/useWarehouseLedger";
-import { Icon } from "@iconify/react";
+import {useWarehouseLedger} from "@/src/hooks/useWarehouseLedger";
+import {Icon} from "@iconify/react";
 import {
     Button,
     getKeyValue,
@@ -15,11 +15,11 @@ import {
     TableHeader,
     TableRow,
 } from "@heroui/react";
-import { WarehouseLedgerResponse } from "@/src/stores/apis/warehouseLedgerApi";
-import { useRouter } from "next/navigation";
-import { SearchIcon } from "@heroui/shared-icons";
+import {WarehouseLedgerResponse} from "@/src/stores/apis/warehouseLedgerApi";
+import {useRouter} from "next/navigation";
+import {SearchIcon} from "@heroui/shared-icons";
 import _ from "lodash";
-import { useModal } from "@/src/hooks/useModal";
+import {useModal} from "@/src/hooks/useModal";
 
 export default function WarehouseLedgerPage() {
     const router = useRouter();
@@ -47,7 +47,7 @@ export default function WarehouseLedgerPage() {
                     <Button
                         color="success"
                         onPress={() =>
-                            approveMutation({ id: item.id })
+                            approveMutation({id: item.id})
                                 .then((data) => {
                                     modal.setContent({
                                         header: "Approval Succeeded",
@@ -70,7 +70,7 @@ export default function WarehouseLedgerPage() {
                     <Button
                         color="danger"
                         onPress={() =>
-                            rejectMutation({ id: item.id })
+                            rejectMutation({id: item.id})
                                 .then((data) => {
                                     modal.setContent({
                                         header: "Rejection Succeeded",
@@ -107,7 +107,7 @@ export default function WarehouseLedgerPage() {
                             <div className="flex flex-row w-full gap-4">
                                 <Input
                                     placeholder="Search..."
-                                    startContent={<SearchIcon className="text-default-300" />}
+                                    startContent={<SearchIcon className="text-default-300"/>}
                                     value={warehouseLedgerState.getWarehouseLedgersRequest.search}
                                     variant="bordered"
                                     isClearable={true}
@@ -129,7 +129,7 @@ export default function WarehouseLedgerPage() {
                                     )}
                                 />
                                 <Button
-                                    startContent={<Icon icon="heroicons:plus" />}
+                                    startContent={<Icon icon="heroicons:plus"/>}
                                     onPress={() => router.push(`/admin/stock-mutations/add`)}
                                     color="success"
                                     className="text-white"
@@ -188,7 +188,7 @@ export default function WarehouseLedgerPage() {
                     </TableHeader>
                     <TableBody
                         items={getWarehouseLedgersApiResult.data?.data ?? []}
-                        loadingContent={<Spinner />}
+                        loadingContent={<Spinner/>}
                         loadingState={getWarehouseLedgersApiResult.isFetching ? "loading" : "idle"}
                         emptyContent={"Empty!"}
                     >

@@ -23,6 +23,12 @@ export interface LoginByExternalRequest {
     credential: string
 }
 
+export interface ResetPasswordRequest {
+    email: string;
+    otp: string;
+    newPassword: string;
+}
+
 export interface Session {
     account: AccountResponse
     accessToken: string;
@@ -30,6 +36,7 @@ export interface Session {
     accessTokenExpiredAt: Date;
     refreshTokenExpiredAt: Date;
     permissions: string[];
+    providers: string[];
 }
 
 
@@ -38,6 +45,9 @@ export const authenticationApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/authentications`
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         registerByInternal: builder.mutation<ResponseBody<AccountResponse>, RegisterByInternalRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
@@ -115,6 +125,19 @@ export const authenticationApi = createApi({
                     return {error: result.error};
                 }
                 return {data: result.data as ResponseBody<Session>};
+            }
+        }),
+        resetPassword: builder.mutation<ResponseBody<null>, ResetPasswordRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: "/reset-password",
+                    method: "POST",
+                    data: args,
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<null>};
             }
         }),
     })

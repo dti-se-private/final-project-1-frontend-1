@@ -1,5 +1,5 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { axiosBaseQuery, ManyRequest, ResponseBody } from "@/src/stores/apis";
+import {createApi} from "@reduxjs/toolkit/query/react";
+import {axiosBaseQuery, ResponseBody} from "@/src/stores/apis";
 
 // Define response interface based on the Java class
 export interface StatisticSeriesResponse {
@@ -14,7 +14,7 @@ export interface ProductSalesStatisticsRequest {
     categoryIds?: string[];
     productIds?: string[];
     aggregation: "sum" | "average" | "count";
-  period: "day" | "week" | "month";
+    period: "day" | "week" | "month";
 }
 
 // Create the API service
@@ -23,11 +23,14 @@ export const productSalesStatisticsApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/statistics`,
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         getProductSalesStatistics: builder.query<ResponseBody<StatisticSeriesResponse[]>, ProductSalesStatisticsRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [];
-                
+
                 if (args.warehouseIds) {
                     queryParams.push(...args.warehouseIds.map(id => `warehouseIds=${id}`));
                 }
@@ -48,15 +51,15 @@ export const productSalesStatisticsApi = createApi({
                     url: `/product-sales?${queryParams.join("&")}`,
                     method: "GET",
                 });
-                
+
                 if (result.error) {
-                    return { error: result.error };
+                    return {error: result.error};
                 }
-                return { data: result.data as ResponseBody<StatisticSeriesResponse[]> };
+                return {data: result.data as ResponseBody<StatisticSeriesResponse[]>};
             },
         }),
     }),
 });
 
 // Export hooks for usage in components
-export const { useGetProductSalesStatisticsQuery } = productSalesStatisticsApi;
+export const {useGetProductSalesStatisticsQuery} = productSalesStatisticsApi;

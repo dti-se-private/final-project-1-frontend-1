@@ -35,7 +35,7 @@ export const axiosBaseQuery =
         unknown,
         unknown
     > =>
-        async ({url, method, data, params, headers}) => {
+        async ({url, method, data, params, headers}, api, extraOptions) => {
             const instance = applyCaseMiddleware(axios.create())
             const rawInstance = applyCaseMiddleware(axios.create())
             const store = storeRegistry.getStore()!

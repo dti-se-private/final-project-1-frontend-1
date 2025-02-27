@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useWarehouseAdmin} from "@/src/hooks/useWarehouseAdmin";
 import {WarehouseAdminResponse} from "@/src/stores/apis/warehouseAdminApi";
 import {Icon} from "@iconify/react";
@@ -18,17 +18,55 @@ import {
 } from "@heroui/react";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
+import ConfirmationModal from "@/src/components/ConfirmationModal";
+import {useDeleteConfirmation} from "@/src/hooks/useDeleteConfirmation";
 import {useModal} from "@/src/hooks/useModal";
+
 
 export default function WarehouseAdminsManagementPage() {
     const router = useRouter();
     const modal = useModal();
+    const [adminToDelete, setAdminToDelete] = useState<WarehouseAdminResponse | null>(null);
     const {
         warehouseAdminState,
         getWarehouseAdminsApiResult,
         setGetWarehouseAdminsRequest,
         deleteWarehouseAdmin,
     } = useWarehouseAdmin();
+
+    const {
+        isModalOpen,
+        modalContent,
+        showModal,
+        handleConfirm,
+        handleCancel,
+        setModalContent,
+    } = useDeleteConfirmation(() => {
+        if (adminToDelete) {
+            deleteWarehouseAdmin({id: adminToDelete.id})
+                .then((data) => {
+                    modal.setContent({
+                        header: "Delete Succeed",
+                        body: `${data.message}`,
+                    })
+                })
+                .catch((error) => {
+                    modal.setContent({
+                        header: "Delete Failed",
+                        body: `${error.data.message}`,
+                    })
+                })
+                .finally(() => {
+                    modal.onOpenChange(true);
+                    setAdminToDelete(null);
+                });
+        }
+    });
+
+    const handleDelete = (admin: WarehouseAdminResponse) => {
+        setAdminToDelete(admin);
+        showModal("Confirm Delete", `Are you sure you want to delete the admin "${admin.account.name}"?`);
+    };
 
     useEffect(() => {
         setGetWarehouseAdminsRequest({
@@ -50,22 +88,7 @@ export default function WarehouseAdminsManagementPage() {
                     </Button>
                     <Button
                         color="danger"
-                        onPress={() => deleteWarehouseAdmin({id: item.id})
-                            .then((data) => {
-                                modal.setContent({
-                                    header: "Delete Succeed",
-                                    body: `${data.message}`,
-                                })
-                            })
-                            .catch((error) => {
-                                modal.setContent({
-                                    header: "Delete Failed",
-                                    body: `${error.data.message}`,
-                                })
-                            }).finally(() => {
-                                modal.onOpenChange(true);
-                            })
-                        }
+                        onPress={() => handleDelete(item)}
                     >
                         Delete
                     </Button>
@@ -135,10 +158,11 @@ export default function WarehouseAdminsManagementPage() {
                                         size: Number(event.target.value),
                                         search: warehouseAdminState.getWarehouseAdminsRequest.search
                                     })}
+                                    defaultValue={5}
                                 >
-                                    <option value="5">5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={15}>15</option>
                                 </select>
                             </label>
                         </div>
@@ -178,6 +202,14 @@ export default function WarehouseAdminsManagementPage() {
                     </TableBody>
                 </Table>
             </div>
+
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                header={modalContent.header}
+                body={modalContent.body}
+                onCancel={handleCancel}
+                onConfirm={handleConfirm}
+            />
         </div>
     )
 }

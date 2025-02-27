@@ -1,5 +1,5 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { axiosBaseQuery, ManyRequest, OneRequest, ResponseBody } from "@/src/stores/apis";
+import {createApi} from "@reduxjs/toolkit/query/react";
+import {axiosBaseQuery, ManyRequest, ResponseBody} from "@/src/stores/apis";
 
 // Define the response and request interfaces
 export interface WarehouseLedgerResponse {
@@ -30,6 +30,9 @@ export const warehouseLedgerApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/warehouse-ledgers`,
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         // Fetch all warehouse ledger entries with pagination and filtering
         getWarehouseLedgers: builder.query<ResponseBody<WarehouseLedgerResponse[]>, ManyRequest>({
@@ -44,9 +47,9 @@ export const warehouseLedgerApi = createApi({
                     method: "GET",
                 });
                 if (result.error) {
-                    return { error: result.error };
+                    return {error: result.error};
                 }
-                return { data: result.data as ResponseBody<WarehouseLedgerResponse[]> };
+                return {data: result.data as ResponseBody<WarehouseLedgerResponse[]>};
             },
         }),
 
@@ -59,9 +62,9 @@ export const warehouseLedgerApi = createApi({
                     data: args,
                 });
                 if (result.error) {
-                    return { error: result.error };
+                    return {error: result.error};
                 }
-                return { data: result.data as ResponseBody<WarehouseLedgerResponse> };
+                return {data: result.data as ResponseBody<WarehouseLedgerResponse>};
             },
         }),
 
@@ -74,9 +77,9 @@ export const warehouseLedgerApi = createApi({
                     data: args,
                 });
                 if (result.error) {
-                    return { error: result.error };
+                    return {error: result.error};
                 }
-                return { data: result.data as ResponseBody<WarehouseLedgerResponse> };
+                return {data: result.data as ResponseBody<WarehouseLedgerResponse>};
             },
         }),
 
@@ -89,9 +92,9 @@ export const warehouseLedgerApi = createApi({
                     data: args,
                 });
                 if (result.error) {
-                    return { error: result.error };
+                    return {error: result.error};
                 }
-                return { data: result.data as ResponseBody<WarehouseLedgerResponse> };
+                return {data: result.data as ResponseBody<WarehouseLedgerResponse>};
             },
         }),
     }),

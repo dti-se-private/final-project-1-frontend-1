@@ -87,10 +87,9 @@ export default function Page() {
                     <p className="text-lg">Category: {upperFirst(productState.details?.category?.name ?? "-")}</p>
                     <p className="text-md">{productState.details?.description}</p>
                     <div className="flex md:flex-row flex-col md:justify-start gap-2 mt-2 w-full">
-                        <div className="flex flex-row gap-2 w-full">
+                        <div className="flex flex-row gap-2">
                             <Button
                                 isIconOnly
-                                className="w-full"
                                 onPress={() => {
                                     if (quantity === 1) {
                                         return;
@@ -107,7 +106,6 @@ export default function Page() {
                             </Button>
                             <Button
                                 isIconOnly
-                                className="w-full"
                                 onPress={() => {
                                     if (quantity === productState.details?.quantity) {
                                         return;

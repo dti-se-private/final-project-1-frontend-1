@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
 import {Icon} from "@iconify/react";
 import {
@@ -20,6 +20,8 @@ import {useRouter} from "next/navigation";
 import * as wkx from "wkx";
 import {SearchIcon} from "@heroui/shared-icons";
 import {useModal} from "@/src/hooks/useModal";
+import {useDeleteConfirmation} from "@/src/hooks/useDeleteConfirmation";
+import ConfirmationModal from "@/src/components/ConfirmationModal";
 
 export default function Page() {
     const router = useRouter();
@@ -40,6 +42,37 @@ export default function Page() {
         });
     }, [])
 
+    const [accountAddressToDelete, setAccountAddressToDelete] = useState<AccountAddressResponse | null>(null);
+    const {
+        isModalOpen,
+        modalContent,
+        showModal,
+        handleConfirm,
+        handleCancel,
+        setModalContent,
+    } = useDeleteConfirmation(() => {
+        if (accountAddressToDelete) {
+            deleteAccountAddress({id: accountAddressToDelete.id})
+                .then((data) => {
+                    modal.setContent({
+                        header: "Delete Succeed",
+                        body: `${data.message}`,
+                    })
+                })
+                .catch((error) => {
+                    modal.setContent({
+                        header: "Delete Failed",
+                        body: `${error.data.message}`,
+                    })
+                })
+                .finally(() => {
+                    modal.onOpenChange(true);
+                    setAccountAddressToDelete(null);
+                })
+        }
+    });
+
+
     const rowMapper = (item: AccountAddressResponse, key: string): React.JSX.Element => {
         if (key === "action") {
             return (
@@ -52,22 +85,10 @@ export default function Page() {
                     </Button>
                     <Button
                         color="danger"
-                        onPress={() => deleteAccountAddress({id: item.id})
-                            .then((data) => {
-                                modal.setContent({
-                                    header: "Delete Succeed",
-                                    body: `${data.message}`,
-                                })
-                            })
-                            .catch((error) => {
-                                modal.setContent({
-                                    header: "Delete Failed",
-                                    body: `${error.data.message}`,
-                                })
-                            }).finally(() => {
-                                modal.onOpenChange(true);
-                            })
-                        }
+                        onPress={() => {
+                            setAccountAddressToDelete(item);
+                            showModal("Confirm Delete", `Are you sure you want to delete the address "${item.name}"?`);
+                        }}
                     >
                         Delete
                     </Button>
@@ -139,10 +160,11 @@ export default function Page() {
                                         size: Number(event.target.value),
                                         search: accountAddressState.getAccountAddressesRequest.search
                                     })}
+                                    defaultValue={5}
                                 >
-                                    <option selected value="5">5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={15}>15</option>
                                 </select>
                             </label>
                         </div>
@@ -185,6 +207,14 @@ export default function Page() {
                     </TableBody>
                 </Table>
             </div>
+
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                header={modalContent.header}
+                body={modalContent.body}
+                onCancel={handleCancel}
+                onConfirm={handleConfirm}
+            />
         </div>
     )
 }

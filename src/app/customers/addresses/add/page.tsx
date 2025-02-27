@@ -4,7 +4,7 @@ import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {Button, Checkbox} from "@heroui/react";
 import {useModal} from "@/src/hooks/useModal";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
 import {useRouter} from "next/navigation";
 import {AccountAddressRequest} from "@/src/stores/apis/accountAddressApi";
@@ -22,20 +22,20 @@ export default function Page() {
     } = useAccountAddress();
     const modal = useModal();
 
-    const initialValues = {
+    const [initialValues, setInitialValues] = useState({
         name: "",
         address: "",
         location: new wkx.Point(0, 0).toWkb().toString("hex"),
         isPrimary: false,
-    };
+    });
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((position) => {
             const wkb = new wkx.Point(position.coords.longitude, position.coords.latitude).toWkb();
-            setDetails({
-                ...accountAddressState.details!,
-                location: wkb.toString("hex"),
-            })
+            setInitialValues(prev => ({
+                ...prev,
+                location: wkb.toString("hex")
+            }));
         });
     }, []);
 

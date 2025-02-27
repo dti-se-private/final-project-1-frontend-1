@@ -18,6 +18,9 @@ export const cartApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/carts`
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         getCartItems: builder.query<ResponseBody<CartItemResponse[]>, ManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {

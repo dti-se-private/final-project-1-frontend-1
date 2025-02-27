@@ -11,6 +11,7 @@ import {useOrder} from "@/src/hooks/useOrder";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
 import {OrderRequest, OrderResponse} from "@/src/stores/apis/orderApi";
 import _ from "lodash";
+import Link from "next/link";
 
 export default function Page() {
     const {productId}: { productId: string } = useParams();
@@ -82,7 +83,7 @@ export default function Page() {
     }, [accountAddressId, getCartApiResult.data?.data]);
 
     useEffect(() => {
-        if (getAccountAddressesApiResult.data?.data) {
+        if (getAccountAddressesApiResult.data?.data && getAccountAddressesApiResult.data.data[0]) {
             const item = getAccountAddressesApiResult.data.data[0];
             setAccountAddressId(item.id);
             setGetAccountAddressesRequest({
@@ -107,26 +108,29 @@ export default function Page() {
                             key={cartItem.id}
                             className="flex flex-row justify-between items-center md:items-center gap-4 w-full h-[12vh] md:h-[18vh] border-b border-gray-300"
                         >
-                            <div className="relative h-full w-full md:w-[12vw]">
-                                <Image
-                                    className="rounded-md"
-                                    src={
-                                        cartItem.product.image
-                                            ? convertHexStringToBase64Data(cartItem.product.image, "image/png")
-                                            : "https://placehold.co/400x400?text=product"
-                                    }
-                                    layout="fill"
-                                    objectFit="cover"
-                                    alt='product'
-                                />
-                            </div>
-                            <div className="flex flex-col md:gap-2 w-full">
-                                <div className="md:text-lg text-md font-bold line-clamp-1">{cartItem.product.name}</div>
-                                <div
-                                    className="md:text-md text-sm">{currencyFormatter.format(cartItem.product.price * cartItem.quantity)}</div>
-                                <div
-                                    className="md:text-md text-sm">Stock: {cartItem.product.quantity - cartItem.quantity}</div>
-                            </div>
+                            <Link href={`/products/${cartItem.product.id}`} className="flex flex-row h-full w-full">
+                                <div className="relative h-full w-full md:w-[12vw]">
+                                    <Image
+                                        className="rounded-md"
+                                        src={
+                                            cartItem.product.image
+                                                ? convertHexStringToBase64Data(cartItem.product.image, "image/png")
+                                                : "https://placehold.co/400x400?text=product"
+                                        }
+                                        layout="fill"
+                                        objectFit="cover"
+                                        alt='product'
+                                    />
+                                </div>
+                                <div className="flex flex-col md:gap-2 w-full">
+                                    <div
+                                        className="md:text-lg text-md font-bold line-clamp-1">{cartItem.product.name}</div>
+                                    <div
+                                        className="md:text-md text-sm">{currencyFormatter.format(cartItem.product.price * cartItem.quantity)}</div>
+                                    <div
+                                        className="md:text-md text-sm">Stock: {cartItem.product.quantity - cartItem.quantity}</div>
+                                </div>
+                            </Link>
                             <div className="flex flex-row gap-4">
                                 <Button
                                     isIconOnly
@@ -239,8 +243,16 @@ export default function Page() {
                                 color="primary"
                                 isLoading={isTryCheckoutFetching}
                                 onPress={() => {
+                                    if (!accountAddressId) {
+                                        modal.setContent({
+                                            header: "Checkout Failed",
+                                            body: `Please select an address first.`
+                                        });
+                                        modal.onOpenChange(true);
+                                        return
+                                    }
                                     const request: OrderRequest = {
-                                        addressId: accountAddressId!,
+                                        addressId: accountAddressId,
                                         items: (getCartApiResult.data?.data ?? []).map((cartItem) => ({
                                             productId: cartItem.product.id,
                                             quantity: cartItem.quantity

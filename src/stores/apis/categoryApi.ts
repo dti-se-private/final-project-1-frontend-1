@@ -22,6 +22,9 @@ export const categoryApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/categories`
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
         getCategories: builder.query<ResponseBody<CategoryResponse[]>, ManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
