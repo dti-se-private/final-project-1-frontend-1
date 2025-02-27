@@ -64,19 +64,19 @@ export const statisticApi = createApi({
                 });
 
                 if (result.error) {
-                    return { error: result.error };
+                    return {error: result.error};
                 }
 
-                return { 
-                    data: result.data as ResponseBody<StatisticSeriesResponse[]> 
+                return {
+                    data: result.data as ResponseBody<StatisticSeriesResponse[]>
                 };
-                
+
             }
         }),
     }),
-    
+
 });
-export const { 
+export const {
     useGetProductStockQuery,
-    useGetProductSalesQuery 
+    useGetProductSalesQuery
 } = statisticApi;
