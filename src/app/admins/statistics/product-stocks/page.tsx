@@ -1,18 +1,9 @@
 "use client"
-import {
-    Autocomplete,
-    AutocompleteItem,
-    Button,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownTrigger, Select, SelectItem
-} from "@heroui/react";
+import {Autocomplete, AutocompleteItem, Select, SelectItem} from "@heroui/react";
 import {useModal} from '@/src/hooks/useModal';
 import {CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis} from 'recharts';
 import React, {useEffect, useState} from "react";
 import {SharedSelection} from "@heroui/system";
-import {ChevronDownIcon} from "@heroui/shared-icons";
 import {statisticApi} from "@/src/stores/apis/statisticApi";
 import {useProduct} from "@/src/hooks/useProduct";
 import {ProductResponse} from "@/src/stores/apis/productApi";
