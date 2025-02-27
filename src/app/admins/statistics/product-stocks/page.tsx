@@ -6,7 +6,7 @@ import {
     Dropdown,
     DropdownItem,
     DropdownMenu,
-    DropdownTrigger
+    DropdownTrigger, Select, SelectItem
 } from "@heroui/react";
 import {useModal} from '@/src/hooks/useModal';
 import {CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis} from 'recharts';
@@ -72,9 +72,10 @@ export default function Page() {
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
                 <h1 className="mb-8 text-4xl font-bold">Product Stocks Statistics</h1>
                 <div className="flex flex-col justify-center items-between gap-4 w-full">
-                    <div className="flex justify-between items-center w-full gap-4">
+                    <div className="flex md:flex-row flex-col justify-center items-center md:justify-between md:items-center w-full gap-4">
                         <Autocomplete
-                            className="w-[61%]"
+                            className="w-full"
+                            fullWidth={true}
                             name="productId"
                             placeholder="Type to search..."
                             selectedKey={selectedProductId}
@@ -113,87 +114,48 @@ export default function Page() {
                                 </AutocompleteItem>
                             )}
                         </Autocomplete>
-                        <Dropdown placement="bottom-end">
-                            <DropdownTrigger>
-                                <Button
-                                    className="w-[12%] capitalize flex justify-between"
-                                    endContent={<ChevronDownIcon/>}
-                                >
-                                    {
-                                        Array
-                                            .from(selectedOperation)
-                                            .map((key) => dropdownOperation[key])
-                                            [0]
-                                    }
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                selectedKeys={selectedOperation}
-                                selectionMode="single"
-                                onSelectionChange={(keys: SharedSelection) => setSelectedOperation(keys as Set<string>)}
+                        <Select
+                            className="md:w-[10%] w-full capitalize flex justify-between"
+                            fullWidth={false}
+                            disallowEmptySelection
+                            selectedKeys={selectedOperation}
+                            selectionMode="single"
+                            onSelectionChange={(keys: SharedSelection) => setSelectedOperation(keys as Set<string>)}
                             >
-                                {
-                                    Object.entries(dropdownOperation).map(([key, value]) => (
-                                        <DropdownItem key={key}>{value}</DropdownItem>
-                                    ))
-                                }
-                            </DropdownMenu>
-                        </Dropdown>
-                        <Dropdown placement="bottom-end">
-                            <DropdownTrigger>
-                                <Button
-                                    className="w-[12%] capitalize flex justify-between"
-                                    endContent={<ChevronDownIcon/>}
-                                >
-                                    {
-                                        Array
-                                            .from(selectedAggregation)
-                                            .map((key) => dropdownAggregations[key])
-                                            [0]
-                                    }
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                selectedKeys={selectedAggregation}
-                                selectionMode="single"
-                                onSelectionChange={(keys: SharedSelection) => setSelectedAggregation(keys as Set<string>)}
-                            >
-                                {
-                                    Object.entries(dropdownAggregations).map(([key, value]) => (
-                                        <DropdownItem key={key}>{value}</DropdownItem>
-                                    ))
-                                }
-                            </DropdownMenu>
-                        </Dropdown>
-                        <Dropdown placement="bottom-end">
-                            <DropdownTrigger>
-                                <Button
-                                    className="w-[12%] capitalize flex justify-between"
-                                    endContent={<ChevronDownIcon/>}
-                                >
-                                    {
-                                        Array
-                                            .from(selectedPeriod)
-                                            .map((key) => dropdownPeriods[key])
-                                            [0]
-                                    }
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                selectedKeys={selectedPeriod}
-                                selectionMode="single"
-                                onSelectionChange={(keys: SharedSelection) => setSelectedPeriod(keys as Set<string>)}
-                            >
-                                {
-                                    Object.entries(dropdownPeriods).map(([key, value]) => (
-                                        <DropdownItem key={key}>{value}</DropdownItem>
-                                    ))
-                                }
-                            </DropdownMenu>
-                        </Dropdown>
+                            {
+                                Object.entries(dropdownOperation).map(([key, value]) => (
+                                    <SelectItem key={key}>{value}</SelectItem>
+                                ))
+                            }
+                        </Select>
+                        <Select
+                            className="md:w-[10%] w-full capitalize flex justify-between"
+                            fullWidth={false}
+                            disallowEmptySelection
+                            selectedKeys={selectedAggregation}
+                            selectionMode="single"
+                            onSelectionChange={(keys: SharedSelection) => setSelectedAggregation(keys as Set<string>)}
+                        >
+                            {
+                                Object.entries(dropdownAggregations).map(([key, value]) => (
+                                    <SelectItem key={key}>{value}</SelectItem>
+                                ))
+                            }
+                        </Select>
+                        <Select
+                            className="md:w-[10%] w-full capitalize flex justify-between"
+                            fullWidth={false}
+                            disallowEmptySelection
+                            selectedKeys={selectedPeriod}
+                            selectionMode="single"
+                            onSelectionChange={(keys: SharedSelection) => setSelectedPeriod(keys as Set<string>)}
+                        >
+                            {
+                                Object.entries(dropdownPeriods).map(([key, value]) => (
+                                    <SelectItem key={key}>{value}</SelectItem>
+                                ))
+                            }
+                        </Select>
                     </div>
                 </div>
                 <div className="w-full h-full flex justify-center items-center">

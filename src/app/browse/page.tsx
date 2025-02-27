@@ -72,11 +72,11 @@ export default function Page() {
                             </Link>
                         ))
                     }
-                    {!getProductWithCategoryApiResult.isFetching && getProductWithCategoryApiResult.data?.data?.length === 0 && (
-                        <div className="flex justify-center">
-                            Empty!
-                        </div>
-                    )}
+                    {
+                        !getProductWithCategoryApiResult.isFetching
+                        && (getProductWithCategoryApiResult.data?.data ?? []).length === 0
+                        && (<div className="flex justify-center">Empty!</div>)
+                    }
                 </div>
 
 

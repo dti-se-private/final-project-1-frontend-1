@@ -51,7 +51,6 @@ export default function Page() {
     const products = [defaultProduct, ...(getProductsApiResult.data?.data ?? [])];
 
     const getProductSalesStatisticApiResult = statisticApi.useGetProductSalesQuery({
-        warehouseIds: [],
         categoryIds: [],
         productIds: selectedProductId === "all" ? [] : [selectedProductId],
         aggregation: Array.from(selectedAggregation)[0],

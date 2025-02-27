@@ -9,7 +9,6 @@ export interface ProductStockStatisticRequest {
 }
 
 export interface SalesStatisticRequest {
-    warehouseIds?: string[]
     categoryIds?: string[]
     productIds?: string[]
     aggregation: string
@@ -51,7 +50,6 @@ export const statisticApi = createApi({
         getProductSales: builder.query<ResponseBody<StatisticSeriesResponse[]>, SalesStatisticRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
-                    args.warehouseIds?.length ? `warehouse_ids=${args.warehouseIds.join(',')}` : '',
                     args.categoryIds?.length ? `category_ids=${args.categoryIds.join(',')}` : '',
                     args.productIds?.length ? `product_ids=${args.productIds.join(',')}` : '',
                     `aggregation=${args.aggregation}`,
@@ -76,7 +74,3 @@ export const statisticApi = createApi({
     }),
 
 });
-export const {
-    useGetProductStockQuery,
-    useGetProductSalesQuery
-} = statisticApi;

@@ -42,7 +42,7 @@ export default function Page() {
             {text: "Order Management", link: "/admins/orders"},
             {text: "Payment Confirmation Order Management", link: "/admins/orders/payment-confirmations"},
             {text: "Product Sales Statistics", link: "/admins/statistics/product-sales"},
-            {text: "Product Stocks Statistics", link: "/admins/statistics/product-stocks"},
+            {text: "Product Stock Statistics", link: "/admins/statistics/product-stocks"},
         ],
     };
 

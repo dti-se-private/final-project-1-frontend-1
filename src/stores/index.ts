@@ -29,10 +29,7 @@ import {warehouseProductApi} from "@/src/stores/apis/warehouseProductApi";
 import {accountSlice} from "@/src/stores/slices/accountSlice";
 import {warehouseLedgerSlice} from "@/src/stores/slices/warehouseLedgerSlice";
 import {warehouseLedgerApi} from "@/src/stores/apis/warehouseLedgerApi";
-import {productSalesStatisticsSlice} from "@/src/stores/slices/productSalesStatisticsSlice";
-import {productSalesStatisticsApi} from "@/src/stores/apis/productSalesStatisticsApi";
-import {productStockStatisticsSlice} from "@/src/stores/slices/productStockStatisticsSlice";
-import {productStockStatisticsApi} from "@/src/stores/apis/productStockStatisticsApi";
+import {statisticApi} from "@/src/stores/apis/statisticApi";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
@@ -47,8 +44,6 @@ const rootReducer = combineReducers({
     [warehouseAdminSlice.reducerPath]: warehouseAdminSlice.reducer,
     [warehouseProductSlice.reducerPath]: warehouseProductSlice.reducer,
     [warehouseLedgerSlice.reducerPath]: warehouseLedgerSlice.reducer,
-    [productSalesStatisticsSlice.reducerPath]: productSalesStatisticsSlice.reducer,
-    [productStockStatisticsSlice.reducerPath]: productStockStatisticsSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [accountAddressApi.reducerPath]: accountAddressApi.reducer,
     [warehouseApi.reducerPath]: warehouseApi.reducer,
@@ -61,8 +56,7 @@ const rootReducer = combineReducers({
     [productApi.reducerPath]: productApi.reducer,
     [cartApi.reducerPath]: cartApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
-    [productSalesStatisticsApi.reducerPath]: productSalesStatisticsApi.reducer,
-    [productStockStatisticsApi.reducerPath]: productStockStatisticsApi.reducer,
+    [statisticApi.reducerPath]: statisticApi.reducer,
 })
 
 const createNoopStorage = () => {
@@ -109,8 +103,7 @@ export const store = configureStore({
         warehouseAdminApi.middleware,
         warehouseProductApi.middleware,
         warehouseLedgerApi.middleware,
-        productSalesStatisticsApi.middleware,
-        productStockStatisticsApi.middleware
+        statisticApi.middleware,
     ),
 })
 
