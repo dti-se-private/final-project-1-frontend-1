@@ -66,11 +66,13 @@ export default function Page() {
             });
     }, 500)
 
+    const isValidToTryCheckout = Boolean(getCartApiResult.data?.data && getCartApiResult.data?.data.length > 0 && accountAddressId);
+
     useEffect(() => {
-        if (getCartApiResult.data?.data && accountAddressId) {
+        if (isValidToTryCheckout) {
             const request: OrderRequest = {
                 addressId: accountAddressId!,
-                items: getCartApiResult.data?.data.map((cartItem) => ({
+                items: getCartApiResult.data!.data!.map((cartItem) => ({
                     productId: cartItem.product.id,
                     quantity: cartItem.quantity
                 }))
@@ -90,16 +92,6 @@ export default function Page() {
             });
         }
     }, [getAccountAddressesApiResult.isLoading]);
-
-    if (getCartApiResult.isLoading || getAccountAddressesApiResult.isLoading) {
-        return (
-            <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
-                <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
-                    <Spinner/>
-                </div>
-            </div>
-        )
-    }
 
     return (
         <div className="flex flex-col md:flex-row justify-center items-center min-h-[78vh] h-full">
@@ -184,7 +176,7 @@ export default function Page() {
                             <div>
                                 {
                                     isTryCheckoutFetching ? (<Spinner size="sm"/>)
-                                        : (orderResponse?.itemPrice ? currencyFormatter.format(orderResponse?.itemPrice) : "-")
+                                        : orderResponse?.itemPrice ? currencyFormatter.format(orderResponse?.itemPrice) : "-"
                                 }
                             </div>
                         </div>
@@ -193,7 +185,7 @@ export default function Page() {
                             <div>
                                 {
                                     isTryCheckoutFetching ? (<Spinner size="sm"/>)
-                                        : (orderResponse?.shipmentPrice ? currencyFormatter.format(orderResponse?.shipmentPrice) : "-")
+                                        : orderResponse?.shipmentPrice ? currencyFormatter.format(orderResponse?.shipmentPrice) : "-"
                                 }
                             </div>
                         </div>
@@ -204,7 +196,7 @@ export default function Page() {
                             <div>
                                 {
                                     isTryCheckoutFetching ? (<Spinner size="sm"/>)
-                                        : (orderResponse?.totalPrice ? currencyFormatter.format(orderResponse?.totalPrice) : "-")
+                                        : orderResponse?.totalPrice ? currencyFormatter.format(orderResponse?.totalPrice) : "-"
                                 }
                             </div>
                         </div>
@@ -218,6 +210,7 @@ export default function Page() {
                                 inputValue={accountAddressState.getAccountAddressesRequest.search}
                                 isLoading={getAccountAddressesApiResult.isFetching}
                                 items={getAccountAddressesApiResult.data?.data ?? []}
+                                isClearable={false}
                                 onInputChange={(input) => {
                                     setGetAccountAddressesRequest({
                                         size: accountAddressState.getAccountAddressesRequest.size,
@@ -244,6 +237,7 @@ export default function Page() {
                             <Button
                                 className="w-full"
                                 color="primary"
+                                isLoading={isTryCheckoutFetching}
                                 onPress={() => {
                                     const request: OrderRequest = {
                                         addressId: accountAddressId!,
@@ -265,9 +259,11 @@ export default function Page() {
                                                 header: "Checkout Failed",
                                                 body: `${error.data.message}`,
                                             })
-                                        }).finally(() => {
-                                        modal.onOpenChange(true);
-                                    })
+                                        })
+                                        .finally(() => {
+                                            modal.onOpenChange(true);
+                                            getCartApiResult.refetch();
+                                        })
                                 }}
                             >
                                 Checkout

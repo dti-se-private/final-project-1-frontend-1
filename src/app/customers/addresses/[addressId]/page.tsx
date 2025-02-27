@@ -79,14 +79,23 @@ export default function Page() {
     };
 
     const getPosition = (location: string): { lat: number, lng: number } => {
-        const buffer = Buffer.from(location, "hex");
-        const geometry = wkx.Geometry.parse(buffer);
-        const geoJson = geometry.toGeoJSON() as { type: string, coordinates: number[] };
-        return {lat: geoJson.coordinates[1], lng: geoJson.coordinates[0]};
-    }
+        if (!location || location.length % 2 !== 0) {
+            return {lat: 0, lng: 0};
+        }
+
+        try {
+            const buffer = Buffer.from(location, "hex");
+            const geometry = wkx.Geometry.parse(buffer);
+            const geoJson = geometry.toGeoJSON() as { type: string, coordinates: number[] };
+            return {lat: geoJson.coordinates[1], lng: geoJson.coordinates[0]};
+        } catch (error) {
+            console.error("Error parsing location:", error);
+            return {lat: 0, lng: 0};
+        }
+    };
 
 
-    if (detailAccountAddressApiResult.isFetching) {
+    if (detailAccountAddressApiResult.isLoading) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
@@ -107,7 +116,7 @@ export default function Page() {
                     enableReinitialize
                 >
                     {(props) => (
-                        <Form className="w-2/3 md:w-1/3">
+                        <Form className="w-2/3 md:w-2/3">
                             <FormInput name="id" label="ID" type="text" isDisabled/>
                             <FormInput name="name" label="Name" type="text"/>
                             <FormInputArea name="address" label="Address" type="text"/>

@@ -1,5 +1,5 @@
 "use client"
-import React, {Key} from "react";
+import React, {useEffect} from "react";
 import {useWarehouse} from "@/src/hooks/useWarehouse";
 import {WarehouseResponse} from "@/src/stores/apis/warehouseApi";
 import {Icon} from "@iconify/react";
@@ -18,7 +18,6 @@ import {
 } from "@heroui/react";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
-import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
 import wkx from "wkx";
 
@@ -32,13 +31,21 @@ export default function WarehouseManagementPage() {
         deleteWarehouse,
     } = useWarehouse();
 
+    useEffect(() => {
+        setGetWarehousesRequest({
+            page: warehouseState.getWarehousesRequest.page,
+            size: warehouseState.getWarehousesRequest.size,
+            search: "",
+        });
+    }, [])
+
     const rowMapper = (item: WarehouseResponse, key: string) => {
         if (key === "action") {
             return (
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admin/warehouses/${item.id}`)}
+                        onPress={() => router.push(`/admins/warehouses/${item.id}`)}
                     >
                         Details
                     </Button>
@@ -89,7 +96,7 @@ export default function WarehouseManagementPage() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
                 <h1 className="mb-8 text-4xl font-bold">Warehouses</h1>
                 <Table
@@ -97,7 +104,7 @@ export default function WarehouseManagementPage() {
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-row w-full gap-4">
                                 <Input
-                                    placeholder="Search..."
+                                    placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
                                     value={warehouseState.getWarehousesRequest.search}
                                     variant="bordered"
@@ -107,15 +114,17 @@ export default function WarehouseManagementPage() {
                                         size: warehouseState.getWarehousesRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetWarehousesRequest({
+                                    onValueChange={(value) => setGetWarehousesRequest({
                                         page: warehouseState.getWarehousesRequest.page,
                                         size: warehouseState.getWarehousesRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/admin/warehouses/add`)}
+                                    color="success"
+                                    className={"text-white"}
+                                    onPress={() => router.push(`/admins/warehouses/add`)}
                                 >
                                     Add
                                 </Button>
@@ -164,19 +173,19 @@ export default function WarehouseManagementPage() {
                     <TableBody
                         items={getWarehousesApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={getWarehousesApiResult.isLoading ? "loading" : "idle"}
+                        loadingState={getWarehousesApiResult.isFetching ? "loading" : "idle"}
                     >
                         {
                             (item: WarehouseResponse) => (
-                            <TableRow key={item?.id}>
-                                <TableCell>{getWarehousesApiResult.data?.data?.indexOf(item) ? getWarehousesApiResult.data?.data?.indexOf(item) + 1 : 0 + 1}</TableCell>
-                                <TableCell>{item?.id}</TableCell>
-                                <TableCell>{item?.name}</TableCell>
-                                <TableCell>{item?.description}</TableCell>
-                                <TableCell>{rowMapper(item, "location")}</TableCell>
-                                <TableCell>{rowMapper(item, "action")}</TableCell>
-                            </TableRow>
-                        )}
+                                <TableRow key={item?.id}>
+                                    <TableCell>{getWarehousesApiResult.data?.data?.indexOf(item) ? getWarehousesApiResult.data?.data?.indexOf(item) + 1 : 0 + 1}</TableCell>
+                                    <TableCell>{item?.id}</TableCell>
+                                    <TableCell>{item?.name}</TableCell>
+                                    <TableCell>{item?.description}</TableCell>
+                                    <TableCell>{rowMapper(item, "location")}</TableCell>
+                                    <TableCell>{rowMapper(item, "action")}</TableCell>
+                                </TableRow>
+                            )}
                     </TableBody>
                 </Table>
             </div>

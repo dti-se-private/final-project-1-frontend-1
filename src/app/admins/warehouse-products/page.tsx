@@ -1,7 +1,7 @@
 "use client"
-import React from "react";
-import { useWarehouseProduct } from "@/src/hooks/useWarehouseProduct";
-import { Icon } from "@iconify/react";
+import React, {useEffect} from "react";
+import {useWarehouseProduct} from "@/src/hooks/useWarehouseProduct";
+import {Icon} from "@iconify/react";
 import {
     Button,
     getKeyValue,
@@ -15,11 +15,10 @@ import {
     TableHeader,
     TableRow
 } from "@heroui/react";
-import { WarehouseProductResponse } from "@/src/stores/apis/warehouseProductApi";
-import { useRouter } from "next/navigation";
-import { SearchIcon } from "@heroui/shared-icons";
-import _ from "lodash";
-import { useModal } from "@/src/hooks/useModal";
+import {WarehouseProductResponse} from "@/src/stores/apis/warehouseProductApi";
+import {useRouter} from "next/navigation";
+import {SearchIcon} from "@heroui/shared-icons";
+import {useModal} from "@/src/hooks/useModal";
 
 export default function Page() {
     const router = useRouter();
@@ -32,19 +31,28 @@ export default function Page() {
         deleteWarehouseProduct,
     } = useWarehouseProduct();
 
+
+    useEffect(() => {
+        setGetWarehouseProductsRequest({
+            page: warehouseProductState.getWarehouseProductsRequest.page,
+            size: warehouseProductState.getWarehouseProductsRequest.size,
+            search: "",
+        });
+    }, [])
+
     const rowMapper = (item: WarehouseProductResponse, key: string): React.JSX.Element => {
         if (key === "action") {
             return (
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admin/warehouse-products/${item.id}`)}
+                        onPress={() => router.push(`/admins/warehouse-products/${item.id}`)}
                     >
                         Details
                     </Button>
                     <Button
                         color="danger"
-                        onPress={() => deleteWarehouseProduct({ id: item.id })
+                        onPress={() => deleteWarehouseProduct({id: item.id})
                             .then((data) => {
                                 modal.setContent({
                                     header: "Delete Succeed",
@@ -83,8 +91,8 @@ export default function Page() {
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-row w-full gap-4">
                                 <Input
-                                    placeholder="Search..."
-                                    startContent={<SearchIcon className="text-default-300" />}
+                                    placeholder="Type to search..."
+                                    startContent={<SearchIcon className="text-default-300"/>}
                                     value={warehouseProductState.getWarehouseProductsRequest.search}
                                     variant="bordered"
                                     isClearable={true}
@@ -93,15 +101,15 @@ export default function Page() {
                                         size: warehouseProductState.getWarehouseProductsRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetWarehouseProductsRequest({
+                                    onValueChange={(value) => setGetWarehouseProductsRequest({
                                         page: warehouseProductState.getWarehouseProductsRequest.page,
                                         size: warehouseProductState.getWarehouseProductsRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                                 <Button
-                                    startContent={<Icon icon="heroicons:plus" />}
-                                    onPress={() => router.push(`/admin/warehouse-products/add`)}
+                                    startContent={<Icon icon="heroicons:plus"/>}
+                                    onPress={() => router.push(`/admins/warehouse-products/add`)}
                                     color="success"
                                     className="text-white"
                                 >
@@ -151,7 +159,7 @@ export default function Page() {
                     </TableHeader>
                     <TableBody
                         items={getWarehouseProductsApiResult.data?.data ?? []}
-                        loadingContent={<Spinner />}
+                        loadingContent={<Spinner/>}
                         loadingState={getWarehouseProductsApiResult.isFetching ? "loading" : "idle"}
                         emptyContent={"Empty!"}
                     >

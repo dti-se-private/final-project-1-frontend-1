@@ -68,7 +68,7 @@ export default function Page() {
             });
     };
 
-    if (detailCategoryApiResult.isFetching) {
+    if (detailCategoryApiResult.isLoading) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
@@ -89,7 +89,7 @@ export default function Page() {
                     enableReinitialize
                 >
                     {(props) => (
-                        <Form className="w-2/3 md:w-1/3">
+                        <Form className="w-2/3 md:w-2/3">
                             <FormInput name="id" label="ID" type="text" isDisabled/>
                             <FormInput name="name" label="Name" type="text"/>
                             <FormInputArea name="description" label="Description" type="text"/>

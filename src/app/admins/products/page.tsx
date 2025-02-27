@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {useProduct} from "@/src/hooks/useProduct";
 import {Icon} from "@iconify/react";
 import {
@@ -18,7 +18,6 @@ import {
 import {ProductResponse} from "@/src/stores/apis/productApi";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
-import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
 import Image from "next/image";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
@@ -34,6 +33,13 @@ export default function Page() {
         deleteProduct,
     } = useProduct();
 
+    useEffect(() => {
+        setGetProductsRequest({
+            page: productState.getProductsRequest.page,
+            size: productState.getProductsRequest.size,
+            search: "",
+        });
+    }, [])
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -49,7 +55,7 @@ export default function Page() {
                 <div className="flex flex-col gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admin/products/${item.id}`)}
+                        onPress={() => router.push(`/admins/products/${item.id}`)}
                     >
                         Details
                     </Button>
@@ -123,7 +129,7 @@ export default function Page() {
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-row w-full gap-4">
                                 <Input
-                                    placeholder="Search..."
+                                    placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
                                     value={productState.getProductsRequest.search}
                                     variant="bordered"
@@ -133,15 +139,15 @@ export default function Page() {
                                         size: productState.getProductsRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetProductsRequest({
+                                    onValueChange={(value) => setGetProductsRequest({
                                         page: productState.getProductsRequest.page,
                                         size: productState.getProductsRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/admin/products/add`)}
+                                    onPress={() => router.push(`/admins/products/add`)}
                                     color="success"
                                     className="text-white"
                                 >

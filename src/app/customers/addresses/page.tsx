@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, {useEffect} from "react";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
 import {Icon} from "@iconify/react";
 import {
@@ -19,7 +19,6 @@ import {AccountAddressResponse} from "@/src/stores/apis/accountAddressApi";
 import {useRouter} from "next/navigation";
 import * as wkx from "wkx";
 import {SearchIcon} from "@heroui/shared-icons";
-import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
 
 export default function Page() {
@@ -32,6 +31,14 @@ export default function Page() {
         setDetails,
         deleteAccountAddress,
     } = useAccountAddress();
+
+    useEffect(() => {
+        setGetAccountAddressesRequest({
+            page: accountAddressState.getAccountAddressesRequest.page,
+            size: accountAddressState.getAccountAddressesRequest.size,
+            search: "",
+        });
+    }, [])
 
     const rowMapper = (item: AccountAddressResponse, key: string): React.JSX.Element => {
         if (key === "action") {
@@ -98,7 +105,7 @@ export default function Page() {
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-row w-full gap-4">
                                 <Input
-                                    placeholder="Search..."
+                                    placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
                                     value={accountAddressState.getAccountAddressesRequest.search}
                                     variant="bordered"
@@ -108,11 +115,11 @@ export default function Page() {
                                         size: accountAddressState.getAccountAddressesRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={_.debounce((value) => setGetAccountAddressesRequest({
+                                    onValueChange={(value) => setGetAccountAddressesRequest({
                                         page: accountAddressState.getAccountAddressesRequest.page,
                                         size: accountAddressState.getAccountAddressesRequest.size,
                                         search: value
-                                    }), 500)}
+                                    })}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}

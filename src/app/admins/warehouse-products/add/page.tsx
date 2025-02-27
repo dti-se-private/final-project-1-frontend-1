@@ -1,43 +1,26 @@
 "use client"
 import * as Yup from "yup";
-import { useFormik } from "formik";
-import { Autocomplete, AutocompleteItem, Button, Input, Spinner, Modal, ModalBody, ModalContent, ModalHeader, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
-import React, { useEffect, useState } from "react";
-import { useWarehouseProduct } from "@/src/hooks/useWarehouseProduct";
-import { useRouter } from "next/navigation";
-import { WarehouseProductRequest, WarehouseProductResponse } from "@/src/stores/apis/warehouseProductApi";
-import { useProduct } from "@/src/hooks/useProduct";
-import { useWarehouse } from "@/src/hooks/useWarehouse";
-
-interface ExistingPair {
-    id: string;
-    product: { id: string };
-    warehouse: { id: string };
-    quantity: number;
-}
+import {useFormik} from "formik";
+import {Autocomplete, AutocompleteItem, Button, Input, Spinner} from "@heroui/react";
+import React, {useEffect} from "react";
+import {useRouter} from "next/navigation";
+import {useWarehouseProduct} from "@/src/hooks/useWarehouseProduct";
+import {useProduct} from "@/src/hooks/useProduct";
+import {useWarehouse} from "@/src/hooks/useWarehouse";
+import {WarehouseProductRequest} from "@/src/stores/apis/warehouseProductApi";
+import {useModal} from "@/src/hooks/useModal";
 
 export default function Page() {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState(false);
-    const [existingPair, setExistingPair] = useState<ExistingPair | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [warehouseProducts, setWarehouseProducts] = useState<WarehouseProductResponse[]>([]);
+    const modal = useModal();
     const {
         warehouseProductState,
         addWarehouseProduct,
         getWarehouseProductsApiResult,
-        setGetWarehouseProductsRequest,
+        setGetWarehouseProductsRequest
     } = useWarehouseProduct();
-    const {
-        productState,
-        setGetProductsRequest,
-        getProductsApiResult,
-    } = useProduct();
-    const {
-        warehouseState,
-        setGetWarehousesRequest,
-        getWarehousesApiResult,
-    } = useWarehouse();
+    const {productState, setGetProductsRequest, getProductsApiResult} = useProduct();
+    const {warehouseState, setGetWarehousesRequest, getWarehousesApiResult} = useWarehouse();
 
     const initialValues = {
         productId: "",
@@ -52,28 +35,6 @@ export default function Page() {
     });
 
     const handleSubmit = async (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
-        const existing = warehouseProducts.find(
-            (item) => item.product.id === values.productId && item.warehouse.id === values.warehouseId
-        );
-
-        if (existing) {
-            setExistingPair(existing);
-            setIsModalOpen(true);
-            actions.setSubmitting(false);
-        } else {
-            await addProduct(values, actions);
-        }
-    };
-
-    const confirmAddProduct = async () => {
-        if (existingPair) {
-            await addProduct(formik.values, formik);
-            setExistingPair(null);
-            setIsModalOpen(false);
-        }
-    };
-
-    const addProduct = async (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
         const request: WarehouseProductRequest = {
             productId: values.productId,
             warehouseId: values.warehouseId,
@@ -81,22 +42,28 @@ export default function Page() {
         }
         return addWarehouseProduct(request)
             .then((data) => {
-                setIsModalOpen(false);
-                router.push("/admin/warehouse-products");
+                modal.setContent({
+                    header: "Add Succeed",
+                    body: `${data.message}`,
+                })
             })
             .catch((error) => {
-                setIsModalOpen(false);
+                modal.setContent({
+                    header: "Add Failed",
+                    body: `${error.data.message}`,
+                })
             }).finally(() => {
+                modal.onOpenChange(true);
                 actions.setSubmitting(false);
             });
     };
 
-    const formik = useFormik(({
+    const formik = useFormik({
         initialValues,
         validationSchema,
         onSubmit: handleSubmit,
         enableReinitialize: true
-    }))
+    });
 
     useEffect(() => {
         setGetProductsRequest({
@@ -109,24 +76,13 @@ export default function Page() {
             page: warehouseState.getWarehousesRequest.page,
             search: "",
         });
-        setGetWarehouseProductsRequest({
-            size: warehouseProductState.getWarehouseProductsRequest.size,
-            page: warehouseProductState.getWarehouseProductsRequest.page,
-            search: "",
-        });
     }, []);
 
-    useEffect(() => {
-        if (getWarehouseProductsApiResult.data?.data) {
-            setWarehouseProducts(getWarehouseProductsApiResult.data.data);
-        }
-    }, [getWarehouseProductsApiResult.data]);
-
-    if (isLoading) {
+    if (getProductsApiResult.isLoading || getWarehousesApiResult.isLoading) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
-                    <Spinner />
+                    <Spinner/>
                 </div>
             </div>
         )
@@ -136,7 +92,7 @@ export default function Page() {
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-center items-center">
                 <h1 className="mb-8 text-4xl font-bold">Add Warehouse Product</h1>
-                <form className="w-2/3 md:w-1/3" onSubmit={formik.handleSubmit}>
+                <form className="w-2/3 md:w-2/3" onSubmit={formik.handleSubmit}>
                     <Autocomplete
                         className="mb-6 w-full"
                         label="Product"
@@ -148,6 +104,7 @@ export default function Page() {
                         inputValue={productState.getProductsRequest.search}
                         isLoading={getProductsApiResult.isFetching}
                         items={getProductsApiResult.data?.data ?? []}
+                        isClearable={false}
                         onInputChange={(input) => {
                             setGetProductsRequest({
                                 size: productState.getProductsRequest.size,
@@ -182,6 +139,7 @@ export default function Page() {
                         inputValue={warehouseState.getWarehousesRequest.search}
                         isLoading={getWarehousesApiResult.isFetching}
                         items={getWarehousesApiResult.data?.data ?? []}
+                        isClearable={false}
                         onInputChange={(input) => {
                             setGetWarehousesRequest({
                                 size: warehouseState.getWarehousesRequest.size,
@@ -222,41 +180,6 @@ export default function Page() {
                     </Button>
                 </form>
             </div>
-            {existingPair && (
-                <Modal isOpen={isModalOpen} onOpenChange={setIsModalOpen} size="lg">
-                    <ModalContent>
-                        <ModalHeader className="flex flex-col gap-1">
-                            This Pair is Existed, Check table below
-                        </ModalHeader>
-                        <ModalBody>
-                            <Table>
-                                <TableHeader>
-                                    <TableColumn key="product.id">Product ID</TableColumn>
-                                    <TableColumn key="warehouse.id">Warehouse ID</TableColumn>
-                                    <TableColumn key="quantity">Quantity</TableColumn>
-                                    <TableColumn key="action">Action</TableColumn>
-                                </TableHeader>
-                                <TableBody>
-                                    <TableRow key={existingPair.id}>
-                                        <TableCell>{existingPair.product.id}</TableCell>
-                                        <TableCell>{existingPair.warehouse.id}</TableCell>
-                                        <TableCell>{existingPair.quantity}</TableCell>
-                                        <TableCell>
-                                            <Button color="primary" onClick={() => router.push(`/admin/warehouse-products/${existingPair.id}`)}>
-                                                Details
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                            <div className="flex justify-end mt-4">
-                                <Button color="success" onClick={confirmAddProduct} className="text-white">Confirm</Button>
-                                <Button color="danger" onClick={() => setIsModalOpen(false)} className="ml-2">Cancel</Button>
-                            </div>
-                        </ModalBody>
-                    </ModalContent>
-                </Modal>
-            )}
         </div>
     )
 }

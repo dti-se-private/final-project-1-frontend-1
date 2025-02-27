@@ -1,8 +1,17 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {axiosBaseQuery, ResponseBody} from "@/src/stores/apis";
 
-export interface StatisticRequest {
-    type: string
+export interface ProductStockStatisticRequest {
+    productIds: string[]
+    operation: string
+    aggregation: string
+    period: string
+}
+
+export interface SalesStatisticRequest {
+    warehouseIds?: string[]
+    categoryIds?: string[]
+    productIds?: string[]
     aggregation: string
     period: string
 }
@@ -18,15 +27,16 @@ export const statisticApi = createApi({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/statistics`
     }),
     endpoints: (builder) => ({
-        retrieveProductStatistic: builder.query<ResponseBody<StatisticSeriesResponse[]>, StatisticRequest>({
+        getProductStock: builder.query<ResponseBody<StatisticSeriesResponse[]>, ProductStockStatisticRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
-                    `type=${args.type}`,
+                    args.productIds.map((productId) => `productIds=${productId}`).join("&"),
+                    `operation=${args.operation}`,
                     `aggregation=${args.aggregation}`,
                     `period=${args.period}`,
                 ];
                 const result = await baseQuery({
-                    url: `/products?${queryParams.join("&")}`,
+                    url: `/product-stocks?${queryParams.join("&")}`,
                     method: "GET"
                 });
                 if (result.error) {
@@ -35,5 +45,35 @@ export const statisticApi = createApi({
                 return {data: result.data as ResponseBody<StatisticSeriesResponse[]>};
             }
         }),
-    })
+        getProductSales: builder.query<ResponseBody<StatisticSeriesResponse[]>, SalesStatisticRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const queryParams = [
+                    args.warehouseIds?.length ? `warehouse_ids=${args.warehouseIds.join(',')}` : '',
+                    args.categoryIds?.length ? `category_ids=${args.categoryIds.join(',')}` : '',
+                    args.productIds?.length ? `product_ids=${args.productIds.join(',')}` : '',
+                    `aggregation=${args.aggregation}`,
+                    `period=${args.period}`
+                ]; // Remove empty params
+
+                const result = await baseQuery({
+                    url: `/product-sales?${queryParams.join('&')}`,
+                    method: "GET"
+                });
+
+                if (result.error) {
+                    return { error: result.error };
+                }
+
+                return { 
+                    data: result.data as ResponseBody<StatisticSeriesResponse[]> 
+                };
+                
+            }
+        }),
+    }),
+    
 });
+export const { 
+    useGetProductStockQuery,
+    useGetProductSalesQuery 
+} = statisticApi;

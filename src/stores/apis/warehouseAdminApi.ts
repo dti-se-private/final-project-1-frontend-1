@@ -1,10 +1,12 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {axiosBaseQuery, ManyRequest, OneRequest, ResponseBody} from "@/src/stores/apis";
+import {WarehouseResponse} from "@/src/stores/apis/warehouseApi";
+import {AccountResponse} from "@/src/stores/apis/accountApi";
 
 export interface WarehouseAdminResponse {
     id: string;
-    warehouseId: string;
-    accountId: string;
+    warehouse: WarehouseResponse;
+    account: AccountResponse;
 }
 
 export interface WarehouseAdminRequest {

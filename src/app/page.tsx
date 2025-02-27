@@ -8,6 +8,8 @@ import {Pagination} from "swiper/modules";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
+import {CategoryResponse} from "@/src/stores/apis/categoryApi";
+import {useEffect} from "react";
 
 export default function Page() {
     const router = useRouter();
@@ -21,6 +23,19 @@ export default function Page() {
         setCategory
     } = useProduct();
 
+    useEffect(() => {
+        setGetProductsRequest({
+            size: productState.getProductsRequest.size,
+            page: productState.getProductsRequest.page,
+            search: "",
+        });
+        setGetCategoriesRequest({
+            size: productState.getCategoriesRequest.size,
+            page: productState.getCategoriesRequest.page,
+            search: "",
+        });
+    }, []);
+
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
@@ -30,14 +45,21 @@ export default function Page() {
     });
 
     const categories = [
-        {id: "", name: "all", description: "all"},
+        {id: "", name: "all", description: "all"} as CategoryResponse,
         ...categoryApiResult.data?.data?.slice(0, 10) ?? []
     ]
+
+    const heroImages = [
+        "/hero1.png",
+        "/hero2.png",
+        "/hero3.png",
+        "/hero4.png"
+    ];
 
     return (
         <div className="pb-8 flex flex-col justify-center items-center">
             {/* Hero */}
-            <section className="w-full mb-8">
+            <section className="w-full mb-4">
                 <Swiper
                     loop={true}
                     autoplay={true}
@@ -48,12 +70,12 @@ export default function Page() {
                     pagination={{clickable: true}}
                 >
                     {
-                        [1, 2, 3, 4].map((item, index) => (
+                        heroImages.map((image, index) => (
                             <SwiperSlide key={index}>
-                                <div className="w-full h-[88vh] relative mb-12">
+                                <div className="w-full h-[24vh] md:h-[79vh] relative mb-12">
                                     <Image
                                         className="rounded-md"
-                                        src={`https://placehold.co/1366x768?text=hero${index}`}
+                                        src={image}
                                         layout="fill"
                                         objectFit="cover"
                                         alt="hero"
@@ -83,33 +105,35 @@ export default function Page() {
             {/* Products */}
             <section className="container flex flex-col justify-center items-center px-2">
                 <div className="flex flex-wrap justify-center items-center gap-6 mb-8 min-h-[78vh]">
-                    {getProductWithCategoryApiResult.data?.data?.map((product, index) => (
-                        <Link
-                            href={`/products/${product.id}`}
-                            key={index}
-                            className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md md:w-[16vw] h-[50vh] w-[70vw]"
-                        >
-                            <div className="relative w-[100%] h-[100%] mb-4">
-                                <Image
-                                    className="rounded-md"
-                                    src={
-                                        product.image
-                                            ? convertHexStringToBase64Data(product.image, "image/png")
-                                            : "https://placehold.co/400x400?text=product"
-                                    }
-                                    layout="fill"
-                                    objectFit="cover"
-                                    alt='product'
-                                />
-                            </div>
-                            <div className="w-full flex flex-col justify-center items-start">
-                                <p className="line-clamp-1 w-full text-lg font-bold">{product.name}</p>
-                                <p className="text-md">{currencyFormatter.format(product.price)}</p>
-                                <p className="text-md">Stock: {product.quantity}</p>
-                            </div>
-                        </Link>
-                    ))}
-                    {getProductWithCategoryApiResult.isFetching && (<Spinner/>)}
+                    {getProductWithCategoryApiResult.isFetching ?
+                        (<Spinner/>) :
+                        getProductWithCategoryApiResult.data?.data?.map((product, index) => (
+                            <Link
+                                href={`/products/${product.id}`}
+                                key={index}
+                                className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md md:w-[16vw] h-[50vh] w-[70vw]"
+                            >
+                                <div className="relative w-[100%] h-[100%] mb-4">
+                                    <Image
+                                        className="rounded-md"
+                                        src={
+                                            product.image
+                                                ? convertHexStringToBase64Data(product.image, "image/png")
+                                                : "https://placehold.co/400x400?text=product"
+                                        }
+                                        layout="fill"
+                                        objectFit="cover"
+                                        alt='product'
+                                    />
+                                </div>
+                                <div className="w-full flex flex-col justify-center items-start">
+                                    <p className="line-clamp-1 w-full text-lg font-bold">{product.name}</p>
+                                    <p className="text-md">{currencyFormatter.format(product.price)}</p>
+                                    <p className="text-md">Stock: {product.quantity}</p>
+                                </div>
+                            </Link>
+                        ))
+                    }
                     {!getProductWithCategoryApiResult.isFetching && getProductWithCategoryApiResult.data?.data?.length === 0 && (
                         <div className="flex justify-center">
                             Empty!

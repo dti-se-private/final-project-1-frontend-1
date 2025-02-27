@@ -27,13 +27,17 @@ import {warehouseAdminSlice} from "@/src/stores/slices/warehouseAdminSlice";
 import {warehouseAdminApi} from "@/src/stores/apis/warehouseAdminApi";
 import {warehouseProductSlice} from "@/src/stores/slices/warehouseProductSlice";
 import {warehouseProductApi} from "@/src/stores/apis/warehouseProductApi";
+import {accountSlice} from "@/src/stores/slices/accountSlice";
 import {warehouseLedgerSlice} from "@/src/stores/slices/warehouseLedgerSlice";
 import {warehouseLedgerApi} from "@/src/stores/apis/warehouseLedgerApi";
 import {productSalesStatisticsSlice} from "@/src/stores/slices/productSalesStatisticsSlice";
 import {productSalesStatisticsApi} from "@/src/stores/apis/productSalesStatisticsApi";
+import {productStockStatisticsSlice} from "@/src/stores/slices/productStockStatisticsSlice";
+import {productStockStatisticsApi} from "@/src/stores/apis/productStockStatisticsApi";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
+    [accountSlice.reducerPath]: accountSlice.reducer,
     [categorySlice.reducerPath]: categorySlice.reducer,
     [modalSlice.reducerPath]: modalSlice.reducer,
     [productSlice.reducerPath]: productSlice.reducer,
@@ -45,6 +49,7 @@ const rootReducer = combineReducers({
     [warehouseProductSlice.reducerPath]: warehouseProductSlice.reducer,
     [warehouseLedgerSlice.reducerPath]: warehouseLedgerSlice.reducer,
     [productSalesStatisticsSlice.reducerPath]: productSalesStatisticsSlice.reducer,
+    [productStockStatisticsSlice.reducerPath]: productStockStatisticsSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [accountAddressApi.reducerPath]: accountAddressApi.reducer,
     [warehouseApi.reducerPath]: warehouseApi.reducer,
@@ -58,6 +63,7 @@ const rootReducer = combineReducers({
     [cartApi.reducerPath]: cartApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
     [productSalesStatisticsApi.reducerPath]: productSalesStatisticsApi.reducer,
+    [productStockStatisticsApi.reducerPath]: productStockStatisticsApi.reducer,
 })
 
 const createNoopStorage = () => {
@@ -105,6 +111,7 @@ export const store = configureStore({
         warehouseProductApi.middleware,
         warehouseLedgerApi.middleware,
         productSalesStatisticsApi.middleware,
+        productStockStatisticsApi.middleware
     ),
 })
 

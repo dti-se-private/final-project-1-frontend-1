@@ -80,10 +80,10 @@ export default function Component() {
 
     return (
         <Navbar isBordered>
-            <NavbarBrand className="w-1/5">
+            <NavbarBrand className="w-1/6">
                 <Link className="text-xl font-bold truncate" href="/">Ecommerce</Link>
             </NavbarBrand>
-            <NavbarContent as="div" className="w-3/5 items-center" justify="center">
+            <NavbarContent as="div" className="w-3/6 items-center" justify="center">
                 <Input
                     type="text"
                     placeholder="Type to search..."
@@ -96,7 +96,7 @@ export default function Component() {
                     }}
                 />
             </NavbarContent>
-            <NavbarContent as="div" className="w-1/5 items-center gap-8" justify="end">
+            <NavbarContent as="div" className="w-2/6 items-center gap-8" justify="end">
                 <Link href="/customers/cart" className="flex justify-center items-center">
                     <Badge
                         color="danger"
@@ -128,11 +128,11 @@ export default function Component() {
                                     </DropdownItem>
                                     <DropdownSection showDivider title="Menu">
                                         {hasPermission(['SUPER_ADMIN', 'WAREHOUSE_ADMIN']) ? (
-                                            <DropdownItem key="dashboard" href="/admin/dashboard">
+                                            <DropdownItem key="dashboard" href="/admins/dashboard">
                                                 Dashboard
                                             </DropdownItem>
                                         ) : null}
-                                        <DropdownItem key="addresses" href="/cusomers/addresses">
+                                        <DropdownItem key="addresses" href="/customers/addresses">
                                             Addresses
                                         </DropdownItem>
                                         <DropdownItem key="orders" href="/customers/orders">
