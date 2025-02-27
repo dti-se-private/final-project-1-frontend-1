@@ -8,9 +8,9 @@ export interface ProductStockStatisticRequest {
     period: string
 }
 
-export interface SalesStatisticRequest {
-    categoryIds?: string[]
-    productIds?: string[]
+export interface ProductSalesStatisticRequest {
+    categoryIds: string[]
+    productIds: string[]
     aggregation: string
     period: string
 }
@@ -47,28 +47,25 @@ export const statisticApi = createApi({
                 return {data: result.data as ResponseBody<StatisticSeriesResponse[]>};
             }
         }),
-        getProductSales: builder.query<ResponseBody<StatisticSeriesResponse[]>, SalesStatisticRequest>({
+        getProductSales: builder.query<ResponseBody<StatisticSeriesResponse[]>, ProductSalesStatisticRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
-                    args.categoryIds?.length ? `category_ids=${args.categoryIds.join(',')}` : '',
-                    args.productIds?.length ? `product_ids=${args.productIds.join(',')}` : '',
+                    args.categoryIds.map((categoryId) => `categoryIds=${categoryId}`).join("&"),
+                    args.productIds.map((productId) => `productIds=${productId}`).join("&"),
                     `aggregation=${args.aggregation}`,
-                    `period=${args.period}`
-                ]; // Remove empty params
+                    `period=${args.period}`,
+                ];
 
                 const result = await baseQuery({
                     url: `/product-sales?${queryParams.join('&')}`,
                     method: "GET"
                 });
-
                 if (result.error) {
                     return {error: result.error};
                 }
-
                 return {
                     data: result.data as ResponseBody<StatisticSeriesResponse[]>
                 };
-
             }
         }),
     }),
