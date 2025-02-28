@@ -4,26 +4,58 @@ import {persistReducer, persistStore} from "redux-persist";
 import {FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE} from "redux-persist/es/constants";
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
 import {setupListeners} from "@reduxjs/toolkit/query";
-import {landingSlice} from "@/src/stores/slices/landingSlice";
+import {categorySlice} from "@/src/stores/slices/categorySlice";
 import {modalSlice} from "@/src/stores/slices/modalSlice";
+import {productSlice} from "@/src/stores/slices/productSlice";
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
 import {authenticationApi} from "@/src/stores/apis/authenticationApi";
 import {accountApi} from "@/src/stores/apis/accountApi";
+import {categoryApi} from "@/src/stores/apis/categoryApi";
 import {productApi} from "@/src/stores/apis/productApi";
+import {cartApi} from "@/src/stores/apis/cartApi";
+import {orderApi} from "@/src/stores/apis/orderApi";
+import {cartSlice} from "@/src/stores/slices/cartSlice";
+import {orderSlice} from "@/src/stores/slices/orderSlice";
 import storeRegistry from "@/src/registries/storeRegistry";
-import {searchSlice} from "@/src/stores/slices/searchSlice";
-import {searcherSlice} from "@/src/stores/slices/searcherSlice";
+import {verificationApi} from "@/src/stores/apis/verificationApi";
+import {accountAddressApi} from "@/src/stores/apis/accountAddressApi";
+import {accountAddressSlice} from "@/src/stores/slices/accountAddressSlice";
+import {warehouseSlice} from "@/src/stores/slices/warehouseSlice";
+import {warehouseApi} from "@/src/stores/apis/warehouseApi";
+import {warehouseAdminSlice} from "@/src/stores/slices/warehouseAdminSlice";
+import {warehouseAdminApi} from "@/src/stores/apis/warehouseAdminApi";
+import {warehouseProductSlice} from "@/src/stores/slices/warehouseProductSlice";
+import {warehouseProductApi} from "@/src/stores/apis/warehouseProductApi";
+import {accountSlice} from "@/src/stores/slices/accountSlice";
+import {warehouseLedgerSlice} from "@/src/stores/slices/warehouseLedgerSlice";
+import {warehouseLedgerApi} from "@/src/stores/apis/warehouseLedgerApi";
 import {statisticApi} from "@/src/stores/apis/statisticApi";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
-    [landingSlice.reducerPath]: landingSlice.reducer,
-    [searcherSlice.reducerPath]: searcherSlice.reducer,
-    [searchSlice.reducerPath]: searchSlice.reducer,
+    [accountSlice.reducerPath]: accountSlice.reducer,
+    [categorySlice.reducerPath]: categorySlice.reducer,
     [modalSlice.reducerPath]: modalSlice.reducer,
+    [productSlice.reducerPath]: productSlice.reducer,
+    [accountAddressSlice.reducerPath]: accountAddressSlice.reducer,
+    [cartSlice.reducerPath]: cartSlice.reducer,
+    [orderSlice.reducerPath]: orderSlice.reducer,
+    [warehouseSlice.reducerPath]: warehouseSlice.reducer,
+    [warehouseAdminSlice.reducerPath]: warehouseAdminSlice.reducer,
+    [warehouseProductSlice.reducerPath]: warehouseProductSlice.reducer,
+    [warehouseLedgerSlice.reducerPath]: warehouseLedgerSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
+    [accountAddressApi.reducerPath]: accountAddressApi.reducer,
+    [warehouseApi.reducerPath]: warehouseApi.reducer,
+    [warehouseAdminApi.reducerPath]: warehouseAdminApi.reducer,
+    [warehouseProductApi.reducerPath]: warehouseProductApi.reducer,
+    [warehouseLedgerApi.reducerPath]: warehouseLedgerApi.reducer,
+    [verificationApi.reducerPath]: verificationApi.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
+    [categoryApi.reducerPath]: categoryApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
+    [cartApi.reducerPath]: cartApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer,
     [statisticApi.reducerPath]: statisticApi.reducer,
 })
 
@@ -43,7 +75,7 @@ const createNoopStorage = () => {
 
 const storage = typeof window !== 'undefined' ? createWebStorage('local') : createNoopStorage()
 const persistedReducer = persistReducer({
-        key: "persist",
+        key: "persistence",
         whitelist: [authenticationSlice.reducerPath],
         storage,
     },
@@ -60,8 +92,17 @@ export const store = configureStore({
         },
     }).concat(
         productApi.middleware,
+        categoryApi.middleware,
+        cartApi.middleware,
+        orderApi.middleware,
+        verificationApi.middleware,
         authenticationApi.middleware,
         accountApi.middleware,
+        accountAddressApi.middleware,
+        warehouseApi.middleware,
+        warehouseAdminApi.middleware,
+        warehouseProductApi.middleware,
+        warehouseLedgerApi.middleware,
         statisticApi.middleware,
     ),
 })

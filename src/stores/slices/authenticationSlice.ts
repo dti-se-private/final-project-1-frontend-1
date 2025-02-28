@@ -1,11 +1,11 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {Session} from "@/src/stores/apis/authenticationApi";
-import {Account} from "@/src/stores/apis/accountApi";
+import {AccountResponse} from "@/src/stores/apis/accountApi";
 import storage from "redux-persist/lib/storage";
 
 export interface AuthenticationState {
     isLoggedIn: boolean;
-    account?: Account;
+    account?: AccountResponse;
     session?: Session;
 }
 
@@ -31,13 +31,14 @@ export const authenticationSlice = createSlice({
             state.session = undefined;
             state.isLoggedIn = false;
             storage
-                .removeItem('persist')
+                .removeItem('persistence')
                 .then(() => {
                     console.log('Persisted state has been removed.');
                 })
                 .catch(() => {
                     console.log('Failed to remove persisted state.');
                 });
+
         },
         refreshSession: (state, action) => {
             const {session} = action.payload;

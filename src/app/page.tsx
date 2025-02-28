@@ -1,15 +1,40 @@
 "use client"
 import {Button, Spinner} from '@heroui/react';
 import Image from 'next/image';
-import {useLanding} from '@/src/hooks/useLanding';
-import Link from 'next/link'
+import {useProduct} from '@/src/hooks/useProduct';
 import {upperFirst} from "tiny-case";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Pagination} from "swiper/modules";
+import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
+import {useRouter} from "next/navigation";
+import Link from "next/link";
+import {CategoryResponse} from "@/src/stores/apis/categoryApi";
+import {useEffect} from "react";
 
 export default function Page() {
-    const landing = useLanding();
-    const categories = ['all', 'sports', 'entertainment', 'conference', 'networking', 'health', 'literature', 'art', 'workshop', 'education']
+    const router = useRouter();
+    const {
+        productState,
+        getProductWithCategoryApiResult,
+        categoryApiResult,
+        setGetProductsRequest,
+        setGetCategoriesRequest,
+        setDetails,
+        setCategory
+    } = useProduct();
+
+    useEffect(() => {
+        setGetProductsRequest({
+            size: productState.getProductsRequest.size,
+            page: productState.getProductsRequest.page,
+            search: "",
+        });
+        setGetCategoriesRequest({
+            size: productState.getCategoriesRequest.size,
+            page: productState.getCategoriesRequest.page,
+            search: "",
+        });
+    }, []);
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -19,10 +44,22 @@ export default function Page() {
         maximumFractionDigits: 0
     });
 
+    const categories = [
+        {id: "", name: "all", description: "all"} as CategoryResponse,
+        ...categoryApiResult.data?.data?.slice(0, 10) ?? []
+    ]
+
+    const heroImages = [
+        "/hero1.png",
+        "/hero2.png",
+        "/hero3.png",
+        "/hero4.png"
+    ];
+
     return (
         <div className="pb-8 flex flex-col justify-center items-center">
             {/* Hero */}
-            <section className="w-full mb-8">
+            <section className="w-full mb-4">
                 <Swiper
                     loop={true}
                     autoplay={true}
@@ -33,12 +70,12 @@ export default function Page() {
                     pagination={{clickable: true}}
                 >
                     {
-                        [1, 2, 3, 4].map((item, index) => (
+                        heroImages.map((image, index) => (
                             <SwiperSlide key={index}>
-                                <div className="w-full h-[90vh] relative mb-12">
+                                <div className="w-full h-[24vh] md:h-[79vh] relative mb-12">
                                     <Image
                                         className="rounded-md"
-                                        src={`https://placehold.co/1366x768?text=hero${index}`}
+                                        src={image}
                                         layout="fill"
                                         objectFit="cover"
                                         alt="hero"
@@ -51,66 +88,88 @@ export default function Page() {
             </section>
 
             {/* Categories */}
-            <section className="container flex flex-col justify-center items-center mb-8">
+            <section className="container flex flex-col justify-center items-center mb-8 px-2">
                 <div className="flex flex-wrap justify-center items-center gap-4">
                     {categories.map((category) => (
                         <Button
-                            key={category}
-                            onClick={() => landing.setCategory(category)}
-                            variant={(landing.searcherState.request.search === "" && category === "all") || (landing.searcherState.request.search === category) ? 'solid' : 'bordered'}
+                            key={category.id}
+                            onPress={() => setCategory(category)}
+                            variant={productState.category?.id === category.id ? 'solid' : 'bordered'}
                         >
-                            {upperFirst(category)}
+                            {upperFirst(category.name)}
                         </Button>
                     ))}
                 </div>
             </section>
 
             {/* Products */}
-            <section className="container flex flex-col justify-center items-center">
-                <div className="flex flex-wrap justify-center items-center gap-6 mb-8 min-h-[80vh]">
-                    {landing.searcherState.products.map((product, index) => (
-                        <Link
-                            href={`/products/${product.id}`}
-                            key={index}
-                            className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md w-3/4 md:w-1/4 h-full"
-                        >
-                            <div className="relative w-full min-h-[30vh] mb-4">
-                                <Image
-                                    className="rounded-md"
-                                    src={product.image ?? "https://placehold.co/1366x768?text=product"}
-                                    layout="fill"
-                                    objectFit="cover"
-                                    alt='product'
-                                />
-                            </div>
-                            <div className="w-full min-h-[15vh] flex flex-col justify-center items-start">
-                                <h3 className="overflow-hidden truncate w-full text-lg font-bold">{product.name}</h3>
-                            </div>
-                        </Link>
-                    ))}
-                    {landing.productApiResult.isLoading && (<Spinner/>)}
-                    {!landing.productApiResult.isLoading && landing.searcherState.products.length === 0 && (
-                        <div className="flex justify-center">
-                            Empty!
-                        </div>
-                    )}
+            <section className="container flex flex-col justify-center items-center px-2">
+                <div className="flex flex-wrap justify-center items-center gap-6 mb-8 min-h-[78vh]">
+                    {getProductWithCategoryApiResult.isFetching ?
+                        (<Spinner/>) :
+                        getProductWithCategoryApiResult.data?.data?.map((product, index) => (
+                            <Link
+                                href={`/products/${product.id}`}
+                                key={index}
+                                className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md md:w-[16vw] h-[50vh] w-[70vw]"
+                            >
+                                <div className="relative w-[100%] h-[100%] mb-4">
+                                    <Image
+                                        className="rounded-md"
+                                        src={
+                                            product.image
+                                                ? convertHexStringToBase64Data(product.image, "image/png")
+                                                : "https://placehold.co/400x400?text=product"
+                                        }
+                                        layout="fill"
+                                        objectFit="cover"
+                                        alt='product'
+                                    />
+                                </div>
+                                <div className="w-full flex flex-col justify-center items-start">
+                                    <p className="line-clamp-1 w-full text-lg font-bold">{product.name}</p>
+                                    <p className="text-md">{currencyFormatter.format(product.price)}</p>
+                                    <p className="text-md">Stock: {product.quantity}</p>
+                                </div>
+                            </Link>
+                        ))
+                    }
+                    {
+                        !getProductWithCategoryApiResult.isFetching
+                        && (getProductWithCategoryApiResult.data?.data ?? []).length === 0
+                        && (<div className="flex justify-center">Empty!</div>)
+                    }
                 </div>
-
 
                 {/* Pagination */}
                 <div className="flex justify-center gap-4">
                     <Button
-                        onClick={() => landing.setPage(landing.searcherState.request.page - 1)}
+                        onPress={() => {
+                            if (productState.getProductsRequest.page === 0) {
+                                return;
+                            }
+                            setGetProductsRequest({
+                                page: productState.getProductsRequest.page - 1,
+                                size: productState.getProductsRequest.size,
+                                search: productState.getProductsRequest.search
+                            });
+                        }}
                     >
                         {'<'}
                     </Button>
                     <Button
                         disabled={true}
                     >
-                        {landing.searcherState.request.page + 1}
+                        {productState.getProductsRequest.page + 1}
                     </Button>
                     <Button
-                        onClick={() => landing.setPage(landing.searcherState.request.page + 1)}
+                        onPress={() => {
+                            setGetProductsRequest({
+                                page: productState.getProductsRequest.page + 1,
+                                size: productState.getProductsRequest.size,
+                                search: productState.getProductsRequest.search
+                            });
+                        }}
                     >
                         {'>'}
                     </Button>

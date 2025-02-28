@@ -1,26 +1,28 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {axiosBaseQuery, ResponseBody} from "@/src/stores/apis";
+import {axiosBaseQuery, ManyRequest, OneRequest, ResponseBody} from "@/src/stores/apis";
 
-export interface Account {
+export interface AccountResponse {
     id: string;
     email: string;
     password: string;
     name: string;
     phone: string;
     image: string;
+    isVerified: boolean;
 }
 
-export interface RetrieveOneAccountRequest {
-    id: string;
-}
-
-export interface PatchOneAccountRequest {
-    id: string,
+export interface AccountRequest {
     email: string;
     password: string;
+    otp: string;
     name: string;
     phone: string;
     image: string;
+}
+
+export interface PatchAccountRequest {
+    id: string;
+    data: AccountRequest;
 }
 
 export const accountApi = createApi({
@@ -28,24 +30,50 @@ export const accountApi = createApi({
     baseQuery: axiosBaseQuery({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/accounts`
     }),
+    keepUnusedDataFor: 0,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
     endpoints: (builder) => ({
-        retrieveOneById: builder.query<ResponseBody<Account>, RetrieveOneAccountRequest>({
-            // @ts-expect-error: Still compatible even in type lint error.
+        getAccount: builder.query<ResponseBody<AccountResponse>, OneRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
-                return baseQuery({
+                const result = await baseQuery({
                     url: `/${args.id}`,
                     method: "GET",
                 });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<AccountResponse>};
             }
         }),
-        patchOneById: builder.mutation<ResponseBody<Account>, PatchOneAccountRequest>({
-            // @ts-expect-error: Still compatible even in type lint error.
+        patchAccount: builder.mutation<ResponseBody<AccountResponse>, PatchAccountRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
-                return baseQuery({
+                const result = await baseQuery({
                     url: `/${args.id}`,
                     method: "PATCH",
-                    data: args,
+                    data: args.data,
                 });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<AccountResponse>};
+            }
+        }),
+        getAccountAdmins: builder.query<ResponseBody<AccountResponse[]>, ManyRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const queryParams = [
+                    `page=${args.page}`,
+                    `size=${args.size}`,
+                    `search=${args.search}`
+                ];
+                const result = await baseQuery({
+                    url: `/admins?${queryParams.join("&")}`,
+                    method: "GET"
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<AccountResponse[]>};
             }
         }),
     })
