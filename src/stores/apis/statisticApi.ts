@@ -8,6 +8,13 @@ export interface ProductStockStatisticRequest {
     period: string
 }
 
+export interface ProductSalesStatisticRequest {
+    categoryIds: string[]
+    productIds: string[]
+    aggregation: string
+    period: string
+}
+
 export interface StatisticSeriesResponse {
     x: string
     y: number
@@ -40,5 +47,27 @@ export const statisticApi = createApi({
                 return {data: result.data as ResponseBody<StatisticSeriesResponse[]>};
             }
         }),
-    })
+        getProductSales: builder.query<ResponseBody<StatisticSeriesResponse[]>, ProductSalesStatisticRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const queryParams = [
+                    args.categoryIds.map((categoryId) => `categoryIds=${categoryId}`).join("&"),
+                    args.productIds.map((productId) => `productIds=${productId}`).join("&"),
+                    `aggregation=${args.aggregation}`,
+                    `period=${args.period}`,
+                ];
+
+                const result = await baseQuery({
+                    url: `/product-sales?${queryParams.join('&')}`,
+                    method: "GET"
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {
+                    data: result.data as ResponseBody<StatisticSeriesResponse[]>
+                };
+            }
+        }),
+    }),
+
 });

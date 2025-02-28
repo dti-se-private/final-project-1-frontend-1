@@ -328,7 +328,6 @@ export default function Page() {
                         <div className="text-2xl">Statuses</div>
                         <Table>
                             <TableHeader>
-                                <TableColumn key="id">ID</TableColumn>
                                 <TableColumn key="status">Status</TableColumn>
                                 <TableColumn key="time">Time</TableColumn>
                                 <TableColumn key="action">Action</TableColumn>

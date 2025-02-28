@@ -8,7 +8,7 @@ export interface StatisticSeriesResponse {
     // Add other fields from your Java class if needed
 }
 
-// Define request parameters interface
+// Define add parameters interface
 export interface ProductSalesStatisticsRequest {
     warehouseIds?: string[];
     categoryIds?: string[];

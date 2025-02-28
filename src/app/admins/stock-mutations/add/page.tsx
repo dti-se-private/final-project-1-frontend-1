@@ -1,22 +1,51 @@
 "use client"
 import * as Yup from "yup";
-import { useFormik } from "formik";
+import {useFormik} from "formik";
 import {Autocomplete, AutocompleteItem, Button, Input, Spinner} from "@heroui/react";
-import React, { useEffect, useState } from "react";
-import { useProduct } from "@/src/hooks/useProduct";
-import { useWarehouse } from "@/src/hooks/useWarehouse";
-import { useModal } from "@/src/hooks/useModal";
+import React, {useEffect} from "react";
+import {useProduct} from "@/src/hooks/useProduct";
+import {useWarehouse} from "@/src/hooks/useWarehouse";
+import {useModal} from "@/src/hooks/useModal";
+import {useWarehouseLedger} from "@/src/hooks/useWarehouseLedger";
+import {AddMutationRequest} from "@/src/stores/apis/warehouseLedgerApi";
 
 export default function Page() {
     const modal = useModal();
-    const { productState, setGetProductsRequest, getProductsApiResult } = useProduct();
-    const { warehouseState, setGetWarehousesRequest, getWarehousesApiResult } = useWarehouse();
-    const [originSearch, setOriginSearch] = useState("");
-    const [destinationSearch, setDestinationSearch] = useState("");
+    const {productState, setGetProductsRequest, getProductsApiResult} = useProduct();
+    const {
+        warehouseState,
+        setGetOriginWarehousesRequest,
+        setGetDestinationWarehousesRequest,
+        getOriginWarehousesApiResult,
+        getDestinationWarehousesApiResult
+    } = useWarehouse();
+
+    const {
+        warehouseLedgerState,
+        getMutationRequestsApiResult,
+        setGetMutationRequestsRequest,
+        setDetails,
+        addMutationRequest,
+        approveMutationRequest,
+        rejectMutationRequest,
+    } = useWarehouseLedger();
 
     useEffect(() => {
-        setGetProductsRequest({ size: 10, page: 0, search: "" });
-        setGetWarehousesRequest({ size: 10, page: 0, search: "" });
+        setGetProductsRequest({
+            size: productState.getProductsRequest.size,
+            page: productState.getProductsRequest.page,
+            search: ""
+        });
+        setGetOriginWarehousesRequest({
+            size: warehouseState.getOriginWarehousesRequest.size,
+            page: warehouseState.getOriginWarehousesRequest.page,
+            search: ""
+        });
+        setGetDestinationWarehousesRequest({
+            size: warehouseState.getDestinationWarehousesRequest.size,
+            page: warehouseState.getDestinationWarehousesRequest.page,
+            search: ""
+        });
     }, []);
 
     const initialValues = {
@@ -34,17 +63,31 @@ export default function Page() {
     });
 
     const handleSubmit = async (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
-        // return addStockMutation(values)
-        //     .then((data) => {
-        //         modal.setContent({ header: "Add Succeed", body: `${data.message}` });
-        //     })
-        //     .catch((error) => {
-        //         modal.setContent({ header: "Add Failed", body: `${error.data.message}` });
-        //     })
-        //     .finally(() => {
-        //         modal.onOpenChange(true);
-        //         actions.setSubmitting(false);
-        //     });
+        const request: AddMutationRequest = {
+            productId: values.productId,
+            originWarehouseId: values.originWarehouseId,
+            destinationWarehouseId: values.destinationWarehouseId,
+            quantity: values.quantity
+        }
+        addMutationRequest(request)
+            .then((data) => {
+                modal
+                    .setContent({
+                        header: "Add Succeed",
+                        body: `${data.message}`
+                    });
+            })
+            .catch((error) => {
+                modal
+                    .setContent({
+                        header: "Add Failed",
+                        body: `${error.data.message}`
+                    });
+            })
+            .finally(() => {
+                modal.onOpenChange(true);
+                actions.setSubmitting(false);
+            });
     };
 
     const formik = useFormik({
@@ -54,11 +97,11 @@ export default function Page() {
         enableReinitialize: true,
     });
 
-    if (getProductsApiResult.isLoading || getWarehousesApiResult.isLoading) {
+    if (getProductsApiResult.isLoading || getOriginWarehousesApiResult.isLoading || getDestinationWarehousesApiResult.isLoading) {
         return (
             <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
-                    <Spinner />
+                    <Spinner/>
                 </div>
             </div>
         );
@@ -68,7 +111,7 @@ export default function Page() {
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-center items-center">
                 <h1 className="mb-8 text-4xl font-bold">Add Stock Mutation</h1>
-                <form className="w-2/3 md:w-1/3" onSubmit={formik.handleSubmit}>
+                <form className="w-2/3 md:w-2/3" onSubmit={formik.handleSubmit}>
                     <Autocomplete
                         className="mb-6 w-full"
                         label="Product ID"
@@ -112,22 +155,25 @@ export default function Page() {
                         selectedKey={formik.values.originWarehouseId}
                         errorMessage={formik.errors.originWarehouseId}
                         isInvalid={Boolean(formik.errors.originWarehouseId)}
-                        inputValue={originSearch}
-                        isLoading={getWarehousesApiResult.isFetching}
-                        items={getWarehousesApiResult.data?.data ?? []}
+                        inputValue={warehouseState.getOriginWarehousesRequest.search}
+                        isLoading={getOriginWarehousesApiResult.isFetching}
+                        items={getOriginWarehousesApiResult.data?.data ?? []}
                         isClearable={false}
                         onInputChange={(input) => {
-                            setOriginSearch(input);
-                            setGetWarehousesRequest({
-                                size: warehouseState.getWarehousesRequest.size,
-                                page: warehouseState.getWarehousesRequest.page,
+                            setGetOriginWarehousesRequest({
+                                size: warehouseState.getOriginWarehousesRequest.size,
+                                page: warehouseState.getOriginWarehousesRequest.page,
                                 search: input,
                             });
                         }}
                         onSelectionChange={(key) => {
                             formik.setFieldValue("originWarehouseId", key);
-                            const item = getWarehousesApiResult.data?.data?.find((item) => item.id === key);
-                            setOriginSearch(`${item?.id} - ${item?.name}`);
+                            const item = getOriginWarehousesApiResult.data?.data?.find((item) => item.id === key);
+                            setGetOriginWarehousesRequest({
+                                size: warehouseState.getOriginWarehousesRequest.size,
+                                page: warehouseState.getOriginWarehousesRequest.page,
+                                search: `${item?.id} - ${item?.name}`,
+                            });
                         }}
                     >
                         {(item) => (
@@ -144,22 +190,25 @@ export default function Page() {
                         selectedKey={formik.values.destinationWarehouseId}
                         errorMessage={formik.errors.destinationWarehouseId}
                         isInvalid={Boolean(formik.errors.destinationWarehouseId)}
-                        inputValue={destinationSearch}
-                        isLoading={getWarehousesApiResult.isFetching}
-                        items={getWarehousesApiResult.data?.data ?? []}
+                        inputValue={warehouseState.getDestinationWarehousesRequest.search}
+                        isLoading={getDestinationWarehousesApiResult.isFetching}
+                        items={getDestinationWarehousesApiResult.data?.data ?? []}
                         isClearable={false}
                         onInputChange={(input) => {
-                            setDestinationSearch(input);
-                            setGetWarehousesRequest({
-                                size: warehouseState.getWarehousesRequest.size,
-                                page: warehouseState.getWarehousesRequest.page,
+                            setGetDestinationWarehousesRequest({
+                                size: warehouseState.getDestinationWarehousesRequest.size,
+                                page: warehouseState.getDestinationWarehousesRequest.page,
                                 search: input,
                             });
                         }}
                         onSelectionChange={(key) => {
                             formik.setFieldValue("destinationWarehouseId", key);
-                            const item = getWarehousesApiResult.data?.data?.find((item) => item.id === key);
-                            setDestinationSearch(`${item?.id} - ${item?.name}`);
+                            const item = getDestinationWarehousesApiResult.data?.data?.find((item) => item.id === key);
+                            setGetDestinationWarehousesRequest({
+                                size: warehouseState.getDestinationWarehousesRequest.size,
+                                page: warehouseState.getDestinationWarehousesRequest.page,
+                                search: `${item?.id} - ${item?.name}`,
+                            });
                         }}
                     >
                         {(item) => (

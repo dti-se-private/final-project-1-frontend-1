@@ -43,7 +43,7 @@ export default function Page() {
             {text: "Order Management", link: "/admins/orders"},
             {text: "Payment Confirmation Order Management", link: "/admins/orders/payment-confirmations"},
             {text: "Product Sales Statistics", link: "/admins/statistics/product-sales"},
-            {text: "Product Stocks Statistics", link: "/admins/statistics/product-stocks"},
+            {text: "Product Stock Statistics", link: "/admins/statistics/product-stocks"},
         ],
     };
 
@@ -60,7 +60,7 @@ export default function Page() {
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
-                <h1 className="mb-8 text-4xl font-bold">Dashboard</h1>
+                <h1 className="text-center mb-8 text-4xl font-bold">Dashboard</h1>
                 <div className="flex justify-center items-center flex-wrap gap-8 p-4">
                     {buttonsToShow.map((item, index) => (
                         <Link

@@ -1,142 +1,202 @@
 "use client"
-import React from "react";
-import {Select, SelectItem, Spinner} from "@heroui/react";
-import {useRouter} from "next/navigation";
-import {useModal} from "@/src/hooks/useModal";
-import {useProductSalesStatistics} from "@/src/hooks/useProductSalesStatistics";
-import {Chart} from "@/src/components/Chart";
+import {Autocomplete, AutocompleteItem, Select, SelectItem} from "@heroui/react";
+import {useModal} from '@/src/hooks/useModal';
+import {CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis} from 'recharts';
+import React, {useEffect, useState} from "react";
+import {SharedSelection} from "@heroui/system";
+import {statisticApi} from "@/src/stores/apis/statisticApi";
+import {useProduct} from "@/src/hooks/useProduct";
+import {ProductResponse} from "@/src/stores/apis/productApi";
+import {CategoryResponse} from "@/src/stores/apis/categoryApi";
+import {useCategory} from "@/src/hooks/useCategory";
 
 export default function Page() {
-    const router = useRouter();
     const modal = useModal();
-    const {
-        productSalesStatisticsState,
-        getProductSalesStatisticsApiResult,
-        setGetProductSalesStatisticsRequest,
-    } = useProductSalesStatistics();
+    const {productState, setGetProductsRequest, getProductsApiResult} = useProduct();
+    const {categoryState, setGetCategoriesRequest, getCategoriesApiResult} = useCategory();
 
-    // Mock data - replace with real data from your APIs
-    const warehouseOptions = [{id: "1", name: "Warehouse A"}, {id: "2", name: "Warehouse B"}];
-    const categoryOptions = [{id: "1", name: "Category X"}, {id: "2", name: "Category Y"}];
-    const productOptions = [{id: "1", name: "Product 1"}, {id: "2", name: "Product 2"}];
+    const dropdownAggregations: Record<string, string> = {
+        sum: "Sum",
+        avg: "Average"
+    }
+    const dropdownPeriods: Record<string, string> = {
+        day: "Day",
+        week: "Week",
+        month: "Month",
+        year: "Year",
+    }
+    const [selectedCategoryId, setSelectedCategoryId] = useState("all");
+    const [selectedProductId, setSelectedProductId] = useState("all");
+    const [selectedAggregation, setSelectedAggregation] = useState(new Set<string>(["sum"]));
+    const [selectedPeriod, setSelectedPeriod] = useState(new Set<string>(["day"]));
+
+    const defaultCategory: CategoryResponse = {
+        id: "all",
+        name: "All Categories",
+    } as CategoryResponse;
+
+    const defaultProduct: ProductResponse = {
+        id: "all",
+        name: "All Products",
+    } as ProductResponse;
+
+    useEffect(() => {
+        setGetCategoriesRequest({
+            size: categoryState.getCategoriesRequest.size,
+            page: categoryState.getCategoriesRequest.page,
+            search: defaultCategory.name,
+        })
+        setGetProductsRequest({
+            size: productState.getProductsRequest.size,
+            page: productState.getProductsRequest.page,
+            search: defaultProduct.name,
+        });
+    }, []);
+
+    const categories = [defaultCategory, ...(getCategoriesApiResult.data?.data ?? [])];
+    const products = [defaultProduct, ...(getProductsApiResult.data?.data ?? [])];
+
+    const getProductSalesStatisticApiResult = statisticApi.useGetProductSalesQuery({
+        categoryIds: selectedCategoryId === "all" ? [] : [selectedCategoryId],
+        productIds: selectedProductId === "all" ? [] : [selectedProductId],
+        aggregation: Array.from(selectedAggregation)[0],
+        period: Array.from(selectedPeriod)[0],
+    });
+
+    useEffect(() => {
+        getProductSalesStatisticApiResult.refetch();
+    }, [selectedCategoryId, selectedProductId, selectedAggregation, selectedPeriod]);
 
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
-            <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
-                <div className="mb-8 text-4xl font-bold">Sales Statistics</div>
-
-                <div className="w-full mb-8">
-                    <div className="flex flex-col gap-4">
-                        <div className="flex flex-row w-full gap-4 flex-wrap">
-                            <Select
-                                label="Warehouse"
-                                selectionMode="multiple"
-                                placeholder="Select warehouses"
-                                className="max-w-xs"
-                                selectedKeys={productSalesStatisticsState.getProductSalesStatisticsRequest.warehouseIds}
-                                onSelectionChange={(keys) => setGetProductSalesStatisticsRequest({
-                                    ...productSalesStatisticsState.getProductSalesStatisticsRequest,
-                                    warehouseIds: Array.from(keys) as string[]
-                                })}
-                            >
-                                {warehouseOptions.map((warehouse) => (
-                                    <SelectItem key={warehouse.id} value={warehouse.id}>
-                                        {warehouse.name}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-
-                            <Select
-                                label="Category"
-                                selectionMode="multiple"
-                                placeholder="Select categories"
-                                className="max-w-xs"
-                                selectedKeys={productSalesStatisticsState.getProductSalesStatisticsRequest.categoryIds}
-                                onSelectionChange={(keys) => setGetProductSalesStatisticsRequest({
-                                    ...productSalesStatisticsState.getProductSalesStatisticsRequest,
-                                    categoryIds: Array.from(keys) as string[]
-                                })}
-                            >
-                                {categoryOptions.map((category) => (
-                                    <SelectItem key={category.id} value={category.id}>
-                                        {category.name}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-
-                            <Select
-                                label="Product"
-                                selectionMode="multiple"
-                                placeholder="Select products"
-                                className="max-w-xs"
-                                selectedKeys={productSalesStatisticsState.getProductSalesStatisticsRequest.productIds}
-                                onSelectionChange={(keys) => setGetProductSalesStatisticsRequest({
-                                    ...productSalesStatisticsState.getProductSalesStatisticsRequest,
-                                    productIds: Array.from(keys) as string[]
-                                })}
-                            >
-                                {productOptions.map((product) => (
-                                    <SelectItem key={product.id} value={product.id}>
-                                        {product.name}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-
-                            <Select
-                                label="Aggregation"
-                                className="max-w-xs"
-                                selectedKeys={new Set([productSalesStatisticsState.getProductSalesStatisticsRequest.aggregation])}
-                                onSelectionChange={(keys) => {
-                                    const key = Array.from(keys).at(0) as "sum" | "average" | "count" | undefined;
-                                    setGetProductSalesStatisticsRequest({
-                                        ...productSalesStatisticsState.getProductSalesStatisticsRequest,
-                                        aggregation: key || "sum"
-                                    });
-                                }}
-                            >
-                                <SelectItem key="sum" value="sum">Sum</SelectItem>
-                                <SelectItem key="average" value="average">Average</SelectItem>
-                                <SelectItem key="count" value="count">Count</SelectItem>
-                            </Select>
-
-                            <Select
-                                label="Period"
-                                className="max-w-xs"
-                                selectedKeys={new Set([productSalesStatisticsState.getProductSalesStatisticsRequest.period])}
-                                onSelectionChange={(keys) => {
-                                    const key = Array.from(keys).at(0) as "day" | "week" | "month" | undefined;
-                                    setGetProductSalesStatisticsRequest({
-                                        ...productSalesStatisticsState.getProductSalesStatisticsRequest,
-                                        period: key || "day"
-                                    });
-                                }}
-                            >
-                                <SelectItem key="day" value="day">Daily</SelectItem>
-                                <SelectItem key="week" value="week">Weekly</SelectItem>
-                                <SelectItem key="month" value="month">Monthly</SelectItem>
-                            </Select>
-                        </div>
-                    </div>
+            <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh] gap-4">
+                <h1 className="text-center mb-4 text-4xl font-bold">Product Sales Statistics</h1>
+                <div className="flex flex-col w-full gap-4">
+                    <Autocomplete
+                        className="w-full"
+                        fullWidth={true}
+                        label="Category"
+                        placeholder="Type to search..."
+                        selectedKey={selectedCategoryId}
+                        inputValue={categoryState.getCategoriesRequest.search}
+                        isLoading={getCategoriesApiResult.isFetching}
+                        items={categories}
+                        isClearable={false}
+                        onInputChange={(input) => {
+                            setGetCategoriesRequest({
+                                size: categoryState.getCategoriesRequest.size,
+                                page: categoryState.getCategoriesRequest.page,
+                                search: input,
+                            });
+                        }}
+                        onSelectionChange={(key) => {
+                            const item = categories.find((item) => item.id === key);
+                            if (key === "all") {
+                                setGetCategoriesRequest({
+                                    size: categoryState.getCategoriesRequest.size,
+                                    page: categoryState.getCategoriesRequest.page,
+                                    search: `${item?.name}`,
+                                });
+                            } else {
+                                setGetCategoriesRequest({
+                                    size: categoryState.getCategoriesRequest.size,
+                                    page: categoryState.getCategoriesRequest.page,
+                                    search: `${item?.id} - ${item?.name}`,
+                                });
+                            }
+                            setSelectedCategoryId(key as string);
+                        }}
+                    >
+                        {(item) => (
+                            <AutocompleteItem key={item.id}>
+                                {item.id === "all" ? item.name : `${item.id} - ${item.name}`}
+                            </AutocompleteItem>
+                        )}
+                    </Autocomplete>
+                    <Autocomplete
+                        className="w-full"
+                        fullWidth={true}
+                        label="Product"
+                        placeholder="Type to search..."
+                        selectedKey={selectedProductId}
+                        inputValue={productState.getProductsRequest.search}
+                        isLoading={getProductsApiResult.isFetching}
+                        items={products}
+                        isClearable={false}
+                        onInputChange={(input) => {
+                            setGetProductsRequest({
+                                size: productState.getProductsRequest.size,
+                                page: productState.getProductsRequest.page,
+                                search: input,
+                            });
+                        }}
+                        onSelectionChange={(key) => {
+                            const item = products.find((item) => item.id === key);
+                            if (key === "all") {
+                                setGetProductsRequest({
+                                    size: productState.getProductsRequest.size,
+                                    page: productState.getProductsRequest.page,
+                                    search: `${item?.name}`,
+                                });
+                            } else {
+                                setGetProductsRequest({
+                                    size: productState.getProductsRequest.size,
+                                    page: productState.getProductsRequest.page,
+                                    search: `${item?.id} - ${item?.name}`,
+                                });
+                            }
+                            setSelectedProductId(key as string);
+                        }}
+                    >
+                        {(item) => (
+                            <AutocompleteItem key={item.id}>
+                                {item.id === "all" ? item.name : `${item.id} - ${item.name}`}
+                            </AutocompleteItem>
+                        )}
+                    </Autocomplete>
                 </div>
-
-                <div className="w-full h-[500px]">
-                    {getProductSalesStatisticsApiResult.isLoading ? (
-                        <div className="flex justify-center items-center h-full">
-                            <Spinner size="lg"/>
-                        </div>
-                    ) : getProductSalesStatisticsApiResult.error ? (
-                        <div className="flex justify-center items-center h-full text-danger">
-                            Error loading statistics
-                        </div>
-                    ) : (
-                        <Chart
-                            data={getProductSalesStatisticsApiResult.data?.data || []}
-                            aggregation={productSalesStatisticsState.getProductSalesStatisticsRequest.aggregation}
-                            period={productSalesStatisticsState.getProductSalesStatisticsRequest.period}
-                        />
-                    )}
+                <div className="flex flex-col md:flex-row w-full gap-4">
+                    <Select
+                        className="w-full capitalize flex justify-between"
+                        fullWidth={false}
+                        label="Aggregation"
+                        disallowEmptySelection
+                        selectedKeys={selectedAggregation}
+                        selectionMode="single"
+                        onSelectionChange={(keys: SharedSelection) => setSelectedAggregation(keys as Set<string>)}
+                    >
+                        {
+                            Object.entries(dropdownAggregations).map(([key, value]) => (
+                                <SelectItem key={key}>{value}</SelectItem>
+                            ))
+                        }
+                    </Select>
+                    <Select
+                        className="w-full capitalize flex justify-between"
+                        fullWidth={false}
+                        label="Period"
+                        disallowEmptySelection
+                        selectedKeys={selectedPeriod}
+                        selectionMode="single"
+                        onSelectionChange={(keys: SharedSelection) => setSelectedPeriod(keys as Set<string>)}
+                    >
+                        {
+                            Object.entries(dropdownPeriods).map(([key, value]) => (
+                                <SelectItem key={key}>{value}</SelectItem>
+                            ))
+                        }
+                    </Select>
+                </div>
+                <div className="w-full h-full flex justify-center items-center">
+                    <LineChart data={getProductSalesStatisticApiResult.data?.data ?? []} width={1024} height={400}>
+                        <CartesianGrid strokeDasharray="3 3"/>
+                        <XAxis dataKey="x"/>
+                        <YAxis/>
+                        <Tooltip/>
+                        <Line type="monotone" dataKey="y"/>
+                    </LineChart>
                 </div>
             </div>
         </div>
-    )
+    );
 }

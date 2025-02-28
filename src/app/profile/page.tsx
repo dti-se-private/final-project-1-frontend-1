@@ -102,7 +102,7 @@ export default function Page() {
                 <div className="mb-8 text-4xl font-bold">Profile</div>
                 <Formik
                     initialValues={initialValues}
-                    validationSchema={authentication.state.session?.providers.includes("INTERNAL")? internalValidationSchema : externalValidationSchema}
+                    validationSchema={authentication.state.session?.providers.includes("INTERNAL") ? internalValidationSchema : externalValidationSchema}
                     onSubmit={handleSubmit}
                     enableReinitialize
                 >
@@ -110,7 +110,8 @@ export default function Page() {
                         (props) =>
                             <Form className="w-2/3 md:w-1/3">
                                 <FormInput name="id" label="ID" type="text" isDisabled/>
-                                <FormInput name="email" label="Email" type="email" isDisabled={!authentication.state.session?.providers.includes("INTERNAL")}/>
+                                <FormInput name="email" label="Email" type="email"
+                                           isDisabled={!authentication.state.session?.providers.includes("INTERNAL")}/>
                                 {authentication.state.session?.providers.includes("INTERNAL") && (
                                     <div>
                                         <div className="flex gap-4 mb-6 w-full">
