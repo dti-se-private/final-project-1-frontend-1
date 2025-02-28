@@ -1,6 +1,6 @@
 import RootProvider from "@/src/components/RootProvider";
 import type {Metadata} from "next";
-import "./globals.scss";
+import "@/src/app/globals.scss";
 import Header from "@/src/components/Header";
 import Modal from "@/src/components/Modal";
 
