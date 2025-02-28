@@ -18,26 +18,26 @@ import {
 import {WarehouseLedgerResponse} from "@/src/stores/apis/warehouseLedgerApi";
 import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
-import _ from "lodash";
 import {useModal} from "@/src/hooks/useModal";
+import moment from "moment";
 
 export default function WarehouseLedgerPage() {
     const router = useRouter();
     const modal = useModal();
     const {
         warehouseLedgerState,
-        getWarehouseLedgersApiResult,
-        setGetWarehouseLedgersRequest,
+        getMutationRequestsApiResult,
+        setGetMutationRequestsRequest,
         setDetails,
-        addMutation,
-        approveMutation,
-        rejectMutation,
+        addMutationRequest,
+        approveMutationRequest,
+        rejectMutationRequest,
     } = useWarehouseLedger();
 
     useEffect(() => {
-        setGetWarehouseLedgersRequest({
-            page: warehouseLedgerState.getWarehouseLedgersRequest.page,
-            size: warehouseLedgerState.getWarehouseLedgersRequest.size,
+        setGetMutationRequestsRequest({
+            page: warehouseLedgerState.getMutationRequestsRequest.page,
+            size: warehouseLedgerState.getMutationRequestsRequest.size,
             search: "",
         });
     }, [])
@@ -45,65 +45,88 @@ export default function WarehouseLedgerPage() {
     const rowMapper = (item: WarehouseLedgerResponse, key: string): React.JSX.Element => {
         if (key === "action") {
             return (
-                <div className="flex flex-row gap-2">
+                <div className="flex flex-col gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admin/warehouse-ledgers/${item.id}`)}
+                        onPress={() => router.push(`/admins/stock-mutations/${item.id}`)}
                     >
                         Details
                     </Button>
-                    <Button
-                        color="success"
-                        onPress={() =>
-                            approveMutation({id: item.id})
-                                .then((data) => {
-                                    modal.setContent({
-                                        header: "Approval Succeeded",
-                                        body: `${data.message}`,
-                                    });
-                                })
-                                .catch((error) => {
-                                    modal.setContent({
-                                        header: "Approval Failed",
-                                        body: `${error.data.message}`,
-                                    });
-                                })
-                                .finally(() => {
-                                    modal.onOpenChange(true);
-                                })
-                        }
-                    >
-                        Approve
-                    </Button>
-                    <Button
-                        color="danger"
-                        onPress={() =>
-                            rejectMutation({id: item.id})
-                                .then((data) => {
-                                    modal.setContent({
-                                        header: "Rejection Succeeded",
-                                        body: `${data.message}`,
-                                    });
-                                })
-                                .catch((error) => {
-                                    modal.setContent({
-                                        header: "Rejection Failed",
-                                        body: `${error.data.message}`,
-                                    });
-                                })
-                                .finally(() => {
-                                    modal.onOpenChange(true);
-                                })
-                        }
-                    >
-                        Reject
-                    </Button>
+                    {item.status === "WAITING_FOR_APPROVAL" && (
+                        <>
+                            <Button
+                                color="warning"
+                                className="text-white"
+                                onPress={() =>
+                                    approveMutationRequest({warehouseLedgerId: item.id})
+                                        .then((data) => {
+                                            modal.setContent({
+                                                header: "Approval Succeed",
+                                                body: `${data.message}`,
+                                            });
+                                        })
+                                        .catch((error) => {
+                                            modal.setContent({
+                                                header: "Approval Failed",
+                                                body: `${error.data.message}`,
+                                            });
+                                        })
+                                        .finally(() => {
+                                            modal.onOpenChange(true);
+                                        })
+                                }
+                            >
+                                Approve
+                            </Button>
+                            <Button
+                                color="danger"
+                                onPress={() =>
+                                    rejectMutationRequest({warehouseLedgerId: item.id})
+                                        .then((data) => {
+                                            modal.setContent({
+                                                header: "Rejection Succeed",
+                                                body: `${data.message}`,
+                                            });
+                                        })
+                                        .catch((error) => {
+                                            modal.setContent({
+                                                header: "Rejection Failed",
+                                                body: `${error.data.message}`,
+                                            });
+                                        })
+                                        .finally(() => {
+                                            modal.onOpenChange(true);
+                                        })
+                                }
+                            >
+                                Reject
+                            </Button>
+                        </>
+                    )}
                 </div>
+            );
+        } else if (key === "productId") {
+            return (
+                <>
+                    {item.originWarehouseProduct.product.id}
+                </>
+            );
+        } else if (key === "status") {
+            return (
+                <>
+                    {item.status}
+                </>
+            );
+        } else if (key === "time") {
+            return (
+                <>
+                    {moment(item.time).local().toString()}
+                </>
             );
         }
 
         return <>{String(getKeyValue(item, key))}</>;
-    };
+    }
 
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
@@ -116,17 +139,17 @@ export default function WarehouseLedgerPage() {
                                 <Input
                                     placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
-                                    value={warehouseLedgerState.getWarehouseLedgersRequest.search}
+                                    value={warehouseLedgerState.getMutationRequestsRequest.search}
                                     variant="bordered"
                                     isClearable={true}
-                                    onClear={() => setGetWarehouseLedgersRequest({
-                                        page: warehouseLedgerState.getWarehouseLedgersRequest.page,
-                                        size: warehouseLedgerState.getWarehouseLedgersRequest.size,
+                                    onClear={() => setGetMutationRequestsRequest({
+                                        page: warehouseLedgerState.getMutationRequestsRequest.page,
+                                        size: warehouseLedgerState.getMutationRequestsRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={(value) => setGetWarehouseLedgersRequest({
-                                        page: warehouseLedgerState.getWarehouseLedgersRequest.page,
-                                        size: warehouseLedgerState.getWarehouseLedgersRequest.size,
+                                    onValueChange={(value) => setGetMutationRequestsRequest({
+                                        page: warehouseLedgerState.getMutationRequestsRequest.page,
+                                        size: warehouseLedgerState.getMutationRequestsRequest.size,
                                         search: value
                                     })}
                                 />
@@ -134,7 +157,7 @@ export default function WarehouseLedgerPage() {
                                     startContent={<Icon icon="heroicons:plus"/>}
                                     color="success"
                                     className={"text-white"}
-                                    onPress={() => router.push(`/admins/stock-mutations/request`)}
+                                    onPress={() => router.push(`/admins/stock-mutations/add`)}
                                 >
                                     Add
                                 </Button>
@@ -143,10 +166,10 @@ export default function WarehouseLedgerPage() {
                                 Rows per page:
                                 <select
                                     className="bg-transparent outline-none text-default-400 text-small"
-                                    onChange={(event) => setGetWarehouseLedgersRequest({
-                                        page: warehouseLedgerState.getWarehouseLedgersRequest.page,
+                                    onChange={(event) => setGetMutationRequestsRequest({
+                                        page: warehouseLedgerState.getMutationRequestsRequest.page,
                                         size: Number(event.target.value),
-                                        search: warehouseLedgerState.getWarehouseLedgersRequest.search
+                                        search: warehouseLedgerState.getMutationRequestsRequest.search
                                     })}
                                     defaultValue={5}
                                 >
@@ -162,13 +185,13 @@ export default function WarehouseLedgerPage() {
                             <Pagination
                                 showControls
                                 showShadow
-                                page={warehouseLedgerState.getWarehouseLedgersRequest.page + 1}
+                                page={warehouseLedgerState.getMutationRequestsRequest.page + 1}
                                 total={Infinity}
                                 onChange={(page) =>
-                                    setGetWarehouseLedgersRequest({
+                                    setGetMutationRequestsRequest({
                                         page: page - 1,
-                                        size: warehouseLedgerState.getWarehouseLedgersRequest.size,
-                                        search: warehouseLedgerState.getWarehouseLedgersRequest.search,
+                                        size: warehouseLedgerState.getMutationRequestsRequest.size,
+                                        search: warehouseLedgerState.getMutationRequestsRequest.search,
                                     })
                                 }
                             />
@@ -176,29 +199,21 @@ export default function WarehouseLedgerPage() {
                     }
                 >
                     <TableHeader>
-                        <TableColumn key="rowNumber">#</TableColumn>
                         <TableColumn key="id">ID</TableColumn>
                         <TableColumn key="productId">Product ID</TableColumn>
-                        <TableColumn key="preQuantity">Pre Quantity</TableColumn>
-                        <TableColumn key="postQuantity">Post Quantity</TableColumn>
+                        <TableColumn key="status">Status</TableColumn>
                         <TableColumn key="time">Time</TableColumn>
                         <TableColumn key="action">Actions</TableColumn>
                     </TableHeader>
                     <TableBody
-                        items={getWarehouseLedgersApiResult.data?.data ?? []}
+                        items={getMutationRequestsApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={getWarehouseLedgersApiResult.isFetching ? "loading" : "idle"}
+                        loadingState={getMutationRequestsApiResult.isFetching ? "loading" : "idle"}
                         emptyContent={"Empty!"}
                     >
-                        {(item: WarehouseLedgerResponse) => (
+                        {(item) => (
                             <TableRow key={item?.id}>
-                                <TableCell>{getWarehouseLedgersApiResult.data?.data?.indexOf(item) ? getWarehouseLedgersApiResult.data?.data?.indexOf(item) + 1 : 0 + 1}</TableCell>
-                                <TableCell>{item?.id}</TableCell>
-                                <TableCell>{item?.productId}</TableCell>
-                                <TableCell>{item?.preQuantity}</TableCell>
-                                <TableCell>{item?.postQuantity}</TableCell>
-                                <TableCell>{item?.time}</TableCell>
-                                <TableCell>{rowMapper(item, "action")}</TableCell>
+                                {(columnKey) => <TableCell>{rowMapper(item, String(columnKey))}</TableCell>}
                             </TableRow>
                         )}
                     </TableBody>

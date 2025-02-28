@@ -3,7 +3,7 @@ import {RootState} from "@/src/stores";
 import {warehouseLedgerSlice} from "@/src/stores/slices/warehouseLedgerSlice";
 import {
     AddMutationRequest,
-    ApproveRejectRequest,
+    ApprovalMutationRequest,
     warehouseLedgerApi,
     WarehouseLedgerResponse,
 } from "@/src/stores/apis/warehouseLedgerApi";
@@ -13,52 +13,46 @@ export const useWarehouseLedger = () => {
     const dispatch = useDispatch();
     const warehouseLedgerState = useSelector((state: RootState) => state.warehouseLedgerSlice);
 
-    // API hooks
-    const getWarehouseLedgersApiResult = warehouseLedgerApi.useGetWarehouseLedgersQuery(
-        warehouseLedgerState.getWarehouseLedgersRequest
+    const getMutationRequestsApiResult = warehouseLedgerApi.useGetMutationRequestsQuery(
+        warehouseLedgerState.getMutationRequestsRequest
     );
-    const [addMutationApiTrigger] = warehouseLedgerApi.useAddMutationMutation();
-    const [approveMutationApiTrigger] = warehouseLedgerApi.useApproveMutationMutation();
-    const [rejectMutationApiTrigger] = warehouseLedgerApi.useRejectMutationMutation();
+    const [addMutationRequestApiTrigger] = warehouseLedgerApi.useAddMutationRequestMutation();
+    const [approveMutationRequestApiTrigger] = warehouseLedgerApi.useApproveMutationRequestMutation();
+    const [rejectMutationRequestApiTrigger] = warehouseLedgerApi.useRejectMutationRequestMutation();
 
-    // Add a new stock mutation
-    const addMutation = async (request: AddMutationRequest) => {
-        const addMutationApiResult = await addMutationApiTrigger(request).unwrap();
-        getWarehouseLedgersApiResult.refetch(); // Refresh the list after adding
+    const addMutationRequest = async (request: AddMutationRequest) => {
+        const addMutationApiResult = await addMutationRequestApiTrigger(request).unwrap();
+        getMutationRequestsApiResult.refetch();
         return addMutationApiResult;
     };
 
-    // Approve a stock mutation
-    const approveMutation = async (request: ApproveRejectRequest) => {
-        const approveMutationApiResult = await approveMutationApiTrigger(request).unwrap();
-        getWarehouseLedgersApiResult.refetch(); // Refresh the list after approving
+    const approveMutationRequest = async (request: ApprovalMutationRequest) => {
+        const approveMutationApiResult = await approveMutationRequestApiTrigger(request).unwrap();
+        getMutationRequestsApiResult.refetch();
         return approveMutationApiResult;
     };
 
-    // Reject a stock mutation
-    const rejectMutation = async (request: ApproveRejectRequest) => {
-        const rejectMutationApiResult = await rejectMutationApiTrigger(request).unwrap();
-        getWarehouseLedgersApiResult.refetch(); // Refresh the list after rejecting
+    const rejectMutationRequest = async (request: ApprovalMutationRequest) => {
+        const rejectMutationApiResult = await rejectMutationRequestApiTrigger(request).unwrap();
+        getMutationRequestsApiResult.refetch();
         return rejectMutationApiResult;
     };
 
-    // Set the pagination and search request for fetching warehouse ledgers
-    const setGetWarehouseLedgersRequest = (request: ManyRequest) => {
-        dispatch(warehouseLedgerSlice.actions.setGetWarehouseLedgersRequest(request));
+    const setGetMutationRequestsRequest = (request: ManyRequest) => {
+        dispatch(warehouseLedgerSlice.actions.setGetMutationRequestsRequest(request));
     };
 
-    // Set the details of a specific warehouse ledger entry
     const setDetails = (warehouseLedger: WarehouseLedgerResponse) => {
         dispatch(warehouseLedgerSlice.actions.setDetails(warehouseLedger));
     };
 
     return {
         warehouseLedgerState,
-        getWarehouseLedgersApiResult,
-        setGetWarehouseLedgersRequest,
+        getMutationRequestsApiResult,
+        setGetMutationRequestsRequest,
         setDetails,
-        addMutation,
-        approveMutation,
-        rejectMutation,
+        addMutationRequest,
+        approveMutationRequest,
+        rejectMutationRequest,
     };
 };

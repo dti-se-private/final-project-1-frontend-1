@@ -1,16 +1,18 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {axiosBaseQuery, ManyRequest, ResponseBody} from "@/src/stores/apis";
+import {axiosBaseQuery, ManyRequest, OneRequest, ResponseBody} from "@/src/stores/apis";
+import {WarehouseProductResponse} from "@/src/stores/apis/warehouseProductApi";
 
-// Define the response and request interfaces
 export interface WarehouseLedgerResponse {
     id: string;
     productId: string;
-    originWarehouseId: string;
-    destinationWarehouseId: string;
-    quantity: number;
-    status: string; // e.g., "PENDING", "APPROVED", "REJECTED"
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
+    originWarehouseProduct: WarehouseProductResponse;
+    destinationWarehouseProduct: WarehouseProductResponse;
+    originPreQuantity: number;
+    originPostQuantity: number;
+    destinationPreQuantity: number;
+    destinationPostQuantity: number;
+    status: string;
+    time: string;
 }
 
 export interface AddMutationRequest {
@@ -20,11 +22,10 @@ export interface AddMutationRequest {
     quantity: number;
 }
 
-export interface ApproveRejectRequest {
-    id: string;
+export interface ApprovalMutationRequest {
+    warehouseLedgerId: string;
 }
 
-// Create the API service
 export const warehouseLedgerApi = createApi({
     reducerPath: "warehouseLedgerApi",
     baseQuery: axiosBaseQuery({
@@ -34,8 +35,7 @@ export const warehouseLedgerApi = createApi({
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
     endpoints: (builder) => ({
-        // Fetch all warehouse ledger entries with pagination and filtering
-        getWarehouseLedgers: builder.query<ResponseBody<WarehouseLedgerResponse[]>, ManyRequest>({
+        getMutationRequests: builder.query<ResponseBody<WarehouseLedgerResponse[]>, ManyRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
                     `page=${args.page}`,
@@ -43,7 +43,7 @@ export const warehouseLedgerApi = createApi({
                     `search=${args.search}`,
                 ];
                 const result = await baseQuery({
-                    url: `?${queryParams.join("&")}`,
+                    url: `/mutations?${queryParams.join("&")}`,
                     method: "GET",
                 });
                 if (result.error) {
@@ -52,9 +52,19 @@ export const warehouseLedgerApi = createApi({
                 return {data: result.data as ResponseBody<WarehouseLedgerResponse[]>};
             },
         }),
-
-        // Add a new stock mutation
-        addMutation: builder.mutation<ResponseBody<WarehouseLedgerResponse>, AddMutationRequest>({
+        getMutationRequest: builder.query<ResponseBody<WarehouseLedgerResponse>, OneRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: `/mutations/${args.id}`,
+                    method: "GET",
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<WarehouseLedgerResponse>};
+            },
+        }),
+        addMutationRequest: builder.mutation<ResponseBody<void>, AddMutationRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
                     url: `/mutations/add`,
@@ -64,12 +74,10 @@ export const warehouseLedgerApi = createApi({
                 if (result.error) {
                     return {error: result.error};
                 }
-                return {data: result.data as ResponseBody<WarehouseLedgerResponse>};
+                return {data: result.data as ResponseBody<void>};
             },
         }),
-
-        // Approve a stock mutation
-        approveMutation: builder.mutation<ResponseBody<WarehouseLedgerResponse>, ApproveRejectRequest>({
+        approveMutationRequest: builder.mutation<ResponseBody<void>, ApprovalMutationRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
                     url: `/mutations/approve`,
@@ -79,12 +87,10 @@ export const warehouseLedgerApi = createApi({
                 if (result.error) {
                     return {error: result.error};
                 }
-                return {data: result.data as ResponseBody<WarehouseLedgerResponse>};
+                return {data: result.data as ResponseBody<void>};
             },
         }),
-
-        // Reject a stock mutation
-        rejectMutation: builder.mutation<ResponseBody<WarehouseLedgerResponse>, ApproveRejectRequest>({
+        rejectMutationRequest: builder.mutation<ResponseBody<void>, ApprovalMutationRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
                     url: `/mutations/reject`,
@@ -94,16 +100,8 @@ export const warehouseLedgerApi = createApi({
                 if (result.error) {
                     return {error: result.error};
                 }
-                return {data: result.data as ResponseBody<WarehouseLedgerResponse>};
+                return {data: result.data as ResponseBody<void>};
             },
         }),
     }),
 });
-
-// Export hooks for usage in components
-export const {
-    useGetWarehouseLedgersQuery,
-    useAddMutationMutation,
-    useApproveMutationMutation,
-    useRejectMutationMutation,
-} = warehouseLedgerApi;

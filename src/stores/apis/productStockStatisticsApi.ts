@@ -10,7 +10,7 @@ export interface StatisticSeriesResponse {
     }>;
 }
 
-// Define request parameters interface
+// Define add parameters interface
 export interface ProductStockStatisticsRequest {
     warehouseIds?: string[];
     productIds?: string[];
