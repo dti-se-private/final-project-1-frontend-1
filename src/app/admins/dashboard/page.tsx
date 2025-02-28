@@ -33,6 +33,7 @@ export default function Page() {
             {text: "Warehouse Product Management", link: "/admins/warehouse-products"},
             {text: "Order Management", link: "/admins/orders"},
             {text: "Payment Confirmation Order Management", link: "/admins/orders/payment-confirmations"},
+            {text: "Stock Mutation Management", link: "/admins/stock-mutations"},
             {text: "Product Sales Statistics", link: "/admins/statistics/product-sales"},
             {text: "Product Stocks Statistics", link: "/admins/statistics/product-stocks"},
         ],

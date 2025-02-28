@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, {useEffect} from "react";
 import {useWarehouseLedger} from "@/src/hooks/useWarehouseLedger";
 import {Icon} from "@iconify/react";
 import {
@@ -33,6 +33,14 @@ export default function WarehouseLedgerPage() {
         approveMutation,
         rejectMutation,
     } = useWarehouseLedger();
+
+    useEffect(() => {
+        setGetWarehouseLedgersRequest({
+            page: warehouseLedgerState.getWarehouseLedgersRequest.page,
+            size: warehouseLedgerState.getWarehouseLedgersRequest.size,
+            search: "",
+        });
+    }, [])
 
     const rowMapper = (item: WarehouseLedgerResponse, key: string): React.JSX.Element => {
         if (key === "action") {
@@ -106,54 +114,45 @@ export default function WarehouseLedgerPage() {
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-row w-full gap-4">
                                 <Input
-                                    placeholder="Search..."
+                                    placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
                                     value={warehouseLedgerState.getWarehouseLedgersRequest.search}
                                     variant="bordered"
                                     isClearable={true}
-                                    onClear={() =>
-                                        setGetWarehouseLedgersRequest({
-                                            page: warehouseLedgerState.getWarehouseLedgersRequest.page,
-                                            size: warehouseLedgerState.getWarehouseLedgersRequest.size,
-                                            search: "",
-                                        })
-                                    }
-                                    onValueChange={_.debounce(
-                                        (value) =>
-                                            setGetWarehouseLedgersRequest({
-                                                page: warehouseLedgerState.getWarehouseLedgersRequest.page,
-                                                size: warehouseLedgerState.getWarehouseLedgersRequest.size,
-                                                search: value,
-                                            }),
-                                        500
-                                    )}
+                                    onClear={() => setGetWarehouseLedgersRequest({
+                                        page: warehouseLedgerState.getWarehouseLedgersRequest.page,
+                                        size: warehouseLedgerState.getWarehouseLedgersRequest.size,
+                                        search: "",
+                                    })}
+                                    onValueChange={(value) => setGetWarehouseLedgersRequest({
+                                        page: warehouseLedgerState.getWarehouseLedgersRequest.page,
+                                        size: warehouseLedgerState.getWarehouseLedgersRequest.size,
+                                        search: value
+                                    })}
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/admin/stock-mutations/add`)}
                                     color="success"
-                                    className="text-white"
+                                    className={"text-white"}
+                                    onPress={() => router.push(`/admins/stock-mutations/request`)}
                                 >
-                                    Add Mutation
+                                    Add
                                 </Button>
                             </div>
                             <label className="flex items-center text-default-400 text-small">
                                 Rows per page:
                                 <select
                                     className="bg-transparent outline-none text-default-400 text-small"
-                                    onChange={(event) =>
-                                        setGetWarehouseLedgersRequest({
-                                            page: warehouseLedgerState.getWarehouseLedgersRequest.page,
-                                            size: Number(event.target.value),
-                                            search: warehouseLedgerState.getWarehouseLedgersRequest.search,
-                                        })
-                                    }
+                                    onChange={(event) => setGetWarehouseLedgersRequest({
+                                        page: warehouseLedgerState.getWarehouseLedgersRequest.page,
+                                        size: Number(event.target.value),
+                                        search: warehouseLedgerState.getWarehouseLedgersRequest.search
+                                    })}
+                                    defaultValue={5}
                                 >
-                                    <option selected value="5">
-                                        5
-                                    </option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={15}>15</option>
                                 </select>
                             </label>
                         </div>
@@ -180,11 +179,10 @@ export default function WarehouseLedgerPage() {
                         <TableColumn key="rowNumber">#</TableColumn>
                         <TableColumn key="id">ID</TableColumn>
                         <TableColumn key="productId">Product ID</TableColumn>
-                        <TableColumn key="originWarehouseId">Origin Warehouse</TableColumn>
-                        <TableColumn key="destinationWarehouseId">Destination Warehouse</TableColumn>
-                        <TableColumn key="quantity">Quantity</TableColumn>
-                        <TableColumn key="status">Status</TableColumn>
-                        <TableColumn key="action">Action</TableColumn>
+                        <TableColumn key="preQuantity">Pre Quantity</TableColumn>
+                        <TableColumn key="postQuantity">Post Quantity</TableColumn>
+                        <TableColumn key="time">Time</TableColumn>
+                        <TableColumn key="action">Actions</TableColumn>
                     </TableHeader>
                     <TableBody
                         items={getWarehouseLedgersApiResult.data?.data ?? []}
@@ -194,15 +192,12 @@ export default function WarehouseLedgerPage() {
                     >
                         {(item: WarehouseLedgerResponse) => (
                             <TableRow key={item?.id}>
-                                <TableCell>
-                                    {(getWarehouseLedgersApiResult.data?.data?.indexOf(item) ?? -1) + 1}
-                                </TableCell>
+                                <TableCell>{getWarehouseLedgersApiResult.data?.data?.indexOf(item) ? getWarehouseLedgersApiResult.data?.data?.indexOf(item) + 1 : 0 + 1}</TableCell>
                                 <TableCell>{item?.id}</TableCell>
                                 <TableCell>{item?.productId}</TableCell>
-                                <TableCell>{item?.originWarehouseId}</TableCell>
-                                <TableCell>{item?.destinationWarehouseId}</TableCell>
-                                <TableCell>{item?.quantity}</TableCell>
-                                <TableCell>{item?.status}</TableCell>
+                                <TableCell>{item?.preQuantity}</TableCell>
+                                <TableCell>{item?.postQuantity}</TableCell>
+                                <TableCell>{item?.time}</TableCell>
                                 <TableCell>{rowMapper(item, "action")}</TableCell>
                             </TableRow>
                         )}
