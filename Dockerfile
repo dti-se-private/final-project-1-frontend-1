@@ -19,7 +19,7 @@ WORKDIR $WORKDIR
 
 # Copy the source code.
 COPY . .
-RUN rm .env
+RUN if [ -f .env ]; then rm .env; fi
 
 # Install dependencies.
 RUN --mount=type=cache,target=~/.bun/install/cache,sharing=locked  \
