@@ -38,6 +38,12 @@ const pathPatternPermissions = {
         '^/profile',
         '^/forbidden',
     ],
+    UNAUTHENTICATED:[
+        '^/$',
+        '^/products.*',
+        '^/browse',
+        '^/forbidden',
+    ],
 };
 
 export const PermissionProvider: FC<PermissionProviderProps> = ({children}) => {
@@ -60,7 +66,7 @@ export const PermissionProvider: FC<PermissionProviderProps> = ({children}) => {
                 redirect("/forbidden")
             }
         } else {
-            if (requiredPermissions.length > 0) {
+            if (!requiredPermissions.includes("UNAUTHENTICATED")) {
                 redirect("/login")
             }
         }

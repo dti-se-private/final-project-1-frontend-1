@@ -3,7 +3,6 @@ import {Autocomplete, AutocompleteItem, Select, SelectItem} from "@heroui/react"
 import {useModal} from '@/src/hooks/useModal';
 import {CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis} from 'recharts';
 import React, {useEffect, useState} from "react";
-import {SharedSelection} from "@heroui/system";
 import {statisticApi} from "@/src/stores/apis/statisticApi";
 import {useProduct} from "@/src/hooks/useProduct";
 import {ProductResponse} from "@/src/stores/apis/productApi";
@@ -163,7 +162,7 @@ export default function Page() {
                         disallowEmptySelection
                         selectedKeys={selectedAggregation}
                         selectionMode="single"
-                        onSelectionChange={(keys: SharedSelection) => setSelectedAggregation(keys as Set<string>)}
+                        onSelectionChange={(keys) => setSelectedAggregation(keys as Set<string>)}
                     >
                         {
                             Object.entries(dropdownAggregations).map(([key, value]) => (
@@ -178,7 +177,7 @@ export default function Page() {
                         disallowEmptySelection
                         selectedKeys={selectedPeriod}
                         selectionMode="single"
-                        onSelectionChange={(keys: SharedSelection) => setSelectedPeriod(keys as Set<string>)}
+                        onSelectionChange={(keys) => setSelectedPeriod(keys as Set<string>)}
                     >
                         {
                             Object.entries(dropdownPeriods).map(([key, value]) => (

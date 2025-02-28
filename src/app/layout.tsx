@@ -4,7 +4,7 @@ import "@/src/app/globals.scss";
 import Header from "@/src/components/Header";
 import Modal from "@/src/components/Modal";
 
-import Footer from "../components/Footer";
+import Footer from "@/src/components/Footer";
 
 export const metadata: Metadata = {
     title: "Commerce",

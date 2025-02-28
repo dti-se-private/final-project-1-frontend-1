@@ -10,6 +10,10 @@ import {useRouter} from "next/navigation";
 import Link from "next/link";
 import {CategoryResponse} from "@/src/stores/apis/categoryApi";
 import {useEffect} from "react";
+import hero1 from "@/public/hero1.png";
+import hero2 from "@/public/hero2.png";
+import hero3 from "@/public/hero3.png";
+import hero4 from "@/public/hero4.png";
 
 export default function Page() {
     const router = useRouter();
@@ -50,10 +54,10 @@ export default function Page() {
     ]
 
     const heroImages = [
-        "/hero1.png",
-        "/hero2.png",
-        "/hero3.png",
-        "/hero4.png"
+        hero1,
+        hero2,
+        hero3,
+        hero4
     ];
 
     return (

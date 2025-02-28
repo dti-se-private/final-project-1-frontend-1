@@ -17,6 +17,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 ENV WORKDIR=/workdir
 WORKDIR $WORKDIR
 
+# Set environment variables.
+ARG NEXT_PUBLIC_BACKEND_1_URL
+ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
+ENV NEXT_PUBLIC_BACKEND_1_URL=$NEXT_PUBLIC_BACKEND_1_URL
+ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_CLIENT_ID
+
 # Copy the source code.
 COPY . .
 RUN if [ -f .env ]; then rm .env; fi

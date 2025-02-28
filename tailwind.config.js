@@ -1,5 +1,4 @@
 import {heroui} from "@heroui/react";
-import typography from "@tailwindcss/typography";
 
 module.exports = {
     content: [
@@ -17,5 +16,5 @@ module.exports = {
         },
     },
     darkMode: "class",
-    plugins: [heroui(), typography],
+    plugins: [heroui()],
 }
