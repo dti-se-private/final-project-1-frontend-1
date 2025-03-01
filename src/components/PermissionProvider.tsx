@@ -40,6 +40,9 @@ const pathPatternPermissions = {
     ],
     UNAUTHENTICATED:[
         '^/$',
+        '^/reset-password',
+        '^/login',
+        '^/register',
         '^/products.*',
         '^/browse',
         '^/forbidden',

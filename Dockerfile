@@ -1,5 +1,5 @@
 # Set base image.
-FROM oven/bun:latest
+FROM node:latest
 
 # Setup apt.
 ENV DEBIAN_FRONTEND=noninteractive
@@ -28,11 +28,11 @@ COPY . .
 RUN if [ -f .env ]; then rm .env; fi
 
 # Install dependencies.
-RUN --mount=type=cache,target=~/.bun/install/cache,sharing=locked  \
-    bun install
+RUN --mount=type=cache,target=~/.npm,sharing=locked  \
+    npm install
 
 # Build the application.
-RUN bun run build
+RUN npm run build
 
 # Start the application.
-CMD ["bun", "run", "start"]
+CMD ["npm", "run", "start"]

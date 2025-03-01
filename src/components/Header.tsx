@@ -100,7 +100,7 @@ export default function Component() {
                 <Link href="/customers/cart" className="flex justify-center items-center">
                     <Badge
                         color="danger"
-                        content={getCartApiResult.data?.data?.reduce((acc, item) => acc + item.quantity, 0)}
+                        content={getCartApiResult.data?.data?.reduce((acc, item) => acc + item.quantity, 0) ?? 0}
                     >
                         <Icon icon="heroicons:shopping-cart" className="text-2xl"/>
                     </Badge>

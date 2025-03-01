@@ -10,11 +10,13 @@ import {productApi} from "@/src/stores/apis/productApi";
 import {Button, Spinner} from "@heroui/react";
 import {Icon} from "@iconify/react";
 import {upperFirst} from "tiny-case";
+import {useAuthentication} from "@/src/hooks/useAuthentication";
 
 export default function Page() {
     const {productId}: { productId: string } = useParams();
     const router = useRouter();
     const modal = useModal();
+    const authentication = useAuthentication();
     const {
         productState,
         getProductWithCategoryApiResult,
@@ -120,25 +122,34 @@ export default function Page() {
                             className="w-full"
                             color="primary"
                             startContent={<Icon icon="heroicons:shopping-cart"/>}
-                            onPress={() => addCartItemRequest({
-                                productId: productState.details!.id,
-                                quantity: quantity
-                            })
-                                .then((data) => {
-                                    modal.setContent({
-                                        header: "Add to Cart Succeed",
-                                        body: `${data.message}`,
-                                    })
-                                })
-                                .catch((error) => {
+                            onPress={() => {
+                                if (!authentication.state.isLoggedIn) {
                                     modal.setContent({
                                         header: "Add to Cart Failed",
-                                        body: `${error.data.message}`,
+                                        body: "Please login first before adding an item to the cart.",
                                     })
-                                }).finally(() => {
                                     modal.onOpenChange(true);
+                                    return;
+                                }
+                                addCartItemRequest({
+                                    productId: productState.details!.id,
+                                    quantity: quantity
                                 })
-                            }
+                                    .then((data) => {
+                                        modal.setContent({
+                                            header: "Add to Cart Succeed",
+                                            body: `${data.message}`,
+                                        })
+                                    })
+                                    .catch((error) => {
+                                        modal.setContent({
+                                            header: "Add to Cart Failed",
+                                            body: `${error.data.message}`,
+                                        })
+                                    }).finally(() => {
+                                    modal.onOpenChange(true);
+                                });
+                            }}
                         >
                             Add to Cart
                         </Button>
