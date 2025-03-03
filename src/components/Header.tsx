@@ -1,4 +1,6 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import {
     Avatar,
     Badge,
@@ -14,7 +16,6 @@ import {
 } from "@heroui/react";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
 import {useRouter} from "next/navigation";
-import Link from "next/link";
 import {SearchIcon} from "@heroui/shared-icons";
 import {useModal} from "@/src/hooks/useModal";
 import _ from "lodash";
@@ -159,14 +160,16 @@ export default function Component() {
                                     <DropdownItem
                                         key="login"
                                         href="/login"
-                                        onPress={() => router.push("/login")}
+                                        as={Link}
+                                        href={"/login"}
                                     >
                                         Login
                                     </DropdownItem>
                                     <DropdownItem
                                         key="register"
                                         href="/register"
-                                        onPress={() => router.push("/register")}
+                                        as={Link}
+                                        href={"/register"}
                                     >
                                         Register
                                     </DropdownItem>

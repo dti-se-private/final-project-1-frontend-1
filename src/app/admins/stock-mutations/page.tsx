@@ -1,4 +1,6 @@
-"use client";
+'use client'
+
+import Link from 'next/link';
 import React, {useEffect} from "react";
 import {useWarehouseLedger} from "@/src/hooks/useWarehouseLedger";
 import {Icon} from "@iconify/react";
@@ -20,6 +22,8 @@ import {useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
 import {useModal} from "@/src/hooks/useModal";
 import moment from "moment";
+
+;
 
 export default function WarehouseLedgerPage() {
     const router = useRouter();
@@ -48,7 +52,8 @@ export default function WarehouseLedgerPage() {
                 <div className="flex flex-col gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admins/stock-mutations/${item.id}`)}
+                        as={Link}
+                        href={`/admins/stock-mutations/${item.id}`}
                     >
                         Details
                     </Button>
@@ -114,7 +119,7 @@ export default function WarehouseLedgerPage() {
         } else if (key === "status") {
             return (
                 <>
-                    {item.status}
+                    {item.status.replace(/_/g, ' ')}
                 </>
             );
         } else if (key === "time") {
@@ -157,7 +162,8 @@ export default function WarehouseLedgerPage() {
                                     startContent={<Icon icon="heroicons:plus"/>}
                                     color="success"
                                     className={"text-white"}
-                                    onPress={() => router.push(`/admins/stock-mutations/add`)}
+                                    as={Link}
+                                    href={`/admins/stock-mutations/add`}
                                 >
                                     Add
                                 </Button>

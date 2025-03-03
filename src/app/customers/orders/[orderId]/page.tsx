@@ -1,4 +1,6 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import {
     Button,
     Dropdown,
@@ -75,7 +77,8 @@ export default function Page() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/products/${item.product.id}`)}
+                        as={Link}
+                        href={`/products/${item.product.id}`}
                     >
                         Details
                     </Button>
@@ -146,7 +149,8 @@ export default function Page() {
                                     </DropdownItem>
                                     <DropdownItem
                                         key="manual"
-                                        onPress={() => router.push(`/customers/orders/${orderId}/payment-proofs`)}
+                                        as={Link}
+                                        href={`/customers/orders/${orderId}/payment-proofs`}
                                     >
                                         Manual
                                     </DropdownItem>
@@ -187,7 +191,8 @@ export default function Page() {
                         <div className="flex flex-row gap-2">
                             <Button
                                 color="primary"
-                                onPress={() => router.push(`/customers/orders/${orderId}/payment-proofs`)}
+                                as={Link}
+                                href={`/customers/orders/${orderId}/payment-proofs`}
                             >
                                 Details
                             </Button>
@@ -264,6 +269,12 @@ export default function Page() {
             return (
                 <>
                     {moment(item.time).local().toString()}
+                </>
+            );
+        } else if (key === "status") {
+            return (
+                <>
+                    {item.status.replace(/_/g, ' ')}
                 </>
             );
         } else {

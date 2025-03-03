@@ -1,4 +1,6 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import React, {useEffect} from "react";
 import {
     Button,
@@ -53,7 +55,8 @@ export default function Page() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/customers/orders/${item.id}`)}
+                        as={Link}
+                        href={`/customers/orders/${item.id}`}
                     >
                         Details
                     </Button>
@@ -62,7 +65,7 @@ export default function Page() {
         } else if (key === "lastStatus") {
             return (
                 <>
-                    {lastStatus?.status}
+                    {lastStatus?.status.replace(/_/g, ' ')}
                 </>
             );
         } else if (key === "lastStatusTime") {

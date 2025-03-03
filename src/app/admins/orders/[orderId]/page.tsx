@@ -1,4 +1,6 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import {
     Button,
     getKeyValue,
@@ -65,7 +67,8 @@ export default function Page() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/products/${item.product.id}`)}
+                        as={Link}
+                        href={`/products/${item.product.id}`}
                     >
                         Details
                     </Button>
@@ -137,7 +140,8 @@ export default function Page() {
                         <div className="flex flex-row gap-2">
                             <Button
                                 color="primary"
-                                onPress={() => router.push(`/admins/orders/${orderId}/payment-proofs`)}
+                                as={Link}
+                                href={`/admins/orders/${orderId}/payment-proofs`}
                             >
                                 Details
                             </Button>
@@ -214,6 +218,12 @@ export default function Page() {
             return (
                 <>
                     {moment(item.time).local().toString()}
+                </>
+            );
+        } else if (key === "status") {
+            return (
+                <>
+                    {item.status.replace(/_/g, ' ')}
                 </>
             );
         } else {

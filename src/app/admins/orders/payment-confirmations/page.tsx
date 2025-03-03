@@ -1,4 +1,6 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import React, {useEffect} from "react";
 import {
     Button,
@@ -54,7 +56,8 @@ export default function Page() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admins/orders/${item.id}`)}
+                        as={Link}
+                        href={`/admins/orders/${item.id}`}
                     >
                         Details
                     </Button>

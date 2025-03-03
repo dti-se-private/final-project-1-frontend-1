@@ -1,4 +1,6 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import {Button, Spinner} from '@heroui/react';
 import Image from 'next/image';
 import {useProduct} from '@/src/hooks/useProduct';
@@ -7,7 +9,6 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import {Pagination} from "swiper/modules";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import {useRouter} from "next/navigation";
-import Link from "next/link";
 import {CategoryResponse} from "@/src/stores/apis/categoryApi";
 import {useEffect} from "react";
 import hero1 from "@/public/hero1.png";

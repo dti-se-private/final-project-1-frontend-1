@@ -1,4 +1,6 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import React, {useEffect, useState} from "react";
 import {useWarehouseProduct} from "@/src/hooks/useWarehouseProduct";
 import {Icon} from "@iconify/react";
@@ -82,7 +84,8 @@ export default function Page() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admins/warehouse-products/${item.id}`)}
+                        as={Link}
+                        href={`/admins/warehouse-products/${item.id}`}
                     >
                         Details
                     </Button>
@@ -130,7 +133,8 @@ export default function Page() {
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/admins/warehouse-products/add`)}
+                                    as={Link}
+                                    href={`/admins/warehouse-products/add`}
                                     color="success"
                                     className="text-white"
                                 >

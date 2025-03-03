@@ -38,7 +38,7 @@ const pathPatternPermissions = {
         '^/profile',
         '^/forbidden',
     ],
-    UNAUTHENTICATED:[
+    UNAUTHENTICATED: [
         '^/$',
         '^/reset-password',
         '^/login',

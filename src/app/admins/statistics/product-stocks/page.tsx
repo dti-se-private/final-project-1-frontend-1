@@ -1,4 +1,5 @@
-"use client"
+'use client'
+
 import {Autocomplete, AutocompleteItem, Select, SelectItem} from "@heroui/react";
 import {useModal} from '@/src/hooks/useModal';
 import {CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis} from 'recharts';

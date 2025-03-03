@@ -1,4 +1,6 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import React, {useEffect, useState} from "react";
 import {useCategory} from "@/src/hooks/useCategory";
 import {Icon} from "@iconify/react";
@@ -65,7 +67,7 @@ export default function Page() {
 
     const handleDelete = (category: CategoryResponse) => {
         setCategoryToDelete(category);
-        showModal("Confirm Delete", `Are you sure you want to delete the admin "${category.name}"?`);
+        showModal("Confirm Delete", `Are you sure you want to delete the category "${category.name}"?`);
     }
 
     useEffect(() => {
@@ -82,7 +84,8 @@ export default function Page() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admins/categories/${item.id}`)}
+                        as={Link}
+                        href={`/admins/categories/${item.id}`}
                     >
                         Details
                     </Button>
@@ -130,7 +133,8 @@ export default function Page() {
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/admins/categories/add`)}
+                                    as={Link}
+                                    href={`/admins/categories/add`}
                                     color="success"
                                     className="text-white"
                                 >

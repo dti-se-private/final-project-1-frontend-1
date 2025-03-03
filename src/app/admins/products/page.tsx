@@ -1,4 +1,6 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import React, {useEffect, useState} from "react";
 import {useProduct} from "@/src/hooks/useProduct";
 import {Icon} from "@iconify/react";
@@ -67,7 +69,7 @@ export default function Page() {
 
     const handleDelete = (product: ProductResponse) => {
         setProductToDelete(product);
-        showModal("Confirm Delete", `Are you sure you want to delete the admin "${product.name}"?`);
+        showModal("Confirm Delete", `Are you sure you want to delete the product "${product.name}"?`);
     }
 
     useEffect(() => {
@@ -92,7 +94,8 @@ export default function Page() {
                 <div className="flex flex-col gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admins/products/${item.id}`)}
+                        as={Link}
+                        href={`/admins/products/${item.id}`}
                     >
                         Details
                     </Button>
@@ -169,7 +172,8 @@ export default function Page() {
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/admins/products/add`)}
+                                    as={Link}
+                                    href={`/admins/products/add`}
                                     color="success"
                                     className="text-white"
                                 >

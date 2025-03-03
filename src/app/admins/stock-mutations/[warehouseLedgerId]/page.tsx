@@ -1,4 +1,5 @@
-"use client"
+'use client'
+
 import * as Yup from "yup";
 import {useFormik} from "formik";
 import {Input, Spinner} from "@heroui/react";
@@ -267,7 +268,7 @@ export default function Page() {
                         name="status"
                         label="Status"
                         type="text"
-                        value={`${formik.values.status}`}
+                        value={`${formik.values.status.replace(/_/g, ' ')}`}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         isInvalid={Boolean(formik.errors.status)}

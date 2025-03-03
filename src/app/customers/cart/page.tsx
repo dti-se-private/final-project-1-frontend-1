@@ -1,4 +1,6 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import {useModal} from "@/src/hooks/useModal";
 import React, {useEffect, useState} from "react";
 import {useParams, useRouter} from "next/navigation";
@@ -11,7 +13,6 @@ import {useOrder} from "@/src/hooks/useOrder";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
 import {OrderRequest, OrderResponse} from "@/src/stores/apis/orderApi";
 import _ from "lodash";
-import Link from "next/link";
 
 export default function Page() {
     const {productId}: { productId: string } = useParams();

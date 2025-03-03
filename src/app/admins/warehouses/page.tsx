@@ -1,4 +1,6 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import React, {useEffect, useState} from "react";
 import {useWarehouse} from "@/src/hooks/useWarehouse";
 import {WarehouseResponse} from "@/src/stores/apis/warehouseApi";
@@ -82,7 +84,8 @@ export default function WarehouseManagementPage() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/admins/warehouses/${item.id}`)}
+                        as={Link}
+                        href={`/admins/warehouses/${item.id}`}
                     >
                         Details
                     </Button>
@@ -146,7 +149,8 @@ export default function WarehouseManagementPage() {
                                     startContent={<Icon icon="heroicons:plus"/>}
                                     color="success"
                                     className={"text-white"}
-                                    onPress={() => router.push(`/admins/warehouses/add`)}
+                                    as={Link}
+                                    href={`/admins/warehouses/add`}
                                 >
                                     Add
                                 </Button>

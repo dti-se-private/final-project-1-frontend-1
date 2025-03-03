@@ -1,4 +1,6 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import React, {useEffect, useState} from "react";
 import {useAccountAddress} from "@/src/hooks/useAccountAddress";
 import {Icon} from "@iconify/react";
@@ -79,7 +81,8 @@ export default function Page() {
                 <div className="flex flex-row gap-2">
                     <Button
                         color="primary"
-                        onPress={() => router.push(`/customers/addresses/${item.id}`)}
+                        as={Link}
+                        href={`/customers/addresses/${item.id}`}
                     >
                         Details
                     </Button>
@@ -144,7 +147,8 @@ export default function Page() {
                                 />
                                 <Button
                                     startContent={<Icon icon="heroicons:plus"/>}
-                                    onPress={() => router.push(`/customers/addresses/add`)}
+                                    as={Link}
+                                    href={`/customers/addresses/add`}
                                     color="success"
                                     className="text-white"
                                 >

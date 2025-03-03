@@ -1,4 +1,5 @@
-"use client"
+'use client'
+
 import * as Yup from "yup";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
 import {RegisterByExternalRequest, RegisterByInternalRequest} from "@/src/stores/apis/authenticationApi";

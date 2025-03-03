@@ -1,6 +1,7 @@
-"use client"
+'use client'
+
+import Link from 'next/link';
 import {Button, Spinner} from '@heroui/react';
-import Link from "next/link";
 import Image from "next/image";
 import {convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import {useProduct} from "@/src/hooks/useProduct";

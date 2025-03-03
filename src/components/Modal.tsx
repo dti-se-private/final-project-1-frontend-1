@@ -1,4 +1,5 @@
-"use client"
+'use client'
+
 import {Modal, ModalBody, ModalContent, ModalHeader} from "@heroui/react";
 import {useModal} from "@/src/hooks/useModal";
 

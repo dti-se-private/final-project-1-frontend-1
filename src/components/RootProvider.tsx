@@ -1,4 +1,5 @@
-"use client"
+'use client'
+
 import {HeroUIProvider} from '@heroui/react';
 import {Provider as ReduxProvider} from "react-redux";
 import {persistor, store} from "@/src/stores";
