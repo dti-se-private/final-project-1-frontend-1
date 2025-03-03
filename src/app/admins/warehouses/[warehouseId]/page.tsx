@@ -86,7 +86,7 @@ export default function Page() {
 
     if (detailWarehouseApiResult.isLoading) {
         return (
-            <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+            <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-2/3">
                     <Spinner/>
                 </div>
@@ -95,7 +95,7 @@ export default function Page() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-center items-center">
                 <h1 className="text-center mb-8 text-4xl font-bold">Warehouse Details</h1>
                 <Formik

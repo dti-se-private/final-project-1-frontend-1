@@ -87,7 +87,7 @@ export default function Page() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
                 <div className="mb-8 text-4xl font-bold">Orders</div>
                 <Table

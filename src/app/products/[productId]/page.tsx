@@ -57,7 +57,7 @@ export default function Page() {
 
     if (detailProductApiResult.isLoading) {
         return (
-            <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+            <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
                     <Spinner/>
                 </div>
@@ -66,7 +66,7 @@ export default function Page() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div
                 className="container flex md:flex-row md:justify-center md:items-start flex-col justify-center item-center gap-8 w-3/4">
                 <div className="relative md:h-[65vh] md:w-[55vw] h-[45vh] w-[100%]">

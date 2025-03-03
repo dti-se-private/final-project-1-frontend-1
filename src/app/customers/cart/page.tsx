@@ -95,9 +95,9 @@ export default function Page() {
     }, [getAccountAddressesApiResult.isLoading]);
 
     return (
-        <div className="flex flex-col md:flex-row justify-center items-center min-h-[78vh] h-full">
+        <div className="flex flex-col md:flex-row justify-center items-center h-full w-full">
             <section
-                className="p-8 md:overflow-y-scroll w-full md:w-2/3 h-[78vh] flex flex-col md:relative md:relative md:left-0 md:top-0 md:bottom-0">
+                className="p-8 md:overflow-y-scroll w-full md:w-2/3 h-[78vh] flex flex-col md:relative md:left-0 md:top-0 md:bottom-0">
                 <div className="flex flex-col justify-start items-start mb-8">
                     <div className="text-6xl font-bold">Cart</div>
                     <div>All items in your cart to be checked out.</div>

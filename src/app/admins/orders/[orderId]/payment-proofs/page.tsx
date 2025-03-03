@@ -49,7 +49,7 @@ export default function Page() {
 
     if (detailOrderApiResult.isLoading) {
         return (
-            <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+            <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
                     <Spinner/>
                 </div>
@@ -100,7 +100,7 @@ export default function Page() {
     const lastStatus = statuses.length > 0 ? statuses[statuses.length - 1] : undefined;
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
                 <div className="mb-8 text-4xl font-bold">Payment Proofs</div>
                 <Table

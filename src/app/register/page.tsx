@@ -116,7 +116,7 @@ export default function Page() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-center items-center gap-8">
                 <div className="mb-8 text-4xl font-bold">Register Now!</div>
                 <Formik

@@ -42,7 +42,7 @@ export default function Page() {
         <div className="py-8 flex flex-col justify-center items-center">
             {/* Products */}
             <section className="container flex flex-col justify-center items-center px-2">
-                <div className="flex flex-wrap justify-center items-center gap-6 mb-8 min-h-[78vh]">
+                <div className="flex flex-wrap justify-center items-center gap-6 mb-8 min-h-[80vh]">
                     {getProductWithCategoryApiResult.isFetching ?
                         (<Spinner/>) :
                         getProductWithCategoryApiResult.data?.data?.map((product, index) => (

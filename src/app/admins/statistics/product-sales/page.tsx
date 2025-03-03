@@ -67,7 +67,7 @@ export default function Page() {
     }, [selectedCategoryId, selectedProductId, selectedAggregation, selectedPeriod]);
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh] gap-4">
                 <h1 className="text-center mb-4 text-4xl font-bold">Product Sales Statistics</h1>
                 <div className="flex flex-col w-full gap-4">

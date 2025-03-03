@@ -99,7 +99,7 @@ export default function Page() {
 
     if (getProductsApiResult.isLoading || getOriginWarehousesApiResult.isLoading || getDestinationWarehousesApiResult.isLoading) {
         return (
-            <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+            <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
                 <div className="container flex flex-row justify-center items-center gap-8 w-3/4">
                     <Spinner/>
                 </div>
@@ -108,7 +108,7 @@ export default function Page() {
     }
 
     return (
-        <div className="py-8 flex flex-col justify-center items-center min-h-[78vh]">
+        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-center items-center">
                 <h1 className="mb-8 text-4xl font-bold">Add Stock Mutation</h1>
                 <form className="w-2/3 md:w-2/3" onSubmit={formik.handleSubmit}>
