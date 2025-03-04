@@ -24,7 +24,7 @@ export default function Page() {
     const [initialValues, setInitialValues] = useState({
         name: "",
         description: "",
-        location: new wkx.Point(0, 0).toWkb().toString("hex"),
+        location: new wkx.Point(106.82707481803374, -6.175494872535908).toWkb().toString("hex"),
         isPrimary: false,
     });
 
