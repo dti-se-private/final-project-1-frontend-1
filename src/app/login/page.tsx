@@ -2,13 +2,18 @@
 
 import * as Yup from "yup";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
-import {LoginByInternalRequest, RegisterByExternalRequest} from "@/src/stores/apis/authenticationApi";
+import {
+    LoginByExternalRequest,
+    LoginByInternalRequest,
+    RegisterByExternalRequest
+} from "@/src/stores/apis/authenticationApi";
 import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {Button} from "@heroui/react";
 import {useModal} from "@/src/hooks/useModal";
 import {useRouter} from "next/navigation";
-import {CredentialResponse, GoogleLogin} from "@react-oauth/google";
+import {CodeResponse, CredentialResponse, GoogleLogin, useGoogleLogin} from "@react-oauth/google";
+import React from "react";
 
 export default function Page() {
     const authentication = useAuthentication();
@@ -52,10 +57,10 @@ export default function Page() {
     };
 
 
-    const handleGoogleLoginSuccess = (credentialResponse: CredentialResponse) => {
-        console.log(credentialResponse);
-        const request: RegisterByExternalRequest = {
-            credential: credentialResponse.credential!
+    const handleGoogleLoginSuccess = (response: CodeResponse) => {
+        console.log(response);
+        const request: LoginByExternalRequest = {
+            authorizationCode: response.code
         }
         return authentication
             .loginByExternal(request)
@@ -88,6 +93,13 @@ export default function Page() {
         modal.onOpenChange(true);
     }
 
+    const googleLogin = useGoogleLogin({
+        onSuccess: handleGoogleLoginSuccess,
+        onError: handleGoogleLoginError,
+        flow: 'auth-code',
+        redirect_uri: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_REDIRECT_URI
+    });
+
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-center items-center gap-8">
@@ -109,11 +121,9 @@ export default function Page() {
                         </Button>
                     </Form>
                 </Formik>
-                <GoogleLogin
-                    type="icon"
-                    onSuccess={handleGoogleLoginSuccess}
-                    onError={handleGoogleLoginError}
-                />
+                <Button onPress={() => googleLogin()}>
+                    Google
+                </Button>
             </div>
         </div>
     )

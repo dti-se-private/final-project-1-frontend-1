@@ -15,7 +15,7 @@ import {
     NavbarContent
 } from "@heroui/react";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
-import {useRouter} from "next/navigation";
+import {redirect, useRouter} from "next/navigation";
 import {SearchIcon} from "@heroui/shared-icons";
 import {useModal} from "@/src/hooks/useModal";
 import _ from "lodash";
@@ -62,8 +62,8 @@ export default function Component() {
                 })
             })
             .finally(() => {
-                router.push("/login");
                 modal.onOpenChange(true);
+                redirect("/login");
             });
     }
 

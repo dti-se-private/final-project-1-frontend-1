@@ -11,7 +11,7 @@ export interface RegisterByInternalRequest {
 }
 
 export interface RegisterByExternalRequest {
-    credential: string
+    authorizationCode: string
 }
 
 export interface LoginByInternalRequest {
@@ -20,7 +20,7 @@ export interface LoginByInternalRequest {
 }
 
 export interface LoginByExternalRequest {
-    credential: string
+    authorizationCode: string
 }
 
 export interface ResetPasswordRequest {

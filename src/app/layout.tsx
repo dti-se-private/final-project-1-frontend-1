@@ -8,8 +8,7 @@ import Footer from "@/src/components/Footer";
 
 export const metadata: Metadata = {
     title: "Commerce",
-    description: "final-project-1-frontend-1",
-    referrer: "no-referrer-when-downgrade"
+    description: "final-project-1-frontend-1"
 };
 
 export default function Layout(
