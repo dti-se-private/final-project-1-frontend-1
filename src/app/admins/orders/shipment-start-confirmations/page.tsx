@@ -27,15 +27,15 @@ export default function Page() {
     const modal = useModal();
     const {
         orderState,
-        getPaymentConfirmationOrdersApiResult,
-        setGetPaymentConfirmationOrdersRequest,
-        processPaymentConfirmation
+        getShipmentStartConfirmationOrdersApiResult,
+        setGetShipmentStartConfirmationOrdersRequest,
+        processShipmentStartConfirmation
     } = useOrder();
 
     useEffect(() => {
-        setGetPaymentConfirmationOrdersRequest({
-            page: orderState.getPaymentConfirmationOrdersRequest.page,
-            size: orderState.getPaymentConfirmationOrdersRequest.size,
+        setGetShipmentStartConfirmationOrdersRequest({
+            page: orderState.getShipmentStartConfirmationOrdersRequest.page,
+            size: orderState.getShipmentStartConfirmationOrdersRequest.size,
             search: "",
         });
     }, [])
@@ -69,22 +69,22 @@ export default function Page() {
                                 orderId: item.id,
                                 action: "APPROVE"
                             }
-                            processPaymentConfirmation(request)
+                            processShipmentStartConfirmation(request)
                                 .then((data) => {
                                     modal.setContent({
-                                        header: "Process Payment Confirmation Succeed",
+                                        header: "Process Shipment Start Confirmation Succeed",
                                         body: `${data.message}`,
                                     })
                                 })
                                 .catch((error) => {
                                     modal.setContent({
-                                        header: "Process Payment Confirmation Failed",
+                                        header: "Process Shipment Start Confirmation Failed",
                                         body: `${error.data.message}`,
                                     })
                                 })
                                 .finally(() => {
                                     modal.onOpenChange(true);
-                                    getPaymentConfirmationOrdersApiResult.refetch();
+                                    getShipmentStartConfirmationOrdersApiResult.refetch();
                                 });
                         }}
                     >
@@ -97,22 +97,22 @@ export default function Page() {
                                 orderId: item.id,
                                 action: "REJECT"
                             }
-                            processPaymentConfirmation(request)
+                            processShipmentStartConfirmation(request)
                                 .then((data) => {
                                     modal.setContent({
-                                        header: "Process Payment Confirmation Succeed",
+                                        header: "Process Shipment Start Confirmation Succeed",
                                         body: `${data.message}`,
                                     })
                                 })
                                 .catch((error) => {
                                     modal.setContent({
-                                        header: "Process Payment Confirmation Failed",
+                                        header: "Process Shipment Start Confirmation Failed",
                                         body: `${error.data.message}`,
                                     })
                                 })
                                 .finally(() => {
                                     modal.onOpenChange(true);
-                                    getPaymentConfirmationOrdersApiResult.refetch();
+                                    getShipmentStartConfirmationOrdersApiResult.refetch();
                                 });
                         }}
                     >
@@ -144,7 +144,7 @@ export default function Page() {
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-start items-center w-3/4 min-h-[55vh]">
-                <div className="mb-8 text-4xl font-bold">Payment Confirmation Orders</div>
+                <div className="mb-8 text-4xl font-bold">Shipment Start Confirmation Orders</div>
                 <Table
                     topContent={
                         <div className="flex flex-col gap-4">
@@ -152,17 +152,17 @@ export default function Page() {
                                 <Input
                                     placeholder="Type to search..."
                                     startContent={<SearchIcon className="text-default-300"/>}
-                                    value={orderState.getPaymentConfirmationOrdersRequest.search}
+                                    value={orderState.getShipmentStartConfirmationOrdersRequest.search}
                                     variant="bordered"
                                     isClearable={true}
-                                    onClear={() => setGetPaymentConfirmationOrdersRequest({
-                                        page: orderState.getPaymentConfirmationOrdersRequest.page,
-                                        size: orderState.getPaymentConfirmationOrdersRequest.size,
+                                    onClear={() => setGetShipmentStartConfirmationOrdersRequest({
+                                        page: orderState.getShipmentStartConfirmationOrdersRequest.page,
+                                        size: orderState.getShipmentStartConfirmationOrdersRequest.size,
                                         search: "",
                                     })}
-                                    onValueChange={(value) => setGetPaymentConfirmationOrdersRequest({
-                                        page: orderState.getPaymentConfirmationOrdersRequest.page,
-                                        size: orderState.getPaymentConfirmationOrdersRequest.size,
+                                    onValueChange={(value) => setGetShipmentStartConfirmationOrdersRequest({
+                                        page: orderState.getShipmentStartConfirmationOrdersRequest.page,
+                                        size: orderState.getShipmentStartConfirmationOrdersRequest.size,
                                         search: value
                                     })}
                                 />
@@ -171,10 +171,10 @@ export default function Page() {
                                 Rows per page:
                                 <select
                                     className="bg-transparent outline-none text-default-400 text-small"
-                                    onChange={(event) => setGetPaymentConfirmationOrdersRequest({
-                                        page: orderState.getPaymentConfirmationOrdersRequest.page,
+                                    onChange={(event) => setGetShipmentStartConfirmationOrdersRequest({
+                                        page: orderState.getShipmentStartConfirmationOrdersRequest.page,
                                         size: Number(event.target.value),
-                                        search: orderState.getPaymentConfirmationOrdersRequest.search
+                                        search: orderState.getShipmentStartConfirmationOrdersRequest.search
                                     })}
                                     defaultValue={5}
                                 >
@@ -190,12 +190,12 @@ export default function Page() {
                             <Pagination
                                 showControls
                                 showShadow
-                                page={orderState.getPaymentConfirmationOrdersRequest.page + 1}
+                                page={orderState.getShipmentStartConfirmationOrdersRequest.page + 1}
                                 total={Infinity}
-                                onChange={(page) => setGetPaymentConfirmationOrdersRequest({
+                                onChange={(page) => setGetShipmentStartConfirmationOrdersRequest({
                                     page: page - 1,
-                                    size: orderState.getPaymentConfirmationOrdersRequest.size,
-                                    search: orderState.getPaymentConfirmationOrdersRequest.search,
+                                    size: orderState.getShipmentStartConfirmationOrdersRequest.size,
+                                    search: orderState.getShipmentStartConfirmationOrdersRequest.search,
                                 })}
                             />
                         </div>
@@ -210,9 +210,9 @@ export default function Page() {
                         <TableColumn key="action">Action</TableColumn>
                     </TableHeader>
                     <TableBody
-                        items={getPaymentConfirmationOrdersApiResult.data?.data ?? []}
+                        items={getShipmentStartConfirmationOrdersApiResult.data?.data ?? []}
                         loadingContent={<Spinner/>}
-                        loadingState={getPaymentConfirmationOrdersApiResult.isFetching ? "loading" : "idle"}
+                        loadingState={getShipmentStartConfirmationOrdersApiResult.isFetching ? "loading" : "idle"}
                         emptyContent={"Empty!"}
                     >
                         {(item) => (

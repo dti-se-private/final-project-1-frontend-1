@@ -160,16 +160,12 @@ export default function Component() {
                                     <DropdownItem
                                         key="login"
                                         href="/login"
-                                        as={Link}
-                                        href={"/login"}
                                     >
                                         Login
                                     </DropdownItem>
                                     <DropdownItem
                                         key="register"
                                         href="/register"
-                                        as={Link}
-                                        href={"/register"}
                                     >
                                         Register
                                     </DropdownItem>

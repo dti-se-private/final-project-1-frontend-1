@@ -18,10 +18,12 @@ export const useOrder = () => {
     const [checkoutApiTrigger] = orderApi.useCheckoutMutation();
     const getOrdersApiResult = orderApi.useGetOrdersQuery(orderState.getOrdersRequest);
     const getPaymentConfirmationOrdersApiResult = orderApi.useGetPaymentConfirmationOrdersQuery(orderState.getPaymentConfirmationOrdersRequest);
+    const getShipmentStartConfirmationOrdersApiResult = orderApi.useGetShipmentStartConfirmationOrdersQuery(orderState.getShipmentStartConfirmationOrdersRequest);
     const [processCancellationApiTrigger] = orderApi.useProcessCancellationMutation();
     const [processPaymentGatewayApiTrigger] = orderApi.useProcessPaymentGatewayMutation();
     const [processManualPaymentApiTrigger] = orderApi.useProcessManualPaymentMutation();
     const [processPaymentConfirmationApiTrigger] = orderApi.useProcessPaymentConfirmationMutation();
+    const [processShipmentStartConfirmationApiTrigger] = orderApi.useProcessShipmentStartConfirmationMutation();
     const [processShipmentConfirmationApiTrigger] = orderApi.useProcessShipmentConfirmationMutation();
 
     const tryCheckout = async (request: OrderRequest) => {
@@ -37,6 +39,11 @@ export const useOrder = () => {
     const setGetPaymentConfirmationOrdersRequest = (request: ManyRequest) => {
         dispatch(orderSlice.actions.setGetPaymentConfirmationOrdersRequest(request));
         getPaymentConfirmationOrdersApiResult.refetch();
+    }
+
+    const setGetShipmentStartConfirmationOrdersRequest = (request: ManyRequest) => {
+        dispatch(orderSlice.actions.setGetShipmentStartConfirmationOrdersRequest(request));
+        getShipmentStartConfirmationOrdersApiResult.refetch();
     }
 
     const setGetOrdersRequest = (request: ManyRequest) => {
@@ -72,6 +79,12 @@ export const useOrder = () => {
         return processPaymentConfirmationApiResult;
     }
 
+    const processShipmentStartConfirmation = async (request: OrderProcessRequest) => {
+        const processShipmentStartConfirmationApiResult = await processShipmentStartConfirmationApiTrigger(request).unwrap();
+        getShipmentStartConfirmationOrdersApiResult.refetch();
+        return processShipmentStartConfirmationApiResult;
+    }
+
     const processShipmentConfirmation = async (request: OrderProcessRequest) => {
         const processShipmentConfirmationApiResult = await processShipmentConfirmationApiTrigger(request).unwrap();
         getOrdersApiResult.refetch();
@@ -85,6 +98,8 @@ export const useOrder = () => {
         setGetOrdersRequest,
         getPaymentConfirmationOrdersApiResult,
         setGetPaymentConfirmationOrdersRequest,
+        getShipmentStartConfirmationOrdersApiResult,
+        setGetShipmentStartConfirmationOrdersRequest,
         tryCheckout,
         checkout,
         setDetails,
@@ -92,6 +107,7 @@ export const useOrder = () => {
         processPaymentGateway,
         processManualPayment,
         processPaymentConfirmation,
+        processShipmentStartConfirmation,
         processShipmentConfirmation
     };
 }

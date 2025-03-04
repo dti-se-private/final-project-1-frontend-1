@@ -124,6 +124,23 @@ export const orderApi = createApi({
                 return {data: result.data as ResponseBody<OrderResponse[]>};
             }
         }),
+        getShipmentStartConfirmationOrders: builder.query<ResponseBody<OrderResponse[]>, ManyRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const queryParams = [
+                    `page=${args.page}`,
+                    `size=${args.size}`,
+                    `search=${args.search}`
+                ];
+                const result = await baseQuery({
+                    url: `/shipment-start-confirmations?${queryParams.join("&")}`,
+                    method: "GET"
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<OrderResponse[]>};
+            }
+        }),
         tryCheckout: builder.mutation<ResponseBody<OrderResponse>, OrderRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
@@ -167,6 +184,19 @@ export const orderApi = createApi({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const result = await baseQuery({
                     url: "/payment-confirmations/process",
+                    method: "POST",
+                    data: args,
+                });
+                if (result.error) {
+                    return {error: result.error};
+                }
+                return {data: result.data as ResponseBody<OrderResponse>};
+            }
+        }),
+        processShipmentStartConfirmation: builder.mutation<ResponseBody<OrderResponse>, OrderProcessRequest>({
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const result = await baseQuery({
+                    url: "/shipment-start-confirmations/process",
                     method: "POST",
                     data: args,
                 });

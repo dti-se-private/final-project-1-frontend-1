@@ -5,6 +5,7 @@ import {OrderResponse} from "@/src/stores/apis/orderApi";
 export interface OrderState {
     getOrdersRequest: ManyRequest
     getPaymentConfirmationOrdersRequest: ManyRequest
+    getShipmentStartConfirmationOrdersRequest: ManyRequest
     details?: OrderResponse
 }
 
@@ -21,6 +22,11 @@ export const orderSlice = createSlice({
             size: 5,
             search: ''
         },
+        getShipmentStartConfirmationOrdersRequest: {
+            page: 0,
+            size: 5,
+            search: ''
+        },
         details: undefined
     } as OrderState,
     reducers: {
@@ -29,6 +35,9 @@ export const orderSlice = createSlice({
         },
         setGetPaymentConfirmationOrdersRequest: (state, action) => {
             state.getPaymentConfirmationOrdersRequest = action.payload;
+        },
+        setGetShipmentStartConfirmationOrdersRequest: (state, action) => {
+            state.getShipmentStartConfirmationOrdersRequest = action.payload;
         },
         setDetails: (state, action) => {
             state.details = action.payload;
