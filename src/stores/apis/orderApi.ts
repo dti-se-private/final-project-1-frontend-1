@@ -2,6 +2,7 @@ import {createApi} from "@reduxjs/toolkit/query/react";
 import {axiosBaseQuery, ManyRequest, OneRequest, ResponseBody} from "@/src/stores/apis";
 import {ProductResponse} from "@/src/stores/apis/productApi";
 import {AccountResponse} from "@/src/stores/apis/accountApi";
+import {WarehouseResponse} from "@/src/stores/apis/warehouseApi";
 
 export interface OrderStatusResponse {
     id: string;
@@ -38,6 +39,7 @@ export interface OrderResponse {
     paymentProofs: PaymentProofResponse[];
     shipmentOrigin: string
     shipmentDestination: string
+    originWarehouse: WarehouseResponse;
 }
 
 

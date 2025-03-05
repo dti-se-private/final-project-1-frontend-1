@@ -246,23 +246,36 @@ export default function Page() {
                             type="text"
                             value={orderState.details?.id ?? ""}
                         />
-                        <Input
-                            label="Item Price"
-                            type="text"
-                            value={currencyFormatter.format(orderState.details?.itemPrice ?? 0)}
-                        />
-                        <Input
-                            label="Shipment Price"
-                            type="text"
-                            value={currencyFormatter.format(orderState.details?.shipmentPrice ?? 0)}
-                        />
+                        <div className="flex flex-row gap-4">
+                            <Input
+                                label="Item Price"
+                                type="text"
+                                value={currencyFormatter.format(orderState.details?.itemPrice ?? 0)}
+                            />
+                            <Input
+                                label="Shipment Price"
+                                type="text"
+                                value={currencyFormatter.format(orderState.details?.shipmentPrice ?? 0)}
+                            />
+                        </div>
                         <Input
                             label="Total Price"
                             type="text"
                             value={currencyFormatter.format(orderState.details?.totalPrice ?? 0)}
                         />
+                        <div className="flex flex-row gap-4">
+                            <Input
+                                label="Origin Warehouse ID"
+                                type="text"
+                                value={orderState.details?.originWarehouse.id ?? ""}
+                            />
+                            <Input
+                                label="Origin Warehouse Name"
+                                type="text"
+                                value={orderState.details?.originWarehouse.name ?? ""}
+                            />
+                        </div>
                     </div>
-
                     <div className="flex flex-col gap-4">
                         <div className="text-2xl">Items</div>
                         <Table>
