@@ -2,17 +2,14 @@
 
 import * as Yup from "yup";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
-import {
-    LoginByExternalRequest,
-    LoginByInternalRequest,
-    RegisterByExternalRequest
-} from "@/src/stores/apis/authenticationApi";
+import {LoginByExternalRequest, LoginByInternalRequest} from "@/src/stores/apis/authenticationApi";
 import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {Button} from "@heroui/react";
 import {useModal} from "@/src/hooks/useModal";
 import {useRouter} from "next/navigation";
-import {CodeResponse, CredentialResponse, GoogleLogin, useGoogleLogin} from "@react-oauth/google";
+import {CodeResponse, useGoogleLogin} from "@react-oauth/google";
+import {FcGoogle} from "react-icons/fc";
 import React from "react";
 
 export default function Page() {
@@ -121,8 +118,14 @@ export default function Page() {
                         </Button>
                     </Form>
                 </Formik>
-                <Button onPress={() => googleLogin()}>
-                    Google
+                <Button
+                    className="w-2/3 md:w-1/3 gap-2"
+                    onPress={() => googleLogin()}
+                    variant="bordered"
+                    color="primary"
+                >
+                    <FcGoogle size={24}/>
+                    Login with Google
                 </Button>
             </div>
         </div>

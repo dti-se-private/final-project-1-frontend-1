@@ -7,10 +7,11 @@ import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {Button} from "@heroui/react";
 import {useModal} from "@/src/hooks/useModal";
-import {CodeResponse, CredentialResponse, GoogleLogin, TokenResponse, useGoogleLogin} from "@react-oauth/google";
+import {CodeResponse, useGoogleLogin} from "@react-oauth/google";
 import {VerificationSendRequest} from "@/src/stores/apis/verificationApi";
 import React from "react";
 import {useVerification} from "@/src/hooks/useVerification";
+import {FcGoogle} from "react-icons/fc";
 
 export default function Page() {
     const authentication = useAuthentication();
@@ -152,8 +153,14 @@ export default function Page() {
                             </Form>
                     }
                 </Formik>
-                <Button onPress={() => googleLogin()}>
-                    Google
+                <Button
+                    className="w-2/3 md:w-1/3 gap-2"
+                    onPress={() => googleLogin()}
+                    variant="bordered"
+                    color="primary"
+                >
+                    <FcGoogle size={24}/>
+                    Register with Google
                 </Button>
             </div>
         </div>
