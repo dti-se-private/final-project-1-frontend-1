@@ -141,9 +141,48 @@ export default function Page() {
                                     </div>
                                     <Input name="image" label="Image" type="file"
                                            onChange={async (event) => {
-                                               const file = event.target.files?.item(0);
-                                               const hexString = await convertFileToHexString(file!);
-                                               props.setFieldValue("image", hexString);
+                                               const files = event.target.files ?? [];
+
+                                               if (files.length === 0) {
+                                                   modal.setContent({
+                                                       header: "Invalid File",
+                                                       body: `No file selected.`,
+                                                   });
+                                                   modal.onOpenChange(true);
+                                                   return;
+                                               }
+
+                                               if (files.length > 1) {
+                                                   modal.setContent({
+                                                       header: "Invalid File",
+                                                       body: `Only one file is allowed.`,
+                                                   });
+                                                   modal.onOpenChange(true);
+                                                   return;
+                                               }
+
+                                               for (const file of files) {
+                                                   const extension = file.name.split('.').pop();
+                                                   if (!extension) {
+                                                       modal.setContent({
+                                                           header: "Invalid File",
+                                                           body: `File ${file.name} has no extension.`,
+                                                       });
+                                                       modal.onOpenChange(true);
+                                                       return;
+                                                   }
+                                                   if (!["jpg", "jpeg", "png"].includes(extension)) {
+                                                       modal.setContent({
+                                                           header: "Invalid File",
+                                                           body: `Only jpg, jpeg, and png files are allowed.`,
+                                                       });
+                                                       modal.onOpenChange(true);
+                                                       return;
+                                                   }
+
+                                                   const hexString = await convertFileToHexString(file);
+                                                   props.setFieldValue("image", hexString);
+                                               }
                                            }}
                                     />
                                 </div>

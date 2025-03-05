@@ -69,10 +69,10 @@ export const axiosBaseQuery =
                                 return await rawInstance(error.config)
                             }
                         } else {
+                            store.dispatch(authenticationSlice.actions.logout({}))
                             const currentPath = window.location.pathname;
                             const isPathAllowed = pathPatternPermissions.UNAUTHENTICATED.some(pathPattern => new RegExp(pathPattern).test(currentPath))
                             if (!isPathAllowed) {
-                                store.dispatch(authenticationSlice.actions.logout({}))
                                 window.location.href = '/login'
                             }
                         }
