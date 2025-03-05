@@ -8,7 +8,7 @@ interface PermissionProviderProps {
     requiredPermissions?: string[];
 }
 
-const pathPatternPermissions = {
+export const pathPatternPermissions = {
     SUPER_ADMIN: [
         '^/$',
         '^/admins.*',

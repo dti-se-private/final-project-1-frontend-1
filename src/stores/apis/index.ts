@@ -5,6 +5,7 @@ import {authenticationSlice, AuthenticationState} from "@/src/stores/slices/auth
 import storeRegistry from "@/src/registries/storeRegistry";
 import applyCaseMiddleware from "axios-case-converter";
 import {Session} from "@/src/stores/apis/authenticationApi";
+import {pathPatternPermissions} from "@/src/components/PermissionProvider";
 
 export interface ResponseBody<T> {
     data?: T;
@@ -68,8 +69,12 @@ export const axiosBaseQuery =
                                 return await rawInstance(error.config)
                             }
                         } else {
-                            store.dispatch(authenticationSlice.actions.logout({}))
-                            window.location.href = '/login'
+                            const currentPath = window.location.pathname;
+                            const isPathAllowed = pathPatternPermissions.UNAUTHENTICATED.some(pathPattern => new RegExp(pathPattern).test(currentPath))
+                            if (!isPathAllowed) {
+                                store.dispatch(authenticationSlice.actions.logout({}))
+                                window.location.href = '/login'
+                            }
                         }
                     }
                     return await Promise.reject(error)
