@@ -62,7 +62,7 @@ export default function Page() {
                         Details
                     </Button>
                     <Button
-                        color="success"
+                        color="warning"
                         className="text-white"
                         onPress={() => {
                             const request: OrderProcessRequest = {

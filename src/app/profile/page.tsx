@@ -7,7 +7,7 @@ import FormInput from "@/src/components/FormInput";
 import {Avatar, Button, Input} from "@heroui/react";
 import {useModal} from "@/src/hooks/useModal";
 import {PatchAccountRequest} from "@/src/stores/apis/accountApi";
-import React from "react";
+import React, {useRef} from "react";
 import {convertFileToHexString, convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import {useVerification} from "@/src/hooks/useVerification";
 import {VerificationSendRequest} from "@/src/stores/apis/verificationApi";

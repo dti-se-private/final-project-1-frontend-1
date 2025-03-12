@@ -37,6 +37,7 @@ export default function Page() {
         name: productState.details?.name ?? "",
         description: productState.details?.description ?? "",
         price: productState.details?.price ?? 0,
+        weight: productState.details?.weight ?? 0,
         image: productState.details?.image ?? "",
     };
 
@@ -52,6 +53,7 @@ export default function Page() {
         name: Yup.string().required("Name is required."),
         description: Yup.string().required("Description is required."),
         price: Yup.number().required("Price is required."),
+        weight: Yup.number().required("Weight is required."),
         image: Yup.mixed(),
     });
 
@@ -63,6 +65,7 @@ export default function Page() {
                 name: values.name,
                 description: values.description,
                 price: values.price,
+                weight: values.weight,
                 image: values.image
             }
         }
@@ -187,6 +190,18 @@ export default function Page() {
                         onBlur={formik.handleBlur}
                         isInvalid={Boolean(formik.errors.price)}
                         errorMessage={formik.errors.price}
+                        disabled={formik.isSubmitting}
+                    />
+                    <Input
+                        className="mb-6 w-full"
+                        name="weight"
+                        label="Weight"
+                        type="number"
+                        value={`${formik.values.weight}`}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        isInvalid={Boolean(formik.errors.weight)}
+                        errorMessage={formik.errors.weight}
                         disabled={formik.isSubmitting}
                     />
                     <div className="flex gap-4 w-full">

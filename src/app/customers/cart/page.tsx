@@ -71,13 +71,9 @@ export default function Page() {
     const isValidToTryCheckout = Boolean(getCartApiResult.data?.data && getCartApiResult.data?.data.length > 0 && accountAddressId);
 
     useEffect(() => {
-        if (isValidToTryCheckout) {
+        if (isValidToTryCheckout && accountAddressId) {
             const request: OrderRequest = {
-                addressId: accountAddressId!,
-                items: getCartApiResult.data!.data!.map((cartItem) => ({
-                    productId: cartItem.product.id,
-                    quantity: cartItem.quantity
-                }))
+                addressId: accountAddressId,
             }
             handleTryCheckout(request);
         }
@@ -253,11 +249,7 @@ export default function Page() {
                                         return
                                     }
                                     const request: OrderRequest = {
-                                        addressId: accountAddressId,
-                                        items: (getCartApiResult.data?.data ?? []).map((cartItem) => ({
-                                            productId: cartItem.product.id,
-                                            quantity: cartItem.quantity
-                                        }))
+                                        addressId: accountAddressId
                                     }
                                     checkout(request)
                                         .then((data) => {

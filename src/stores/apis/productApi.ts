@@ -8,6 +8,7 @@ export interface ProductResponse {
     name: string;
     description: string;
     price: number;
+    weight: number;
     quantity: number;
     image: string;
 }
@@ -17,6 +18,7 @@ export interface ProductRequest {
     name: string;
     description: string;
     price: number;
+    weight: number;
     image: string;
 }
 

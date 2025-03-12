@@ -219,6 +219,7 @@ export default function Page() {
                         <TableColumn key="category">Category Name</TableColumn>
                         <TableColumn key="name">Name</TableColumn>
                         <TableColumn key="price">Price</TableColumn>
+                        <TableColumn key="weight">Weight</TableColumn>
                         <TableColumn key="quantity">Quantity</TableColumn>
                         <TableColumn key="image">Image</TableColumn>
                         <TableColumn key="action">Action</TableColumn>
