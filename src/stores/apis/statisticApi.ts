@@ -32,7 +32,7 @@ export const statisticApi = createApi({
         getProductStock: builder.query<ResponseBody<StatisticSeriesResponse[]>, ProductStockStatisticRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
-                    args.productIds.map((productId) => `productIds=${productId}`).join("&"),
+                    ...args.productIds.map((productId) => `productIds=${productId}`),
                     `operation=${args.operation}`,
                     `aggregation=${args.aggregation}`,
                     `period=${args.period}`,
@@ -50,8 +50,8 @@ export const statisticApi = createApi({
         getProductSales: builder.query<ResponseBody<StatisticSeriesResponse[]>, ProductSalesStatisticRequest>({
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
-                    args.categoryIds.map((categoryId) => `categoryIds=${categoryId}`).join("&"),
-                    args.productIds.map((productId) => `productIds=${productId}`).join("&"),
+                    ...args.categoryIds.map((categoryId) => `categoryIds=${categoryId}`),
+                    ...args.productIds.map((productId) => `productIds=${productId}`),
                     `aggregation=${args.aggregation}`,
                     `period=${args.period}`,
                 ];
