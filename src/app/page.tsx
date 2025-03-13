@@ -30,13 +30,13 @@ export default function Page() {
 
     useEffect(() => {
         setGetProductsRequest({
-            size: productState.getProductsRequest.size,
-            page: productState.getProductsRequest.page,
+            size: 10,
+            page: 0,
             search: "",
         });
         setGetCategoriesRequest({
-            size: productState.getCategoriesRequest.size,
-            page: productState.getCategoriesRequest.page,
+            size: 10,
+            page: 0,
             search: "",
         });
     }, []);

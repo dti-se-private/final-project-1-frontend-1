@@ -189,7 +189,7 @@ export default function Page() {
                                         size: Number(event.target.value),
                                         search: productState.getProductsRequest.search
                                     })}
-                                    defaultValue={10}
+                                    defaultValue={5}
                                 >
                                     <option value={5}>5</option>
                                     <option value={10}>10</option>
