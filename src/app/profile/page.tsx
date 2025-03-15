@@ -7,7 +7,7 @@ import FormInput from "@/src/components/FormInput";
 import {Avatar, Button, Input} from "@heroui/react";
 import {useModal} from "@/src/hooks/useModal";
 import {PatchAccountRequest} from "@/src/stores/apis/accountApi";
-import React, {useRef} from "react";
+import React, {useState} from "react";
 import {convertFileToHexString, convertHexStringToBase64Data} from "@/src/tools/converterTool";
 import {useVerification} from "@/src/hooks/useVerification";
 import {VerificationSendRequest} from "@/src/stores/apis/verificationApi";
@@ -74,7 +74,22 @@ export default function Page() {
             });
     };
 
+    const [isLoadingOtp, setIsLoadingOtp] = useState<boolean>(false)
+
     const handlePressOtp = (values: typeof initialValues) => {
+        setIsLoadingOtp(true)
+        const emailValidation = Yup.string().email("Invalid email.").required("Email is required.");
+        try {
+            emailValidation.validateSync(values.email);
+        } catch (error) {
+            modal.setContent({
+                header: "Email Error",
+                body: `${(error as Yup.ValidationError).message}`,
+            });
+            modal.onOpenChange(true);
+            return;
+        }
+
         const request: VerificationSendRequest = {
             email: values.email,
             type: "UPDATE_ACCOUNT"
@@ -94,6 +109,7 @@ export default function Page() {
                 })
             }).finally(() => {
                 modal.onOpenChange(true);
+                setIsLoadingOtp(false)
             });
     }
 
@@ -117,8 +133,12 @@ export default function Page() {
                                     <div>
                                         <div className="flex gap-4 mb-6 w-full">
                                             <FormInput className="" name="otp" label="OTP" type="text"/>
-                                            <Button type="button" onPress={() => handlePressOtp(props.values)}
-                                                    className="w-1/3 h-14">
+                                            <Button
+                                                type="button"
+                                                isLoading={isLoadingOtp}
+                                                onPress={() => handlePressOtp(props.values)}
+                                                className="w-1/3 h-14"
+                                            >
                                                 Send OTP
                                             </Button>
                                         </div>

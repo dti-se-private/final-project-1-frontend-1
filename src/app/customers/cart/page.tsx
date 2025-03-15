@@ -68,14 +68,14 @@ export default function Page() {
             });
     }, 500)
 
-    const isValidToTryCheckout = Boolean(getCartApiResult.data?.data && getCartApiResult.data?.data.length > 0 && accountAddressId);
-
     useEffect(() => {
-        if (isValidToTryCheckout && accountAddressId) {
+        if (getCartApiResult.data?.data && getCartApiResult.data?.data.length > 0 && accountAddressId) {
             const request: OrderRequest = {
                 addressId: accountAddressId,
             }
             handleTryCheckout(request);
+        } else {
+            setOrderResponse(undefined);
         }
     }, [accountAddressId, getCartApiResult.data?.data]);
 
