@@ -77,7 +77,7 @@ export default function Page() {
                     {
                         heroImages.map((image, index) => (
                             <SwiperSlide key={index}>
-                                <div className="w-full h-[24vh] md:h-[79vh] relative mb-12">
+                                <div className="cursor-pointer w-full h-[24vh] md:h-[79vh] relative mb-12">
                                     <Image
                                         className="rounded-md"
                                         src={image}

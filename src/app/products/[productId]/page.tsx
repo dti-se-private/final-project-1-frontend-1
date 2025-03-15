@@ -89,7 +89,7 @@ export default function Page() {
                     <p className="text-lg">Stock: {productState.details?.quantity ? productState.details?.quantity - quantity : 0}</p>
                     <p className="text-lg">Category: {upperFirst(productState.details?.category?.name ?? "-")}</p>
                     <p className="text-md">{productState.details?.description}</p>
-                    <div className="flex md:flex-row flex-col md:justify-start gap-2 mt-2 w-full">
+                    <div className="flex md:flex-row flex-col md:justify-start justify-center gap-2 mt-2 w-full">
                         <div className="flex flex-row gap-2">
                             <Button
                                 isIconOnly
@@ -103,6 +103,7 @@ export default function Page() {
                                 <Icon icon="heroicons:minus"/>
                             </Button>
                             <Button
+                                className="w-full"
                                 variant="bordered"
                             >
                                 {quantity}
