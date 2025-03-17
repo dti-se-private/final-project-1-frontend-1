@@ -96,7 +96,6 @@ export default function Page() {
     const [isLoadingOtp, setIsLoadingOtp] = useState<boolean>(false)
 
     const handlePressOtp = (values: typeof initialValues) => {
-        setIsLoadingOtp(true)
         const emailValidation = Yup.string().email("Invalid email.").required("Email is required.");
         try {
             emailValidation.validateSync(values.email);
@@ -109,6 +108,7 @@ export default function Page() {
             return;
         }
 
+        setIsLoadingOtp(true)
         const request: VerificationSendRequest = {
             email: values.email,
             type: "REGISTER"
