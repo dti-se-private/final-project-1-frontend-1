@@ -67,6 +67,9 @@ export const axiosBaseQuery =
                                 store.dispatch(authenticationSlice.actions.refreshSession({session: refreshSessionResponse.data.data}))
                                 error.config.headers.Authorization = `Bearer ${refreshSessionResponse.data.data.accessToken}`
                                 return await rawInstance(error.config)
+                            } else {
+                                store.dispatch(authenticationSlice.actions.logout({}))
+                                window.location.href = '/login'
                             }
                         } else {
                             store.dispatch(authenticationSlice.actions.logout({}))
